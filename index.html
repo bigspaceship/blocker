@@ -2,24 +2,28 @@
 <html>
 	<head>
 		<title>Isometric Asset Builder</title>
+		<script src="javascript/libraries/modernizr.custom.74974.js"></script>
 		<link rel="stylesheet" href="css/stylesheet.css" />
 	</head>
 	<body>
 		<nav>
-			<form id="save-form" method="POST" action="save.php"> 
-				<fieldset> 
-					<label for="title">Title</label> 
-					<input id="title" name="title" class="text" type="text" /> 
-					<input id="cubes_text" name="cubes_text" type="hidden" value="" /> 
-					<input id="order" name="order" type="hidden" value="" /> 
-					<input type="submit" id="submit" value="Save" /> 
-				</fieldset> 
-			</form>
+			<ul class="color-buttons">
+			</ul>
+			<ul class="mode-buttons">
+				<li><a href="#" id="mode-single" class="mode-button">single block</a></li>
+				<li><a href="#" id="mode-multiple" class="mode-button">multiple blocks</a></li>
+				<li><a href="#" id="mode-delete" class="mode-button">delete blocks</a></li>
+			</ul>
+			<ul class="size-sliders">
+				<li id="size-width" class="size-slider"><h1>width</h1></li>
+				<li id="size-depth" class="size-slider"><h1>depth</h1></li>
+			</ul>
+			<ul class="file-buttons">
+				<li><a href="#" id="file-import" class="file-button">import</a></li>
+				<li><a href="#" id="file-export" class="file-button">export</a></li>
+			</ul>
 		</nav>		
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js"></script>
-		<script src="javascript/jquery-ui-1.8.13.custom.min.js"></script>
-		<script src="javascript/jquery.mousewheel.js"></script>
-		<script src="javascript/jquery.event.drag-2.0.js"></script>
-		<script src="javascript/isometric.js"></script>		
+		<script src="javascript/application/editor.js"></script>
+		<!--<script src="javascript/isometric.js"></script>-->
 	</body>
 </html>

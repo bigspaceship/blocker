@@ -18,7 +18,7 @@ body
 	overflow: hidden;
 }
 
-#selector
+#cursor
 {
 	display: block;
 	position: absolute;
@@ -32,7 +32,7 @@ body
 	z-index: 10000;
 }
 
-.cube
+.block
 {
 	width: 28px;
 	height: 28px;
@@ -45,9 +45,14 @@ body
 	background-repeat: no-repeat;
 }
 
-.cube.active
+.block.active
 {
 	background-position: 0 -168px;
+}
+
+.block.preview
+{
+	opacity: 0.4;
 }
 
 nav
@@ -74,12 +79,6 @@ nav
 		float: left;
 		clear: none;
 		margin-right: 10px;
-		height: 28px;
-		width: 28px;
-		text-indent: -5000px;
-		overflow: hidden;
-		cursor: pointer;
-		border: 1px #333 solid;
 	}
 	
 	nav li.active
