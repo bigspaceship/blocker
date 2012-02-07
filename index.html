@@ -7,20 +7,45 @@
 	</head>
 	<body>
 		<nav>
-			<ul class="color-buttons">
-			</ul>
-			<ul class="mode-buttons">
-				<li><a href="#" id="mode-single" class="mode-button">single block</a></li>
-				<li><a href="#" id="mode-multiple" class="mode-button">multiple blocks</a></li>
-				<li><a href="#" id="mode-delete" class="mode-button">delete blocks</a></li>
-			</ul>
-			<ul class="size-sliders">
-				<li id="size-width" class="size-slider"><h1>width</h1></li>
-				<li id="size-depth" class="size-slider"><h1>depth</h1></li>
-			</ul>
-			<ul class="file-buttons">
-				<li><a href="#" id="file-import" class="file-button">import</a></li>
-				<li><a href="#" id="file-export" class="file-button">export</a></li>
+			<div class="size-sliders">
+				<h1>Pencil Size</h1>
+				<ul>
+					<li id="size-width" class="size-slider"><h1>width</h1></li>
+					<li id="size-depth" class="size-slider"><h1>depth</h1></li>
+				</ul>
+			</div>
+			<div class="mode-buttons">
+				<h1>Edit Mode</h1>
+				<ul>
+					<li><a href="#" id="mode-single" class="mode-button">single block</a></li>
+					<li><a href="#" id="mode-multiple" class="mode-button">multiple blocks</a></li>
+					<li><a href="#" id="mode-delete" class="mode-button">delete blocks</a></li>
+				</ul>
+			</div>
+			<div class="color-buttons">
+				<h1>Block Color</h1>
+				<ul>
+					<li><a href="#" id="color-button-yellow">yellow</a></li>
+					<li><a href="#" id="color-button-blue">blue</a></li>
+					<li><a href="#" id="color-button-pink">pink</a></li>
+					<li><a href="#" id="color-button-green">green</a></li>
+					<li><a href="#" id="color-button-red">red</a></li>
+					<li><a href="#" id="color-button-transparent">transparent</a></li>
+				</ul>
+			</div>
+			<div class="history-buttons">
+				<h1>History</h1>
+				<ul>
+					<li><a href="#" id="history-undo" class="history-button">undo</a></li>
+					<li><a href="#" id="history-redo" class="history-button">redo</a></li>
+				</ul>
+			</div>			
+			<div class="file-buttons">
+				<h1>File</h1>
+				<ul>
+					<li><a href="#" id="file-import" class="file-button">import</a></li>
+					<li><a href="#" id="file-export" class="file-button">export</a></li>
+				</ul>
 			</ul>
 		</nav>		
 		<script src="javascript/application/editor.js"></script>

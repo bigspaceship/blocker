@@ -5,26 +5,21 @@ var Navigation = function()
 
 	function init( $colors )
 	{
-		var color_list_html = '';
-		
-		if ( $colors )
-		{
-			for ( var i = 0; i < $colors.length; i++ )
-			{
-				color_list_html += 	'<li><a href="#" id="color-button-' + $colors[i] + '">' + $colors[i] + '</a></li>';
-			}
-		}
+		$( '.color-buttons a:first' ).addClass( 'active' );
+		$( '.mode-buttons a:first' ).addClass( 'active' );
 
-		$( '.color-buttons' ).append( color_list_html );
+		var color = $( '.color-buttons a.active' ).attr( 'id' ).replace( 'color-button-', '' );
+
+		editor.colorUpdate( color );
 
 		slidersAdd( '.size-slider' );
 
-		$( '.size-sliders' ).hide();
+		//$( '.size-sliders' ).hide();
 		$( '.color-buttons a' ).click( colorChanged );
 		$( '.mode-buttons a' ).click( modeChanged );
 		$( '.file-buttons a' ).click( fileClicked );
+		$( '.history-buttons a' ).click( historyClicked );
 
-		editor.colorUpdate( $colors[0] );
 		editor.modeUpdate( 'single' );
 	}
 
@@ -73,6 +68,15 @@ var Navigation = function()
 			operation = 'file' + operation.charAt( 0 ).toUpperCase() + operation.substr( 1 ).toLowerCase()
 
 		editor[operation]();
+	}
+
+	function historyClicked( $event )
+	{
+		$event.preventDefault();
+
+		var action = $( $event.target ).attr( 'id' ).replace( 'history-', '' );
+
+		editor.historyUpdate( action );
 	}
 
 	function slidersAdd( $selector )
