@@ -683,7 +683,36 @@ function Canvas()
 
 	function getBlocks()
 	{
+		blockRemove( { blocks: $( '.block.preview' ) } );
+		
 		return _blocks;
+	}
+
+	function importBlocks( $blocks )
+	{
+		for ( var i = 0; i < $blocks.length; i++ )
+		{
+			var old_index = $blocks[i].index;
+
+			var new_block = $blocks[i];
+				new_block.index = getHighestBlockIndex() + 1;
+
+			var new_block_html = '<div class="block color-' + new_block.color + '" id="block-' + new_block.index + '"></div>';
+		
+			var new_block_css = {
+				top: new_block.position.y + ( - _block_size.height * new_block.position.z ),
+				left: new_block.position.x
+			};
+
+			editor.historyUpdateIDs( old_index, new_block.index );
+
+			_blocks.push( new_block );
+
+			$( '#blocks' ).append( new_block_html );
+			$( '#block-' + new_block.index )
+				.css( new_block_css )
+				.hover( blockOver, blockOut );
+		}
 	}
 
 	_self.init = init;
@@ -693,6 +722,7 @@ function Canvas()
 	_self.historyUpdate = historyUpdate;
 	_self.deleteSelected = blocksDeleteSelected;
 	_self.getBlocks = getBlocks;
+	_self.importBlocks = importBlocks;
 
 	_self.getBlocks = function(){ return _blocks };
 }

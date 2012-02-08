@@ -4,6 +4,7 @@ function History()
 
 	var _history = [];
 	var _current_index = -1;
+	var _imported_history = [];
 
 	function init()
 	{
@@ -87,6 +88,26 @@ function History()
 		return _history;
 	}
 
+	function importHistory( $history )
+	{
+		_imported_history = $history;
+	}
+
+	function historyUpdateIDs( $old_index, $new_index )
+	{
+		for ( var i = 0; i < _imported_history.length; i++ )
+		{
+			if ( _imported_history[i].block.index === $old_index )
+			{
+				_imported_history[i].block.index = $new_index;
+			}
+
+			save( { action: 'add', block: _imported_history[i].block } );
+		}
+
+		_imported_history = [];
+	}
+
 	_self.init = init;
 	_self.save = save;
 	_self.undo = undo;
@@ -94,4 +115,6 @@ function History()
 	_self.hasNext = hasNext;
 	_self.hasPrev = hasPrev;
 	_self.getHistory = getHistory;
+	_self.importHistory = importHistory;
+	_self.historyUpdateIDs = historyUpdateIDs;
 }

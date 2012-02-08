@@ -133,7 +133,8 @@ nav
 
 .size-sliders,
 .delete-info,
-.export-info
+.export-info,
+.import-info
 {
 	width: 100%;
 	float: none;
@@ -150,7 +151,8 @@ nav
 
 	.size-sliders h1,
 	.delete-info h1,
-	.export-info h1
+	.export-info h1,
+	.import-info h1
 	{
 		color: #fff;
 		float: left;
@@ -169,7 +171,9 @@ nav
 	.delete-info::before,
 	.delete-info::after,
 	.export-info::before,
-	.export-info::after
+	.export-info::after,
+	.import-info::before,
+	.import-info::after
 	{
 		clear: both;
 		content: '';
@@ -228,7 +232,8 @@ nav
 	}
 
 	.delete-info h1,
-	.export-info h1
+	.export-info h1,
+	.import-info h1
 	{
 		line-height: 25px;
 		height: 25px;
@@ -252,7 +257,8 @@ nav
 	}
 
 	.delete-info p,
-	.export-info p
+	.export-info p,
+	.import-info p
 	{
 		margin-bottom: 0;
 		float: left;
@@ -260,7 +266,8 @@ nav
 		height: 25px;
 	}
 
-	.export-info input
+	.export-info input,
+	.import-info input
 	{
 		display: block;
 		float: left;
@@ -277,19 +284,23 @@ nav
 	}
 
 	.export-info input:active,
-	.export-info input:focus
+	.export-info input:focus,
+	.import-info input:active,
+	.import-info input:focus
 	{
 		color: #fff;,
 		border: 1px #fff solid;
 	}
 
-	.export-info label
+	.export-info label,
+	.import-info label
 	{
 		display: block;
 		float: left;
 		line-height: 25px;
 		height: 25px;
 		color: #D89495;
+		margin-right: 10px;
 	}
 
 .color-buttons

@@ -20,10 +20,22 @@ var Navigation = function()
 		$( '.file-buttons a' ).click( fileClicked );
 		$( '.history-buttons a' ).click( historyClicked );
 		$( '#file-export' ).click( exportClicked );
+		$( '#file-import' ).click( importClicked );
 
 		$( '.delete-info a' ).click( deleteClicked );
 		$( '#export-html' ).click( exportHTMLClicked );
 		$( '#export-json' ).click( exportJSONClicked );
+
+		// gf: check for file API for
+		if (
+			window.File &&
+			window.FileReader &&
+			window.FileList &&
+			window.Blob
+		)
+		{
+			$( '#import-file' ).change( fileChanged );
+		}
 
 		editor.modeUpdate( 'single' );
 	}
@@ -54,6 +66,7 @@ var Navigation = function()
 			$( '.size-sliders' ).hide();
 			$( '.delete-info' ).hide();
 			$( '.export-info' ).hide();
+			$( '.import-info' ).hide();
 		}
 
 		if ( new_mode === 'delete' )
@@ -61,6 +74,7 @@ var Navigation = function()
 			$( '.size-sliders' ).hide();
 			$( '.delete-info' ).show();
 			$( '.export-info' ).hide();
+			$( '.import-info' ).hide();
 		}
 
 		if ( new_mode === 'multiple' )
@@ -68,6 +82,7 @@ var Navigation = function()
 			$( '.size-sliders' ).show();
 			$( '.delete-info' ).hide();
 			$( '.export-info' ).hide();
+			$( '.import-info' ).hide();
 		}
 
 		editor.modeUpdate( new_mode );
@@ -81,6 +96,11 @@ var Navigation = function()
 			operation = 'file' + operation.charAt( 0 ).toUpperCase() + operation.substr( 1 ).toLowerCase()
 
 		editor[operation]();
+	}
+
+	function fileChanged( $event )
+	{
+		editor.fileImported( $event );
 	}
 
 	function historyClicked( $event )
@@ -106,6 +126,17 @@ var Navigation = function()
 		$( '.size-sliders' ).hide();
 		$( '.delete-info' ).hide();
 		$( '.export-info' ).toggle();
+		$( '.import-info' ).hide();
+	}
+
+	function importClicked( $event )
+	{
+		$event.preventDefault();
+
+		$( '.size-sliders' ).hide();
+		$( '.delete-info' ).hide();
+		$( '.export-info' ).hide();
+		$( '.import-info' ).toggle();
 	}
 
 	function exportHTMLClicked( $event )

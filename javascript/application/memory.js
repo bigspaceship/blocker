@@ -7,7 +7,53 @@ function Memory()
 
 	}
 
-	
+	function fileImported( $event )
+	{
+		var files = $event.target.files;
+		var files_imported = [];
+
+		for ( var i = 0; i < files.length; i++ )
+		{
+			var file = {
+				name: files[i].name,
+				type: files[i].type,
+				size: files[i].size,
+				last_modified: files[i].lastModifiedDate.toLocaleDateString()
+			}
+
+			files_imported.push( file );
+		}
+
+		if ( files_imported.length )
+		{
+			var reader = new FileReader();
+
+				reader.readAsText( files[0] );
+				reader.onload = ( function( $file ){ return function( $event ) { importJSON( $event.target.result ) }; } )( files[0] );
+		}
+	}
+
+	function importJSON( $text )
+	{
+		var object = {};
+
+		try
+		{
+			object = jQuery.parseJSON( $text );
+		}
+
+		catch( $error ) {}
+
+		if (
+			object &&
+			object.blocks &&
+			object.history
+		)
+		{
+			editor.importHistory( object.history );
+			editor.importBlocks( object.blocks );
+		}
+	}
 
 	function exportHTML( $event )
 	{
@@ -88,5 +134,6 @@ function Memory()
 
 	_self.exportHTML = exportHTML;
 	_self.exportJSON = exportJSON;
+	_self.fileImported = fileImported;
 	_self.init = init;
 }

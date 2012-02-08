@@ -44,6 +44,11 @@ function Editor()
 		_self.getHistory = _history.getHistory;
 		_self.exportHTML = _memory.exportHTML;
 		_self.exportJSON = _memory.exportJSON;
+		_self.importHistory = _history.importHistory;
+		_self.importBlocks = _canvas.importBlocks;
+		_self.fileImported = _memory.fileImported;
+
+		_self.historyUpdateIDs = _history.historyUpdateIDs;
 	}
 
 	function fileImport()
