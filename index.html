@@ -4,6 +4,7 @@
 		<title>Isometric Asset Builder</title>
 		<script src="javascript/libraries/modernizr.custom.74974.js"></script>
 		<link rel="stylesheet" href="css/stylesheet.css" />
+		<link rel="stylesheet" href="css/blocks.css" />
 	</head>
 	<body>
 		<nav>
@@ -16,8 +17,16 @@
 			</div>
 			<div class="delete-info">
 				<h1>Delete</h1>
-				<a href="#">Delete Selected Blocks</a>
+				<a href="#" class="info-button">Delete Selected Blocks</a>
 				<p>Click on a block to select it. Hold down shift while dragging to select multiple blocks.</p>
+			</div>
+			<div class="export-info">
+				<h1>Export</h1>
+				<label for="export-filename">File Name</label>
+				<input id="export-filename" type="text" placeholder="myBlocks" />
+				<a href="#" id="export-html" class="info-button">Export HTML</a>
+				<a href="#" id="export-json" class="info-button">Export JSON</a>
+				<p>Export to HTML to use your creation on a web site. Export to JSON to save your creation and come back later to continue working on it.</p>
 			</div>
 			<div class="mode-buttons">
 				<h1>Edit Mode</h1>
@@ -54,6 +63,5 @@
 			</ul>
 		</nav>		
 		<script src="javascript/application/editor.js"></script>
-		<!--<script src="javascript/isometric.js"></script>-->
 	</body>
 </html>

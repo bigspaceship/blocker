@@ -82,10 +82,16 @@ function History()
 		return return_value;
 	}
 
+	function getHistory()
+	{
+		return _history;
+	}
+
 	_self.init = init;
 	_self.save = save;
 	_self.undo = undo;
 	_self.redo = redo;
 	_self.hasNext = hasNext;
 	_self.hasPrev = hasPrev;
+	_self.getHistory = getHistory;
 }

@@ -681,12 +681,18 @@ function Canvas()
 		previewUpdate();
 	}
 
+	function getBlocks()
+	{
+		return _blocks;
+	}
+
 	_self.init = init;
 	_self.modeUpdate = modeUpdate;
 	_self.colorUpdate = colorUpdate;
 	_self.sizeUpdate = sizeUpdate;
 	_self.historyUpdate = historyUpdate;
 	_self.deleteSelected = blocksDeleteSelected;
+	_self.getBlocks = getBlocks;
 
 	_self.getBlocks = function(){ return _blocks };
 }

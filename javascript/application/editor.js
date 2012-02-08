@@ -8,7 +8,8 @@ function Editor()
 		'javascript/libraries/jquery.event.drag-2.0.js',
 		'javascript/application/navigation.js',
 		'javascript/application/canvas.js',
-		'javascript/application/history.js'
+		'javascript/application/history.js',
+		'javascript/application/memory.js'
 	];
 
 	var _colors = []
@@ -31,12 +32,18 @@ function Editor()
 		_colors = getColors();
 
 		_history = new History();
+		_memory = new Memory();
 
 		_navigation = new Navigation();
 		_navigation.init( _colors );
 
 		_canvas = new Canvas();
 		_canvas.init();
+
+		_self.getBlocks = _canvas.getBlocks;
+		_self.getHistory = _history.getHistory;
+		_self.exportHTML = _memory.exportHTML;
+		_self.exportJSON = _memory.exportJSON;
 	}
 
 	function fileImport()

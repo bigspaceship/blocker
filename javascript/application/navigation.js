@@ -19,8 +19,11 @@ var Navigation = function()
 		$( '.mode-buttons a' ).click( modeChanged );
 		$( '.file-buttons a' ).click( fileClicked );
 		$( '.history-buttons a' ).click( historyClicked );
+		$( '#file-export' ).click( exportClicked );
 
 		$( '.delete-info a' ).click( deleteClicked );
+		$( '#export-html' ).click( exportHTMLClicked );
+		$( '#export-json' ).click( exportJSONClicked );
 
 		editor.modeUpdate( 'single' );
 	}
@@ -50,18 +53,21 @@ var Navigation = function()
 		{
 			$( '.size-sliders' ).hide();
 			$( '.delete-info' ).hide();
+			$( '.export-info' ).hide();
 		}
 
 		if ( new_mode === 'delete' )
 		{
 			$( '.size-sliders' ).hide();
 			$( '.delete-info' ).show();
+			$( '.export-info' ).hide();
 		}
 
 		if ( new_mode === 'multiple' )
 		{
 			$( '.size-sliders' ).show();
 			$( '.delete-info' ).hide();
+			$( '.export-info' ).hide();
 		}
 
 		editor.modeUpdate( new_mode );
@@ -91,6 +97,29 @@ var Navigation = function()
 		$event.preventDefault();
 
 		editor.deleteSelected();
+	}
+
+	function exportClicked( $event )
+	{
+		$event.preventDefault();
+
+		$( '.size-sliders' ).hide();
+		$( '.delete-info' ).hide();
+		$( '.export-info' ).toggle();
+	}
+
+	function exportHTMLClicked( $event )
+	{
+		$event.preventDefault();
+
+		editor.exportHTML( $event );
+	}
+
+	function exportJSONClicked( $event )
+	{
+		$event.preventDefault();
+
+		editor.exportJSON( $event );
 	}
 
 	function slidersAdd( $selector )
