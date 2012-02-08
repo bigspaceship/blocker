@@ -77,7 +77,12 @@ function Canvas()
 			else
 			{
 				$( '#cursor' ).show();
-			}	
+
+				if ( ! $( '.block.preview' ).length )
+				{
+					previewUpdateBlocks();
+				}
+			}
 		}
 
 		else
@@ -85,6 +90,7 @@ function Canvas()
 			_mouse_on_canvas = false;
 			
 			$( '#cursor' ).hide();
+			blockRemove( { blocks: $( '.block.preview' ) } );
 		}
 
 		if ( $event.shiftKey )
