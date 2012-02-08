@@ -99,16 +99,15 @@ var Navigation = function()
 			function()
 			{
 				$( this )
-					.append( '<div />' )
+					.append( '<div class="nav-slider"></div>' )
 
 				$( this )
-					.find( 'div' )
+					.find( '.nav-slider' )
 					.slider( _slider_options );
 
 				$( this )
 					.find( 'h1' )
 					.text( $( this ).text() + ': ' + _slider_options.value );
-
 
 				var id = $( this ).closest( 'li' ).attr( 'id' ).replace( 'size-', '' )
 				
@@ -118,7 +117,7 @@ var Navigation = function()
 	}
 
 	function sliderMoved( $event, $ui )
-	{
+	{		
 		if ( $( $event.target ).closest( 'li' ).attr( 'id' ) )
 		{
 			var slider_id = $( $event.target ).closest( 'li' ).attr( 'id' ).replace( 'size-', '' );

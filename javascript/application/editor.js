@@ -3,7 +3,7 @@ function Editor()
 	var _self = this;
 	var _dependencies = [
 		'javascript/libraries/jquery-1.7.1.min.js',
-		'javascript/libraries/jquery-ui-1.8.13.custom.min.js',
+		'javascript/libraries/jquery-ui-1.8.17.custom.min.js',
 		'javascript/libraries/jquery.mousewheel.js',
 		'javascript/libraries/jquery.event.drag-2.0.js',
 		'javascript/application/navigation.js',

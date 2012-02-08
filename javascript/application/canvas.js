@@ -544,8 +544,6 @@ function Canvas()
 	{
 		var block = $options.block;
 
-		console.log( 'addBlock', block.position.z );
-
 		block.index = parseInt( getHighestBlockIndex() + 1 );
 
 		var new_block_html = '<div class="block color-' + block.color + '" id="block-' + block.index + '"></div>';
