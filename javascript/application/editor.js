@@ -99,6 +99,14 @@ function Editor()
 		}
 	}
 
+	function deleteSelected()
+	{
+		if ( _canvas )
+		{
+			_canvas.deleteSelected();
+		}
+	}
+
 	_self.init = init;
 	
 	_self.colorUpdate = colorUpdate;
@@ -106,6 +114,7 @@ function Editor()
 	_self.modeUpdate = modeUpdate;
 	_self.fileImport = fileImport;
 	_self.fileExport = fileExport;
+	_self.deleteSelected = deleteSelected;
 
 	_self.getColor = function(){ return _color; };
 	_self.getMode = function(){ return _mode; };

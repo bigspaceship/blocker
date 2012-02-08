@@ -20,6 +20,8 @@ var Navigation = function()
 		$( '.file-buttons a' ).click( fileClicked );
 		$( '.history-buttons a' ).click( historyClicked );
 
+		$( '.delete-info a' ).click( deleteClicked );
+
 		editor.modeUpdate( 'single' );
 	}
 
@@ -44,17 +46,22 @@ var Navigation = function()
 		$( '.mode-buttons .active' ).removeClass( 'active' );
 		$( '.mode-buttons #mode-' + new_mode ).addClass( 'active' );
 
-		if (
-			new_mode === 'single' ||
-			new_mode === 'delete'
-		)
+		if ( new_mode === 'single' )
 		{
 			$( '.size-sliders' ).hide();
+			$( '.delete-info' ).hide();
+		}
+
+		if ( new_mode === 'delete' )
+		{
+			$( '.size-sliders' ).hide();
+			$( '.delete-info' ).show();
 		}
 
 		if ( new_mode === 'multiple' )
 		{
 			$( '.size-sliders' ).show();
+			$( '.delete-info' ).hide();
 		}
 
 		editor.modeUpdate( new_mode );
@@ -77,6 +84,13 @@ var Navigation = function()
 		var action = $( $event.target ).attr( 'id' ).replace( 'history-', '' );
 
 		editor.historyUpdate( action );
+	}
+
+	function deleteClicked( $event )
+	{
+		$event.preventDefault();
+
+		editor.deleteSelected();
 	}
 
 	function slidersAdd( $selector )

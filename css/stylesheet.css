@@ -124,7 +124,8 @@ nav
 		clear: both;
 	}
 
-.size-sliders
+.size-sliders,
+.delete-info
 {
 	width: 100%;
 	float: none;
@@ -139,7 +140,8 @@ nav
 	display: none;
 }
 
-	.size-sliders h1
+	.size-sliders h1,
+	.delete-info h1
 	{
 		color: #fff;
 		float: left;
@@ -154,7 +156,9 @@ nav
 	}
 
 	.size-sliders::after,
-	.size-sliders::before
+	.size-sliders::before,
+	.delete-info::before,
+	.delete-info::after
 	{
 		clear: both;
 		content: '';
@@ -179,6 +183,46 @@ nav
 		margin-left: 5px;
 		margin-top: 6px;
 		morder-radius: 3px;
+	}
+
+	.delete-info h1
+	{
+		line-height: 25px;
+		height: 25px;
+	}
+
+	.delete-info a
+	{
+		margin-right: 10px;
+		margin-left: 8px;
+		float: left;
+		padding: 0 7px;
+		border-radius: 5px;
+		margin-left: 10px;
+		margin-right: 10px;
+
+		line-height: 23px;
+		height: 23px;
+
+		border: 1px rgba(255, 255, 255, 0.6) solid;
+
+/*		background-image: linear-gradient(bottom, rgb(255,255,255) 21%, rgb(247,243,243) 100%);
+		background-image: -o-linear-gradient(bottom, rgb(255,255,255) 21%, rgb(247,243,243) 100%);
+		background-image: -moz-linear-gradient(bottom, rgb(255,255,255) 21%, rgb(247,243,243) 100%);
+		background-image: -webkit-linear-gradient(bottom, rgb(255,255,255) 21%, rgb(247,243,243) 100%);
+		background-image: -ms-linear-gradient(bottom, rgb(255,255,255) 21%, rgb(247,243,243) 100%);*/
+
+		box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+
+		color: #e2c9c9;
+	}
+
+	.delete-info p
+	{
+		margin-bottom: 0;
+		float: left;
+		line-height: 25px;
+		height: 25px;
 	}
 
 .color-buttons
@@ -303,6 +347,11 @@ nav
 	background-position: -28px -168px;
 }
 
+.block.selected
+{
+	background-position: 0 -168px;
+}
+
 .slider
 {
 	float: right;
@@ -330,14 +379,6 @@ nav
 	top: -4px;
 }
 
-#wall-sliders p
-{
-	float: left;
-	clear: none;
-	width: 60px;
-	margin-top: 25px;
-}
-
 .slider-container
 {
 	float: left;
@@ -346,7 +387,10 @@ nav
 	margin-right: 20px;
 }
 
-#cube-count
+#selection
 {
-	margin-top: 25px;
+	position: absolute;
+	background: rgba(0, 0, 0, 0.1);
+	border: 1px rgba(0, 0, 0, 0.5) solid;
+	border-radius: 2px;
 }

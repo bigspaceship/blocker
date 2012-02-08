@@ -10,14 +10,19 @@ function Canvas()
 	var _size;
 
 	var _mouse_on_canvas = true;
+	var _shift_pressed = false;
 
 	function init()
 	{
 		$( 'body' )
 			.click( clicked )
 			.mousemove( mouseMoved )
+			.bind( 'dragstart', dragStarted )
+			.bind( 'drag', dragged )
+			.bind( 'dragend', dragEnded )
 			.append('<div id="cursor"></div>')
 			.append('<div id="blocks"></div>');
+		
 
 		_mode = editor.getMode();
 		_color = editor.getColor();
@@ -34,21 +39,27 @@ function Canvas()
 			! $( $event.target ).closest( 'nav' ).length
 		)
 		{
-			if ( _mouse_on_canvas )
+			if (
+				_mouse_on_canvas &&
+				_mode !== 'delete'
+			)
 			{
 				previewToBlock();
 				blocksUpdateZ();
 				previewUpdateBlocks();
 				previewUpdate();
-			}		
+			}
+
+			if ( _mode === 'delete' )
+			{
+				blockAddToSelection( $event );
+			}
 		}
 	}
 
 	function mouseMoved( $event )
 	{
-		if (
-			$event.pageY < $( window ).height() - $( 'nav' ).height()
-		)
+		if ( $event.pageY < $( window ).height() - $( 'nav' ).height() )
 		{
 			_cursor.target.x = getGridPosition( $event.pageX, $event.pageY ).x;
 			_cursor.target.y = getGridPosition( $event.pageX, $event.pageY ).y;
@@ -58,7 +69,15 @@ function Canvas()
 			cursorUpdate();
 			previewUpdate();
 			
-			$( '#cursor' ).show();
+			if ( _mode === 'delete' )
+			{
+				$( '#cursor' ).hide();
+			}
+
+			else
+			{
+				$( '#cursor' ).show();
+			}	
 		}
 
 		else
@@ -66,6 +85,107 @@ function Canvas()
 			_mouse_on_canvas = false;
 			
 			$( '#cursor' ).hide();
+		}
+
+		if ( $event.shiftKey )
+		{
+			_shift_pressed = true;
+		}
+
+		else
+		{
+			shift_pressed = false;
+		}
+	}
+
+	function dragStarted( $event, $object )
+	{
+		if (
+			_shift_pressed &&
+			_mode === 'delete'
+		)
+		{
+			$( 'body' ).append( '<div id="selection"></div>' );
+			
+			var selection = {
+				width: $object.deltaX,
+				height:  $object.deltaY,
+				left: $object.startX,
+				top: $object.startY
+			}
+			
+			if ( $object.deltaX < 0 )
+			{
+				selection.width =  $object.deltaX;
+				selection.left = $object.startX + $object.deltaX;
+			}
+				
+			if ( $object.deltaY < 0 )
+			{
+				selection.height = $object.deltaY;
+				selection.top = $object.startY + $object.deltaY;
+			}
+				
+			$( '#selection' ).css( selection );
+		}
+	}
+
+	function dragged( $event, $object )
+	{
+		if (
+			_shift_pressed &&
+			_mode === 'delete'
+		)
+		{
+			var selection = {
+				width: $object.deltaX,
+				height:  $object.deltaY,
+				left: $object.startX,
+				top: $object.startY
+			}
+
+			if ( $object.deltaX < 0 )
+			{
+				selection.width = $object.deltaX * -1;
+				selection.left = $object.startX + $object.deltaX;
+			}
+					
+			if ( $object.deltaY < 0 )
+			{
+				selection.height = $object.deltaY * -1;
+				selection.top = $object.startY + $object.deltaY;
+			}
+
+			for ( var i = 0; i < _blocks.length; i++ )
+			{
+				var block = $( '#block-' + _blocks[i].index );
+				var position = block.position();
+
+				if (
+					position.left >= selection.left &&
+					position.left + _block_size.width <= selection.left + selection.width &&
+					position.top >= selection.top &&
+					position.top + _block_size.height <= selection.top + selection.height
+				)
+				{
+					block.addClass( 'selected' );
+				}
+
+				else
+				{
+					block.removeClass( 'selected' );
+				}
+			}
+					
+			$( '#selection' ).css( selection );
+		}
+	}
+
+	function dragEnded( $event )
+	{
+		if ( _mode === 'delete' )
+		{
+			$( '#selection' ).remove();
 		}
 	}
 
@@ -133,7 +253,9 @@ function Canvas()
 		_blocks.push( new_block );
 
 		$( '#blocks' ).append( new_block_html );
-		$( '#block-' + new_block.index ).css( new_block_css );
+		$( '#block-' + new_block.index )
+			.css( new_block_css )
+			.hover( blockOver, blockOut );
 
 		if ( $type === 'preview' )
 		{
@@ -192,6 +314,31 @@ function Canvas()
 				);
 			}
 		}
+	}
+
+	function blocksDeleteSelected()
+	{
+		blockRemove( { blocks: $( '.selected' ) } );
+	}
+
+	function blockAddToSelection( $event )
+	{
+		var target = $( $event.target );
+		
+		if ( target.hasClass( 'block' ) )
+		{
+			target.toggleClass( 'selected' );
+		}
+	}
+
+	function blockOver( $event )
+	{
+
+	}
+
+	function blockOut( $event )
+	{
+
 	}
 
 	function previewUpdate()
@@ -510,6 +657,16 @@ function Canvas()
 		_mode = $mode;
 		previewUpdateBlocks();
 		previewUpdate();
+
+		if ( _mode === 'delete' )
+		{
+			blockRemove( { blocks: $( '.block.preview' ) } );
+		}
+
+		else
+		{
+			$( '.block.selected' ).removeClass( 'selected' );
+		}
 	}
 	
 	function colorUpdate( $new_color, $old_color )
@@ -531,6 +688,7 @@ function Canvas()
 	_self.colorUpdate = colorUpdate;
 	_self.sizeUpdate = sizeUpdate;
 	_self.historyUpdate = historyUpdate;
+	_self.deleteSelected = blocksDeleteSelected;
 
 	_self.getBlocks = function(){ return _blocks };
 }
