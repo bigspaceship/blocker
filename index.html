@@ -8,34 +8,8 @@
 	</head>
 	<body>
 		<nav>
-			<div class="size-sliders">
-				<h1>Pencil Size</h1>
-				<ul>
-					<li id="size-width" class="size-slider"><h1>width</h1></li>
-					<li id="size-depth" class="size-slider"><h1>depth</h1></li>
-				</ul>
-			</div>
-			<div class="delete-info">
-				<h1>Delete</h1>
-				<a href="#" class="info-button">Delete Selected Blocks</a>
-				<p>Click on a block to select it. Hold down shift while dragging to select multiple blocks.</p>
-			</div>
-			<div class="export-info">
-				<h1>Export</h1>
-				<label for="export-filename">File Name</label>
-				<input id="export-filename" type="text" placeholder="myBlocks" />
-				<a href="#" id="export-html" class="info-button">Export HTML</a>
-				<a href="#" id="export-json" class="info-button">Export JSON</a>
-				<p>Export to HTML to use your creation on a web site. Export to JSON to save your creation and come back later to continue working on it.</p>
-			</div>
-			<div class="import-info">
-				<h1>Import</h1>
-				<label for="import-file">Choose JSON File</label>
-				<input id="import-file" type="file" accept="application/json,text/json,text/plain" />
-				<p>You can import .json files that you saved from previous sessions.</p>
-			</div>
 			<div class="mode-buttons">
-				<h1>Edit Mode</h1>
+				<h1>Drawing Mode</h1>
 				<ul>
 					<li><a href="#" id="mode-single" class="mode-button">single block</a></li>
 					<li><a href="#" id="mode-multiple" class="mode-button">multiple blocks</a></li>
@@ -66,7 +40,38 @@
 					<li><a href="#" id="file-import" class="file-button">import</a></li>
 					<li><a href="#" id="file-export" class="file-button">export</a></li>
 				</ul>
-			</ul>
+			</div>
+			<div class="info-container">
+				<div class="size-sliders">
+					<h1>Grid Size</h1>
+					<ul>
+						<li id="size-width" class="size-slider"><h1>width</h1></li>
+						<li id="size-depth" class="size-slider"><h1>depth</h1></li>
+					</ul>
+				</div>
+				<div class="delete-info">
+					<h1>Delete</h1>
+					<a href="#" class="info-button">Delete Selected Blocks</a>
+					<p>Click on a block to select it. Hold down shift while dragging to select multiple blocks.</p>
+				</div>
+				<div class="export-info">
+					<h1>Export</h1>
+					<label for="export-filename">File Name</label>
+					<input id="export-filename" type="text" placeholder="myBlocks" />
+					<a href="#" id="export-html" class="info-button">Export HTML</a>
+					<a href="#" id="export-json" class="info-button">Export JSON</a>
+					<p>Export to HTML to use your creation on a web site. Export to JSON to save your creation and come back later to continue working on it.</p>
+				</div>
+				<div class="import-info">
+					<h1>Import</h1>
+					<label for="import-file">Choose JSON File</label>
+					<input id="import-file" type="file" accept="application/json,text/json,text/plain" />
+					<p>You can import .json files that you saved from previous sessions.</p>
+				</div>
+				<div class="single-info">
+					<p>Click to add a block. Hold down shift to draw a line.</p>
+				</div>
+			</div>
 		</nav>		
 		<script src="javascript/application/editor.js"></script>
 	</body>

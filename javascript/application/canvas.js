@@ -96,6 +96,11 @@ function Canvas()
 		if ( $event.shiftKey )
 		{
 			_shift_pressed = true;
+
+			if ( _mode === 'single' )
+			{
+				previewToBlock();
+			}
 		}
 
 		else

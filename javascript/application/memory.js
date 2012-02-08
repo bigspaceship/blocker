@@ -103,7 +103,11 @@ function Memory()
 		window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder;
 
 		$( '.export-info input, .export-info label, .export-info .info-button' ).hide();
-		$( '.export-info h1' ).after( '<a class="download-link info-button">Download File</a>' );
+		
+		if ( ! $( '.export-info .download-link' ).length )
+		{
+			$( '.export-info h1' ).after( '<a class="download-link info-button">Download File</a>' );
+		}
 
 		var blob_builder = new BlobBuilder();
 			blob_builder.append( $text );
@@ -113,7 +117,7 @@ function Memory()
 
 		var filepath = window.URL.createObjectURL( blob_builder.getBlob( $mime_type ) );
 
-		var download_link = $( '.export-info a' );
+		var download_link = $( '.export-info .download-link' );
 
 		var download_link_attributes = {
 			download: filename,

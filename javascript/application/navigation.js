@@ -14,6 +14,8 @@ var Navigation = function()
 
 		slidersAdd( '.size-slider' );
 
+		$( '.single-info' ).show();
+
 		//$( '.size-sliders' ).hide();
 		$( '.color-buttons a' ).click( colorChanged );
 		$( '.mode-buttons a' ).click( modeChanged );
@@ -63,6 +65,7 @@ var Navigation = function()
 
 		if ( new_mode === 'single' )
 		{
+			$( '.single-info' ).show();
 			$( '.size-sliders' ).hide();
 			$( '.delete-info' ).hide();
 			$( '.export-info' ).hide();
@@ -71,6 +74,7 @@ var Navigation = function()
 
 		if ( new_mode === 'delete' )
 		{
+			$( '.single-info' ).hide();
 			$( '.size-sliders' ).hide();
 			$( '.delete-info' ).show();
 			$( '.export-info' ).hide();
@@ -79,6 +83,7 @@ var Navigation = function()
 
 		if ( new_mode === 'multiple' )
 		{
+			$( '.single-info' ).hide();
 			$( '.size-sliders' ).show();
 			$( '.delete-info' ).hide();
 			$( '.export-info' ).hide();
@@ -123,6 +128,7 @@ var Navigation = function()
 	{
 		$event.preventDefault();
 
+		$( '.single-info' ).hide();
 		$( '.size-sliders' ).hide();
 		$( '.delete-info' ).hide();
 		$( '.export-info' ).toggle();
@@ -133,6 +139,7 @@ var Navigation = function()
 	{
 		$event.preventDefault();
 
+		$( '.single-info' ).hide();
 		$( '.size-sliders' ).hide();
 		$( '.delete-info' ).hide();
 		$( '.export-info' ).hide();
