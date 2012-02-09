@@ -97,6 +97,30 @@ function Memory()
 		}
 	}
 
+	function save()
+	{
+		if ( $( '#blocks' ).length )
+		{
+			var data = {
+				blocks: editor.getBlocks(),
+				history: editor.getHistory(),
+				saved: new Date()
+			};
+
+			localStorage.setItem( 'blocks_data', JSON.stringify( data ) );
+		}
+
+		editor.savedToLocal();
+	}
+
+	function load()
+	{
+		var data = {};
+			data = jQuery.parseJSON( localStorage.getItem( 'blocks_data' ) );
+		
+		return data;
+	}
+
 	function textToDownload( $event, $text, $mime_type, $file_extension )
 	{
 		window.URL = window.webkitURL || window.URL;
@@ -139,5 +163,7 @@ function Memory()
 	_self.exportHTML = exportHTML;
 	_self.exportJSON = exportJSON;
 	_self.fileImported = fileImported;
+	_self.load = load;
+	_self.save = save;
 	_self.init = init;
 }

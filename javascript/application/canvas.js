@@ -21,12 +21,13 @@ function Canvas()
 			.bind( 'drag', dragged )
 			.bind( 'dragend', dragEnded )
 			.append('<div id="cursor"></div>')
-			.append('<div id="blocks"></div>');
-		
+			.append('<div id="blocks"></div>')
 
 		_mode = editor.getMode();
 		_color = editor.getColor();
 		_size = editor.getSize();
+
+		blocksLoadFromStorage();
 
 		previewUpdateBlocks();
 		previewUpdate();
@@ -170,21 +171,25 @@ function Canvas()
 			for ( var i = 0; i < _blocks.length; i++ )
 			{
 				var block = $( '#block-' + _blocks[i].index );
-				var position = block.position();
-
-				if (
-					position.left >= selection.left &&
-					position.left + _block_size.width <= selection.left + selection.width &&
-					position.top >= selection.top &&
-					position.top + _block_size.height <= selection.top + selection.height
-				)
+				
+				if ( block.length )
 				{
-					block.addClass( 'selected' );
-				}
+					var position = block.position();
 
-				else
-				{
-					block.removeClass( 'selected' );
+					if (
+						position.left >= selection.left &&
+						position.left + _block_size.width <= selection.left + selection.width &&
+						position.top >= selection.top &&
+						position.top + _block_size.height <= selection.top + selection.height
+					)
+					{
+						block.addClass( 'selected' );
+					}
+
+					else
+					{
+						block.removeClass( 'selected' );
+					}
 				}
 			}
 					
@@ -330,6 +335,19 @@ function Canvas()
 	function blocksDeleteSelected()
 	{
 		blockRemove( { blocks: $( '.selected' ) } );
+	}
+
+	function blocksLoadFromStorage()
+	{
+		var storage = editor.load();
+
+		if (
+			storage &&
+			storage.blocks
+		)
+		{
+			importBlocks( storage.blocks );
+		}
 	}
 
 	function blockAddToSelection( $event )
@@ -735,5 +753,6 @@ function Canvas()
 	_self.getBlocks = getBlocks;
 	_self.importBlocks = importBlocks;
 
+	_self.getMode = function(){ return _mode };
 	_self.getBlocks = function(){ return _blocks };
 }

@@ -2,6 +2,7 @@ var Navigation = function()
 {
 	var _self = this;
 	var _slider_options = { min: 1, max: 20, value: 1, step: 1, slide: sliderMoved }
+	var _saving = false;
 
 	function init( $colors )
 	{
@@ -12,19 +13,21 @@ var Navigation = function()
 
 		editor.colorUpdate( color );
 
-		slidersAdd( '.size-slider' );
+		slidersAdd( '.multiple-info .size-slider' );
 
 		$( '.single-info' ).show();
 
-		//$( '.size-sliders' ).hide();
 		$( '.color-buttons a' ).click( colorChanged );
 		$( '.mode-buttons a' ).click( modeChanged );
-		$( '.file-buttons a' ).click( fileClicked );
 		$( '.history-buttons a' ).click( historyClicked );
+
 		$( '#file-export' ).click( exportClicked );
 		$( '#file-import' ).click( importClicked );
+		$( '#file-save' ).click( saveClicked );
 
 		$( '.delete-info a' ).click( deleteClicked );
+		$( '.save-info a' ).click( saveToLocal );
+		
 		$( '#export-html' ).click( exportHTMLClicked );
 		$( '#export-json' ).click( exportJSONClicked );
 
@@ -46,10 +49,23 @@ var Navigation = function()
 	{
 		$event.preventDefault();
 
+		var mode = editor.getMode();
 		var new_color = $( $event.target ).attr( 'id' ).replace( 'color-button-', '' );
 
 		$( '.color-buttons .active' ).removeClass( 'active' );
 		$( '.color-buttons #color-button-' + new_color ).addClass( 'active' );
+
+
+		if ( mode === 'delete' )
+		{
+			editor.modeUpdate( 'single' );
+			showInfo( 'single' );
+		}
+
+		else
+		{
+			showInfo( mode );
+		}
 
 		editor.colorUpdate( new_color );
 	}
@@ -63,44 +79,8 @@ var Navigation = function()
 		$( '.mode-buttons .active' ).removeClass( 'active' );
 		$( '.mode-buttons #mode-' + new_mode ).addClass( 'active' );
 
-		if ( new_mode === 'single' )
-		{
-			$( '.single-info' ).show();
-			$( '.size-sliders' ).hide();
-			$( '.delete-info' ).hide();
-			$( '.export-info' ).hide();
-			$( '.import-info' ).hide();
-		}
-
-		if ( new_mode === 'delete' )
-		{
-			$( '.single-info' ).hide();
-			$( '.size-sliders' ).hide();
-			$( '.delete-info' ).show();
-			$( '.export-info' ).hide();
-			$( '.import-info' ).hide();
-		}
-
-		if ( new_mode === 'multiple' )
-		{
-			$( '.single-info' ).hide();
-			$( '.size-sliders' ).show();
-			$( '.delete-info' ).hide();
-			$( '.export-info' ).hide();
-			$( '.import-info' ).hide();
-		}
-
+		showInfo( new_mode );
 		editor.modeUpdate( new_mode );
-	}
-
-	function fileClicked( $event )
-	{
-		$event.preventDefault();
-
-		var operation = $( $event.target ).attr( 'id' ).replace( 'file-', '' );
-			operation = 'file' + operation.charAt( 0 ).toUpperCase() + operation.substr( 1 ).toLowerCase()
-
-		editor[operation]();
 	}
 
 	function fileChanged( $event )
@@ -128,22 +108,21 @@ var Navigation = function()
 	{
 		$event.preventDefault();
 
-		$( '.single-info' ).hide();
-		$( '.size-sliders' ).hide();
-		$( '.delete-info' ).hide();
-		$( '.export-info' ).toggle();
-		$( '.import-info' ).hide();
+		showInfo( 'export' );
 	}
 
 	function importClicked( $event )
 	{
 		$event.preventDefault();
 
-		$( '.single-info' ).hide();
-		$( '.size-sliders' ).hide();
-		$( '.delete-info' ).hide();
-		$( '.export-info' ).hide();
-		$( '.import-info' ).toggle();
+		showInfo( 'import' );
+	}
+
+	function saveClicked( $event )
+	{
+		$event.preventDefault();
+
+		showInfo( 'save' );
 	}
 
 	function exportHTMLClicked( $event )
@@ -160,13 +139,49 @@ var Navigation = function()
 		editor.exportJSON( $event );
 	}
 
+	function saveToLocal( $event )
+	{
+		$event.preventDefault();
+
+		if ( ! _saving )
+		{
+			_saving = true;
+
+			$( $event.target )
+				.text( 'Saving...' )
+				.addClass( 'inactive' );
+
+			editor.saveToLocal();
+		}		
+	}
+
+	function showInfo( $subnav )
+	{
+		$( '.info-container > *' )
+			.not( '.info-' + $subnav )
+			.hide();
+
+		$( '.info-container .' + $subnav + '-info' ).show();
+	}
+
+	function savedToLocal()
+	{
+		setTimeout( function() { 
+			$( '.save-info a' )
+				.text( 'Save To Local Storage' )
+				.removeClass( 'inactive' );
+			
+			_saving = false;
+		}, 500 );
+	}
+
 	function slidersAdd( $selector )
 	{
 		$( $selector ).each(
 			function()
 			{
 				$( this )
-					.append( '<div class="nav-slider"></div>' )
+					.append( '<div class="nav-slider"></div>' );
 
 				$( this )
 					.find( '.nav-slider' )
@@ -196,4 +211,6 @@ var Navigation = function()
 	}
 
 	_self.init = init;
+	_self.savedToLocal = savedToLocal;
+	_self.showInfo = showInfo;
 }

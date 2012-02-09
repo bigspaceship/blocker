@@ -33,27 +33,6 @@ body
 	z-index: 2;
 }
 
-/*#blocks
-{
-	position: relative;
-	top: 0; 
-	left: 0;
-	z-index: 1;
-}
-
-.block
-{
-	width: 28px;
-	height: 28px;
-	display: block;
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 1;
-	background-image: url(../images/blocks.png);
-	background-repeat: no-repeat;
-}*/
-
 .block.active
 {
 	background-position: 0 -168px;
@@ -80,7 +59,7 @@ nav
 	background-image: -webkit-linear-gradient(bottom, rgb(57,65,71) 0%, rgb(23,29,34) 100%);
 	background-image: -ms-linear-gradient(bottom, rgb(57,65,71) 0%, rgb(23,29,34) 100%);
 
-	box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75);
+	box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.45);
 }
 
 	nav ul
@@ -146,12 +125,13 @@ nav
 	float: left;
 	clear: both;
 	width: 100%;
-	background-image: linear-gradient(bottom, rgb(150,0,0) 21%, rgb(179,13,13) 100%);
-	background-image: -o-linear-gradient(bottom, rgb(150,0,0) 21%, rgb(179,13,13) 100%);
-	background-image: -moz-linear-gradient(bottom, rgb(150,0,0) 21%, rgb(179,13,13) 100%);
-	background-image: -webkit-linear-gradient(bottom, rgb(150,0,0) 21%, rgb(179,13,13) 100%);
-	background-image: -ms-linear-gradient(bottom, rgb(150,0,0) 21%, rgb(179,13,13) 100%);
+	        background-image: linear-gradient(bottom, #aaa 0%, #fff 100%);
+	     background-image: -o-linear-gradient(bottom, #aaa 0%, #fff 100%);
+	    background-image: -ms-linear-gradient(bottom, #aaa 0%, #fff 100%);
+	   background-image: -moz-linear-gradient(bottom, #aaa 0%, #fff 100%);
+	background-image: -webkit-linear-gradient(bottom, #aaa 0%, #fff 100%);
 	
+	color: #333;
 	padding: 0;
 	
 }
@@ -162,26 +142,64 @@ nav
 	padding: 15px;
 	display: none;
 	width: 100%;
-	border-top: 1px solid rgba(0, 0, 0, 0.75);
-	min-height: 15px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.75);
+	min-height: 25px;
 }
 
-	.size-sliders h1,
-	.delete-info h1,
-	.export-info h1,
-	.import-info h1
+	.info-container h1
 	{
-		color: #fff;
+		color: rgb(57,65,71);
 		float: left;
 		margin-right: 15px;
 		margin-bottom: 0;
 		margin-left: 8px;
+		line-height: 25px;
+		height: 25px;
 	}
 
 	.size-sliders ul
 	{
 		clear: none;
 	}
+
+		.nav-slider
+		{
+			display: block;
+			float: left;
+			background: #CCC;
+			width: 200px;
+			height: 4px;
+			position: relative;
+			border-radius: 2px;
+			margin-top: 12px;
+		}
+
+		.ui-slider-handle
+		{
+			height: 10px;
+			width: 10px;
+			background: #fff;
+			boder: 1px #000 solid;
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			-o-border-radius: 5px;
+			border-radius: 5px;
+			display: block;
+			position: absolute;
+			float: none;
+			clear: none;
+			padding: 0;
+			top: -4px;
+			z-index: 15;
+			box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+
+			    	background-image: linear-gradient(bottom, rgb(23,29,34) 0%, rgb(57,65,71) 100%);
+			     background-image: -o-linear-gradient(bottom, rgb(23,29,34) 0%, rgb(57,65,71) 100%);
+			    background-image: -ms-linear-gradient(bottom, rgb(23,29,34) 0%, rgb(57,65,71) 100%);
+			   background-image: -moz-linear-gradient(bottom, rgb(23,29,34) 0%, rgb(57,65,71) 100%);
+			background-image: -webkit-linear-gradient(bottom, rgb(23,29,34) 0%, rgb(57,65,71) 100%);
+			outline: none;
+		}
 
 	.info-container::before,
 	.info-container::after
@@ -199,48 +217,7 @@ nav
 		margin-left: 0;
 	}
 
-	.size-sliders .ui-slider
-	{
-		display: block;
-		background: #7d0000;
-		height: 3px;
-		width: 180px;
-		float: left;
-		margin-left: 5px;
-		margin-top: 6px;
-		border-radius: 3px;
-
-		position: relative;
-		z-index: 5;
-	}
-
-	.slider
-	{
-		float: right;
-		clear: none;
-		background: #000;
-		height: 3px;
-		width: 60px;
-		margin-top: 32px;
-	}
-
-	.ui-slider-handle
-	{
-		height: 10px;
-		width: 10px;
-		background: #eee;
-		-webkit-border-radius: 5px;
-		-moz-border-radius: 5px;
-		-o-border-radius: 5px;
-		border-radius: 5px;
-		display: block;
-		position: absolute;
-		float: none;
-		clear: none;
-		padding: 0;
-		top: -4px;
-		z-index: 15;
-	}
+	
 
 	.delete-info h1,
 	.export-info h1,
@@ -259,7 +236,6 @@ nav
 		border-radius: 5px;
 		margin-left: 10px;
 		margin-right: 10px;
-
 		line-height: 23px;
 		height: 23px;
 		border: 1px rgba(255, 255, 255, 0.6) solid;
@@ -267,9 +243,20 @@ nav
 		color: #e2c9c9;
 	}
 
-	.delete-info p,
-	.export-info p,
-	.import-info p
+	.info-button.inactive,
+	.info-button.inactive:hover
+	{
+		opacity: 0.5;
+		cursor: default;
+		color: #e2c9c9;
+	}
+
+	.info-button:hover
+	{
+		color: #fff;
+	}
+
+	.info-container p
 	{
 		margin-bottom: 0;
 		float: left;

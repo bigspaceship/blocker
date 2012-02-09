@@ -22,6 +22,8 @@ function Editor()
 	var _navigation;
 	var _canvas;
 
+	var _number_keys = [49, 50, 51, 52, 53, 54]
+
 	function init()
 	{
 		yepnope( { load: _dependencies, complete: depencenciesLoaded } );
@@ -32,33 +34,123 @@ function Editor()
 		_colors = getColors();
 
 		_history = new History();
-		_memory = new Memory();
-
-		_navigation = new Navigation();
-		_navigation.init( _colors );
-
-		_canvas = new Canvas();
-		_canvas.init();
-
-		_self.getBlocks = _canvas.getBlocks;
 		_self.getHistory = _history.getHistory;
+		_self.importHistory = _history.importHistory;
+		_self.historyUpdateIDs = _history.historyUpdateIDs;
+
+
+		_memory = new Memory();
+		_self.load = _memory.load;
+		_self.saveToLocal = _memory.save;
+		_self.fileImported = _memory.fileImported;
 		_self.exportHTML = _memory.exportHTML;
 		_self.exportJSON = _memory.exportJSON;
-		_self.importHistory = _history.importHistory;
+
+		_navigation = new Navigation();
+		_self.savedToLocal = _navigation.savedToLocal;
+		
+		_canvas = new Canvas();
 		_self.importBlocks = _canvas.importBlocks;
-		_self.fileImported = _memory.fileImported;
+		_self.getBlocks = _canvas.getBlocks;
+		_self.getMode = _canvas.getMode;
+		
+		_history.init();
+		_navigation.init( _colors );
+		_canvas.init();
 
-		_self.historyUpdateIDs = _history.historyUpdateIDs;
+		$( document )
+			.keydown( keyDown )
+			.keypress( keyPressed )
 	}
 
-	function fileImport()
+	function keyPressed( $event )
 	{
 
 	}
 
-	function fileExport()
+	function keyDown( $event )
 	{
+		var key = $event.which;
+		var mode = _canvas.getMode();
 
+		// backspace		
+		if ( key === 8 )
+		{
+			if ( mode === 'delete' )
+			{
+				$event.preventDefault();
+
+				_canvas.deleteSelected();
+				_navigation.showInfo( mode );
+			}
+		}
+
+		if ( _number_keys.indexOf( key ) !== -1 )
+		{
+			var index = _number_keys.indexOf( key );
+			var target = $( '.color-buttons a' ).eq( index );
+			var new_color = target.attr( 'id' ).replace( 'color-button-', '' );
+
+			$( '.color-buttons .active' ).removeClass( 'active' );
+
+			target.addClass( 'active' );
+
+			if ( mode === 'delete' )
+			{
+				modeUpdate( 'single' );
+				_navigation.showInfo( 'single' );
+			}
+
+			else
+			{
+				_navigation.showInfo( mode );
+			}
+			
+			editor.colorUpdate( new_color );
+		}
+
+		if ( $event.metaKey )
+		{			
+			// Z
+			if ( key === 90 || key === 122 )
+			{
+				if ( $event.shiftKey )
+				{
+					historyUpdate( 'redo' );
+				}
+
+				else
+				{
+					historyUpdate( 'undo' );
+				}
+
+				_navigation.showInfo( mode );
+			}
+
+			//O
+			if ( key === 111 || key === 79 )
+			{
+				$event.preventDefault();
+
+				_navigation.showInfo( 'import' );
+			}
+
+			//E
+			if ( key === 69 || key === 101 ) 
+			{
+				$event.preventDefault();
+
+				_navigation.showInfo( 'export' );
+			}
+
+			//S
+			if ( key === 83 || key === 115 )
+			{
+				$event.preventDefault();
+
+				_navigation.showInfo( 'save' );
+			}
+		}
 	}
 
 	function colorUpdate( $new_color )
@@ -124,8 +216,6 @@ function Editor()
 	_self.colorUpdate = colorUpdate;
 	_self.sizeUpdate = sizeUpdate;
 	_self.modeUpdate = modeUpdate;
-	_self.fileImport = fileImport;
-	_self.fileExport = fileExport;
 	_self.deleteSelected = deleteSelected;
 
 	_self.getColor = function(){ return _color; };

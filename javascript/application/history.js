@@ -8,7 +8,7 @@ function History()
 
 	function init()
 	{
-		// uh.. nothing to do here, really
+		historyLoadFromStorage();
 	}
 
 	function save( $item )
@@ -86,6 +86,19 @@ function History()
 	function getHistory()
 	{
 		return _history;
+	}
+
+	function historyLoadFromStorage()
+	{
+		var storage = editor.load();
+
+		if ( 
+			storage &&
+			storage.history
+		)
+		{
+			importHistory( storage.history );
+		}
 	}
 
 	function importHistory( $history )
