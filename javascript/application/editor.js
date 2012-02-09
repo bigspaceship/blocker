@@ -9,7 +9,8 @@ function Editor()
 		'javascript/application/navigation.js',
 		'javascript/application/canvas.js',
 		'javascript/application/history.js',
-		'javascript/application/memory.js'
+		'javascript/application/memory.js',
+		'javascript/application/help.js'
 	];
 
 	var _colors = []
@@ -19,8 +20,11 @@ function Editor()
 	
 	var _cubes = [];
 
+	var _history;
+	var _memory;
 	var _navigation;
 	var _canvas;
+	var _help;
 
 	var _number_keys = [49, 50, 51, 52, 53, 54]
 
@@ -48,15 +52,19 @@ function Editor()
 
 		_navigation = new Navigation();
 		_self.savedToLocal = _navigation.savedToLocal;
+		_self.getColors = _navigation.getColors;
 		
 		_canvas = new Canvas();
 		_self.importBlocks = _canvas.importBlocks;
 		_self.getBlocks = _canvas.getBlocks;
 		_self.getMode = _canvas.getMode;
 		
+		_help = new Help();
+
 		_history.init();
 		_navigation.init( _colors );
 		_canvas.init();
+		_help.init();
 
 		$( document )
 			.keydown( keyDown )
@@ -93,7 +101,9 @@ function Editor()
 
 			$( '.color-buttons .active' ).removeClass( 'active' );
 
-			target.addClass( 'active' );
+			target
+				.closest( 'li' )
+				.addClass( 'active' );
 
 			if ( mode === 'delete' )
 			{
@@ -106,7 +116,7 @@ function Editor()
 				_navigation.showInfo( mode );
 			}
 			
-			editor.colorUpdate( new_color );
+			colorUpdate( new_color );
 		}
 
 		if ( $event.metaKey )
@@ -151,6 +161,30 @@ function Editor()
 				_navigation.showInfo( 'save' );
 			}
 		}
+
+		else
+		{
+			// S
+			if ( key === 83 || key === 115 )
+			{
+				modeUpdate( 'single' );
+				_navigation.showInfo( 'single' );
+			}
+
+			//M
+			if ( key === 77 || key === 109 )
+			{
+				modeUpdate( 'multiple' );
+				_navigation.showInfo( 'multiple' );
+			}
+
+			//D
+			if ( key === 68 || key === 100 )
+			{
+				modeUpdate( 'delete' );
+				_navigation.showInfo( 'delete' );
+			}
+		}
 	}
 
 	function colorUpdate( $new_color )
@@ -165,6 +199,7 @@ function Editor()
 		_mode = $new_mode;
 
 		if ( _canvas ){ _canvas.modeUpdate( _mode ); }
+		if ( _navigation ){ _navigation.modeUpdate( _mode ); }
 	}
 
 	function sizeUpdate( $size )

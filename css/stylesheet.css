@@ -50,16 +50,10 @@ nav
 	left: 0;
 	z-index: 3;
 	width: 100%;
-	background: #333;
+	background: #FCFCFC;
 	float: left;
 
-	background-image: linear-gradient(bottom, rgb(57,65,71) 0%, rgb(23,29,34) 100%);
-	background-image: -o-linear-gradient(bottom, rgb(57,65,71) 0%, rgb(23,29,34) 100%);
-	background-image: -moz-linear-gradient(bottom, rgb(57,65,71) 0%, rgb(23,29,34) 100%);
-	background-image: -webkit-linear-gradient(bottom, rgb(57,65,71) 0%, rgb(23,29,34) 100%);
-	background-image: -ms-linear-gradient(bottom, rgb(57,65,71) 0%, rgb(23,29,34) 100%);
-
-	box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.45);
+	border-top: 1px #ddd solid;
 }
 
 	nav ul
@@ -93,10 +87,10 @@ nav
 	nav h1
 	{
 		float: left;
-		font-weight: normal;
-		font-size: 14px;
+		font-weight: bold;
 		margin-bottom: 10px;
-		color: #8D969A;
+		color: #333;
+		font-size: 12px;
 	}
 
 	nav > div
@@ -108,28 +102,47 @@ nav
 	nav > div > ul
 	{
 		clear: both;
+		margin-top: 5px;
 	}
 
 	nav > div > ul a
 	{
-		color: #CACACA;
+		color: #06f;
 	}
 
 	nav > div > ul a:hover
 	{
-		color: #fff;
+		text-decoration: underline;
 	}
+
+	.stats
+	{
+		position: absolute;
+		bottom: 175px;
+		width: auto;
+		right: 30px;
+		left: auto;
+		text-align: right;
+		color: #333;
+	}
+
+		.stats .count-color
+		{
+			display: none;
+		}
+
+		.stats:hover .count-color
+		{
+			display: block;
+		}
 
 .info-container
 {
 	float: left;
 	clear: both;
 	width: 100%;
-	        background-image: linear-gradient(bottom, #aaa 0%, #fff 100%);
-	     background-image: -o-linear-gradient(bottom, #aaa 0%, #fff 100%);
-	    background-image: -ms-linear-gradient(bottom, #aaa 0%, #fff 100%);
-	   background-image: -moz-linear-gradient(bottom, #aaa 0%, #fff 100%);
-	background-image: -webkit-linear-gradient(bottom, #aaa 0%, #fff 100%);
+	
+	background: #fff;
 	
 	color: #333;
 	padding: 0;
@@ -142,13 +155,15 @@ nav
 	padding: 15px;
 	display: none;
 	width: 100%;
-	border-bottom: 1px solid rgba(0, 0, 0, 0.75);
 	min-height: 25px;
+	border-bottom: 1px #efefef solid;
+	color: #666;
 }
 
 	.info-container h1
 	{
-		color: rgb(57,65,71);
+		color: #333;
+		font-weight: normal;
 		float: left;
 		margin-right: 15px;
 		margin-bottom: 0;
@@ -170,35 +185,28 @@ nav
 			width: 200px;
 			height: 4px;
 			position: relative;
-			border-radius: 2px;
 			margin-top: 12px;
 		}
 
 		.ui-slider-handle
 		{
+			position: absolute;
 			height: 10px;
 			width: 10px;
-			background: #fff;
-			boder: 1px #000 solid;
-			-webkit-border-radius: 5px;
-			-moz-border-radius: 5px;
-			-o-border-radius: 5px;
-			border-radius: 5px;
-			display: block;
-			position: absolute;
-			float: none;
-			clear: none;
-			padding: 0;
-			top: -4px;
-			z-index: 15;
-			box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
-
-			    	background-image: linear-gradient(bottom, rgb(23,29,34) 0%, rgb(57,65,71) 100%);
-			     background-image: -o-linear-gradient(bottom, rgb(23,29,34) 0%, rgb(57,65,71) 100%);
-			    background-image: -ms-linear-gradient(bottom, rgb(23,29,34) 0%, rgb(57,65,71) 100%);
-			   background-image: -moz-linear-gradient(bottom, rgb(23,29,34) 0%, rgb(57,65,71) 100%);
-			background-image: -webkit-linear-gradient(bottom, rgb(23,29,34) 0%, rgb(57,65,71) 100%);
+			background: #333;
+			border-radius: 8px;
 			outline: none;
+			margin-top: -5px;
+			margin-left: -7px;
+			border: 2px white solid;
+			outline: none;
+		}
+
+		.ui-slider-handle.ui-state-active,
+		.ui-slider-handle.ui-state-focus,
+		.ui-slider-handle.ui-state-hover
+		{
+			background-color: #06f;
 		}
 
 	.info-container::before,
@@ -209,12 +217,12 @@ nav
 		display: table;
 	}
 
-	.size-sliders li h1
+	.multiple-info li h1
 	{
 		width: 75px;
-		color: #D89495;
+		font-weight: normal;
+		color: #666;
 		text-align: right;
-		margin-left: 0;
 	}
 
 	
@@ -238,9 +246,8 @@ nav
 		margin-right: 10px;
 		line-height: 23px;
 		height: 23px;
-		border: 1px rgba(255, 255, 255, 0.6) solid;
-		box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
-		color: #e2c9c9;
+		background: #efefef;
+		color: #06f;
 	}
 
 	.info-button.inactive,
@@ -248,12 +255,14 @@ nav
 	{
 		opacity: 0.5;
 		cursor: default;
-		color: #e2c9c9;
+		color: #ccc;
+		background-color: #efefef;
 	}
 
 	.info-button:hover
 	{
 		color: #fff;
+		background-color: #06f;
 	}
 
 	.info-container p
@@ -269,10 +278,10 @@ nav
 	{
 		display: block;
 		float: left;
-		background: rgb(23,29,34);
-		color: rgba(255, 255, 255, 0.6);
+		color: #666;
 		border-radius: 5px;
-		border: 1px rgba(255, 255, 255, 0.5) solid;
+		background: #fcfcfc;
+		border: 1px #efefef solid;
 		line-height: 23px;
 		height: 23px;
 		padding: 0 7px;
@@ -287,7 +296,7 @@ nav
 	.import-info input:active,
 	.import-info input:focus
 	{
-		color: #fff;,
+		color: #333;,
 		border: 1px #fff solid;
 	}
 
@@ -298,8 +307,8 @@ nav
 		float: left;
 		line-height: 25px;
 		height: 25px;
-		color: #D89495;
 		margin-right: 10px;
+		color: #999;
 	}
 
 .color-buttons
@@ -315,6 +324,28 @@ nav
 	.color-buttons ul
 	{
 		clear: both;
+		margin-top: -5px
+	}
+
+	.color-buttons li
+	{
+		padding: 5px;
+		border: 1px #efefef solid;
+		border-radius: 20px;
+
+			    transition: all 0.2s linear;
+		-webkit-transition: all 0.2s linear;
+	}
+
+	.color-buttons li.active
+	{
+		background-color: #fff;
+		border: 1px #aaa solid;
+	}
+
+	.color-buttons li:hover
+	{
+		background-color: #fff;
 	}
 
 	.color-buttons a
@@ -322,20 +353,17 @@ nav
 		background-image: url(../images/blocks.png);
 		background-repeat: no-repeat;
 		background-position: center;
-		width: 20px;
-		height: 10px;
 		display: block;
 		text-indent: -5000px;
 		overflow: hidden;
 		width: 28px;
 		height: 28px;
+
 	}
 
 	.color-buttons .active
 	{
-		box-shadow: 0 0 10px rgba(255,255,255,0.7);
-		background-color: rgba(255, 255, 255, 0.4);
-		border-radius: 11px;
+	
 	}
 
 	.color-buttons a:hover
@@ -360,21 +388,26 @@ nav
 		float: left;
 		line-height: 19px;
 		height: 20px;
-		color: #CACACA;
+		color: #06f;
 		padding: 0 8px;
+		border-radius: 3px;
+		color: #06f;
+		
+		text-decoration: none;
 	}
 
-	.mode-buttons .active
+	.mode-buttons .active,
+	.mode-buttons .active:hover
 	{
-		box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-		background-color: rgba(255, 255, 255, 0.3);
-		color: white;
-		border-radius: 10px;
+		text-decoration: none;
+		background-color: #06f;
+		color: #fff;
 	}
 
 	.mode-buttons a:hover
 	{
-		color: #fff;
+		text-decoration: none;
+		background-color: #fff;
 	}
 
 .file-buttons
@@ -437,3 +470,85 @@ nav
 	border: 1px rgba(0, 0, 0, 0.5) solid;
 	border-radius: 2px;
 }
+
+.help
+{
+	position: relative;
+	top: 50px;
+	left: 50px;
+	z-index: 5;
+	float: left;	
+	color: #666;	
+}
+
+	.help-text
+	{
+		display: none;
+		overflow: auto;
+		background: #fff;
+		padding: 30px 35px;
+		line-height: 20px;
+		
+		max-height: 300px;
+		height: 100%;
+		width: 100%;
+		max-width: 320px;
+		border: 1px #efefef solid;
+		border-radius: 2px;
+	}
+
+	.help.active .help-text
+	{
+		display: block;
+	}
+
+	.help h1
+	{
+		font-size: 12px;
+		color: #333;
+		font-weight: bold;
+		margin-bottom: 10px;
+	}
+
+	.help p
+	{
+		margin-bottom: 5px;
+	}
+
+	.help ul
+	{
+		margin-bottom: 5px;
+	}
+
+	.help-text a
+	{
+		color: #06f;
+		text-decoration: none;
+	}
+
+	.help-text a:hover
+	{
+		text-decoration: underline;
+	}
+
+	.help-button
+	{
+		display: block;
+		background: #fff;
+		color: #06F;
+		font-weight: bold;
+		text-decoration: none;
+		width: 25px;
+		height: 25px;
+		line-height: 25px;
+		text-align: center;
+		border: 1px #efefef solid;
+		border-radius: 2px;
+	}
+
+	.help-button:hover,
+	.help.active .help-button
+	{
+		background-color: #06f;
+		color: #fff;
+	}

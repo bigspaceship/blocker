@@ -1,13 +1,79 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Isometric Asset Builder</title>
+		<title>Isometric Block Editor</title>
 		<script src="javascript/libraries/modernizr.custom.74974.js"></script>
 		<link rel="stylesheet" href="css/stylesheet.css" />
 		<link rel="stylesheet" href="css/blocks.css" />
 	</head>
 	<body>
+		<section class="help">
+			<a href="#" class="help-button help-toggle">?</a>
+			<article class="help-text help-welcome">
+				<h1>Welcome to The Blocks Editor</h1>
+				<p>
+					With this Editor you can draw isometric pixel sketches in your browser.
+				</p>
+				<p>
+					To get started, select a color from the toolbar on the bottom of the screen and
+					click on the canvas. A transparent block shows you where the next block will be positioned
+					when you click.
+				</p>
+				<p>
+					There are three edit modes available. You can switch between modes in the toolbar.
+				</p>
+				<ul>
+					<li>
+						In <strong>single block</strong> mode you can add one block at a time to the canvas.
+					</li>
+					<li>
+						In the <strong>multiple blocks</strong> mode, you can add multiple blocks
+						to the canvas. Using the sliders in the toolbar, you can adjust the size of the
+						grid.
+					</li>
+					<li>
+						You can use the <strong>delete</strong> mode to remove blocks from the canvas.
+						Click on a block to add it to the selection (it turns black). To remove all selected
+						blocks, click on the delete button in the toolbar or backspace on you keyboard.
+					</li>
+				</ul>
+				<p>You can use the history buttons to undo and redo your actions.</p>
+				<p>In the <strong>file</strong> menu you can:</p>
+				<ul>
+					<li>
+						<strong>save</strong> your sketch. This saves your sketch on your local machine.
+						it will automatically load when you return to the editor the next time
+					</li>
+					<li>
+						<strong>import</strong> a sketch from a file.
+					</li>
+					<li>
+						<strong>export</strong> a sketch from a to a file. There are two output formats available:
+						<code>html</code> and <code>json</code>. Export you sketch as <code>html</code> to embed it on other websites. Export it as <code>json</code> if you want to import and modify it later on using this editor.
+					</li>
+				</ul>
+				<p>There are keyboard shortcuts available</p>
+				<ul>
+					<li>Press the numbers <strong>1 - 6</strong> to change the block color.</li>
+					<li>Press <code>S</code> for single block mode.</li>
+					<li>Press <code>M</code> for multiple block mode.</li>
+					<li>Press <code>D</code> for delete mode.</li>
+					<li>Press <code>cmd + z</code> for undo.</li>
+					<li>Press <code>cmd + shift + z</code> for redo.</li>
+					<li>Press <code>cmd + s</code> to open the save menu.</li>
+					<li>Press <code>cmd + o</code> to open the import menu.</li>
+					<li>Press <code>cmd + e</code> to open the export menu.</li>
+					<li>In delete mode, hold <code>shift</code> while moving the mouse to draw blocks faster.</li>
+					<li>In delete mode, hold <code>shift</code> while dragging to select multiple blocks.</li>
+					<li>In delete mode, press <code>backspace</code> to delete selected blocks.</li>
+				</ul>
+				<p><a class="help-toggle" href="#">close</a></p>
+			</article>
+		</section>
 		<nav>
+			<section class="stats">
+				<p class="count"><span>0</span> blocks</p>
+			</section>
 			<div class="info-container">
 				<div class="multiple-info">
 					<h1>Grid Size</h1>
@@ -27,7 +93,7 @@
 					<input id="export-filename" type="text" placeholder="myBlocks" />
 					<a href="#" id="export-html" class="info-button">Export HTML</a>
 					<a href="#" id="export-json" class="info-button">Export JSON</a>
-					<p>Export to HTML to use your creation on a web site. Export to JSON to save your creation and come back later to continue working on it.</p>
+					<p>Export to HTML to use your sketch on a web site. Export to JSON to save your sketch and come back later to continue working on it.</p>
 				</div>
 				<div class="import-info">
 					<h1>Import</h1>
@@ -40,7 +106,7 @@
 				</div>
 				<div class="save-info">
 					<a href="#" class="info-button">Save To Local Storage</a>
-					<p>Save file to local storage. It will load when you come back.</p>
+					<p>Save current sketch to local storage. It will load automatically when you come back. This will erase sketches from previous sessions.</p>
 				</div>
 			</div>
 			<div class="mode-buttons">
@@ -77,7 +143,7 @@
 					<li><a href="#" id="file-export" class="file-button">export</a></li>
 				</ul>
 			</div>
-		</nav>		
+		</nav>
 		<script src="javascript/application/editor.js"></script>
 	</body>
 </html>

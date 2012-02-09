@@ -6,10 +6,10 @@ var Navigation = function()
 
 	function init( $colors )
 	{
-		$( '.color-buttons a:first' ).addClass( 'active' );
+		$( '.color-buttons li:first' ).addClass( 'active' );
 		$( '.mode-buttons a:first' ).addClass( 'active' );
 
-		var color = $( '.color-buttons a.active' ).attr( 'id' ).replace( 'color-button-', '' );
+		var color = $( '.color-buttons li.active a' ).attr( 'id' ).replace( 'color-button-', '' );
 
 		editor.colorUpdate( color );
 
@@ -53,8 +53,9 @@ var Navigation = function()
 		var new_color = $( $event.target ).attr( 'id' ).replace( 'color-button-', '' );
 
 		$( '.color-buttons .active' ).removeClass( 'active' );
-		$( '.color-buttons #color-button-' + new_color ).addClass( 'active' );
-
+		$( '.color-buttons #color-button-' + new_color )
+			.closest( 'li' )
+			.addClass( 'active' )
 
 		if ( mode === 'delete' )
 		{
@@ -81,6 +82,12 @@ var Navigation = function()
 
 		showInfo( new_mode );
 		editor.modeUpdate( new_mode );
+	}
+
+	function modeUpdate( $mode )
+	{
+		$( '.mode-buttons .active' ).removeClass( 'active' );
+		$( '.mode-buttons #mode-' + $mode ).addClass( 'active' );
 	}
 
 	function fileChanged( $event )
@@ -210,7 +217,23 @@ var Navigation = function()
 		}
 	}
 
+	function getColors()
+	{
+		var return_value = [];
+		
+		$( '.color-buttons a' ).each(
+			function( $index, $item )
+			{
+				return_value.push( $( $item ).attr( 'id' ).replace( 'color-button-', '' ) );
+			}
+		);
+
+		return return_value;
+	}
+
 	_self.init = init;
 	_self.savedToLocal = savedToLocal;
 	_self.showInfo = showInfo;
+	_self.modeUpdate = modeUpdate;
+	_self.getColors = getColors;
 }

@@ -7,6 +7,7 @@ function Canvas()
 	var _cursor = { x: 0, y: 0, target: { x: 0, y: 0 } };
 	var _mode;
 	var _color;
+	var _colors;
 	var _size;
 
 	var _mouse_on_canvas = true;
@@ -25,6 +26,7 @@ function Canvas()
 
 		_mode = editor.getMode();
 		_color = editor.getColor();
+		_colors = editor.getColors();
 		_size = editor.getSize();
 
 		blocksLoadFromStorage();
@@ -37,7 +39,9 @@ function Canvas()
 	{
 		if (
 			! $( $event.target ).is( 'nav' ) &&
-			! $( $event.target ).closest( 'nav' ).length
+			! $( $event.target ).closest( 'nav' ).length &&
+			! $( $event.target ).is( '.help' ) &&
+			! $( $event.target ).closest( '.help' ).length
 		)
 		{
 			if (
@@ -98,7 +102,10 @@ function Canvas()
 		{
 			_shift_pressed = true;
 
-			if ( _mode === 'single' )
+			if (
+				_mode === 'single' &&
+				_mouse_on_canvas
+			)
 			{
 				previewToBlock();
 			}
@@ -144,6 +151,16 @@ function Canvas()
 
 	function dragged( $event, $object )
 	{
+		if ( _mode === 'single' )
+		{
+			if ( ! $( '.block.preview' ).length )
+			{
+				previewUpdateBlocks();
+			}
+
+			previewToBlock();
+		}
+
 		if (
 			_shift_pressed &&
 			_mode === 'delete'
@@ -168,7 +185,7 @@ function Canvas()
 				selection.top = $object.startY + $object.deltaY;
 			}
 
-			for ( var i = 0; i < _blocks.length; i++ )
+			var i = _blocks.length; while ( i-- )
 			{
 				var block = $( '#block-' + _blocks[i].index );
 				
@@ -239,7 +256,7 @@ function Canvas()
 		var blocks = $blocks || _blocks;
 			blocks.sort( sortZ );
 			
-		for ( var i = 0; i < blocks.length; i++ )
+		var i = _blocks.length; while ( i-- )
 		{
 			var block = blocks[i];
 				block.z_index = i + block.position.z;
@@ -277,6 +294,8 @@ function Canvas()
 		{
 			$( '#block-' + new_block.index ).addClass( 'preview' );
 		}
+
+		updateCounter();
 	}
 
 	function blockRemove( $options )
@@ -285,7 +304,7 @@ function Canvas()
 		{
 			if ( $options.index )
 			{
-				for ( var i = 0; i < _blocks.length; i++ )
+				var i = _blocks.length; while ( i-- )
 				{
 					if ( _blocks[i].index === $options.index )
 					{
@@ -310,7 +329,7 @@ function Canvas()
 					{
 						var block_index = getBlockID( $( this ) );
 
-						for ( var i = 0; i < _blocks.length; i++ )
+						var i = _blocks.length; while ( i-- )
 						{
 							if ( _blocks[i].index == block_index )
 							{
@@ -330,6 +349,8 @@ function Canvas()
 				);
 			}
 		}
+
+		updateCounter();
 	}
 
 	function blocksDeleteSelected()
@@ -390,7 +411,7 @@ function Canvas()
 		var preview_position = { x: _cursor.x, y: _cursor.y, z: getGridZ( _cursor.x, _cursor.y ) };
 		var block_index = getBlockID( $( '.block.preview' ) );
 
-		for ( var i = 0; i < _blocks.length; i++ )
+		var i = _blocks.length; while ( i-- )
 		{
 			if ( _blocks[i].index === block_index )
 			{
@@ -440,7 +461,7 @@ function Canvas()
 
 				preview_position.z = getGridZ( preview_position.x, preview_position.y );
 
-				for ( var i = 0; i < _blocks.length; i++ )
+				var i = _blocks.length; while ( i-- )
 				{
 					if ( _blocks[i].index === block_index )
 					{
@@ -494,6 +515,8 @@ function Canvas()
 				blockRemove( { blocks: $( '.block.preview:gt(' + blocks_to_remove_index + ')' ) } );
 			}
 		}
+
+		updateCounter();
 	}
 
 	function previewToBlock()
@@ -505,7 +528,7 @@ function Canvas()
 
 				$( this ).removeClass( 'preview' );
 
-				for ( var i = 0; i < _blocks.length; i++ )
+				var i = _blocks.length; while ( i-- )
 				{
 					if ( _blocks[i].index === block_index )
 					{
@@ -517,6 +540,8 @@ function Canvas()
 				}
 			}
 		);
+
+		updateCounter();
 	}
 
 	function previewUpdateColor( $new_color, $old_color )
@@ -588,13 +613,15 @@ function Canvas()
 		$( '#block-' + block.index ).css( new_block_css );
 
 		blocksUpdateZ();
+
+		updateCounter();
 	}
 
 	function historyRemoveBlock( $options )
 	{
 		var block = $options.block;
 
-		for ( var i = 0; i < _blocks.length; i++ )
+		var i = _blocks.length; while ( i-- )
 		{
 			if ( _blocks[i].index === block.index )
 			{
@@ -628,7 +655,7 @@ function Canvas()
 		var return_value = 0;
 		var occupied = false;
 
-		for ( var i = 0; i < blocks.length; i++ )
+		var i = _blocks.length; while ( i-- )
 		{
 			var block = blocks[i];
 
@@ -668,7 +695,7 @@ function Canvas()
 	{
 		var return_value = 0;
 
-		for ( var i = 0; i < _blocks.length; i++ )
+		var i = _blocks.length; while ( i-- )
 		{
 			if ( _blocks[i].index > return_value )
 			{
@@ -741,6 +768,33 @@ function Canvas()
 			$( '#block-' + new_block.index )
 				.css( new_block_css )
 				.hover( blockOver, blockOut );
+		}
+
+		updateCounter();
+	}
+
+	function updateCounter()
+	{
+		$( '.stats .count span' ).text( $( '.block:not(.preview)' ).length );
+
+		if ( ! _colors )
+		{
+			_colors = editor.getColors();
+		}
+
+		var i = _colors.length; while ( i-- )
+		{
+			var color_count = $( '.block.color-' + _colors[i] + ':not(.preview)' ).length;
+			
+			if ( color_count )
+			{
+				if ( ! $( '.stats .count-color-' + _colors[i] ).length )
+				{
+					$( '.stats' ).prepend( '<p class="count-color count-color-' + _colors[i] + '"><span></span> ' + _colors[i] + ' blocks</p>' )
+				}
+
+				$( '.stats .count-color-' + _colors[i] + ' span' ).text( color_count );
+			}
 		}
 	}
 
