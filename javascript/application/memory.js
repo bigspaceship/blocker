@@ -17,8 +17,8 @@ function Memory()
 			var file = {
 				name: files[i].name,
 				type: files[i].type,
-				size: files[i].size,
-				last_modified: files[i].lastModifiedDate.toLocaleDateString()
+				size: files[i].size//,
+				//last_modified: files[i].lastModifiedDate.toLocaleDateString()
 			}
 
 			files_imported.push( file );

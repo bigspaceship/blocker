@@ -348,6 +348,30 @@ function Canvas()
 					}
 				);
 			}
+
+			if ( $options.position )
+			{
+				var i = _blocks.length; while ( i-- )
+				{
+					if (
+						_blocks[i].position.x === $options.position.x &&
+						_blocks[i].position.y === $options.position.y &&
+						_blocks[i].position.z === $options.position.z
+					)
+					{
+						if ( _blocks[i].type !== 'preview' )
+						{
+							editor.historyUpdate( 'save', { action: 'remove', block: _blocks[i] } );
+						}
+
+						$( '#block-' + _blocks[i].index ).remove();
+
+						_blocks.splice( i, 1 );
+
+						break;
+					}
+				}
+			}
 		}
 
 		updateCounter();
@@ -798,6 +822,12 @@ function Canvas()
 		}
 	}
 
+	function getBlocks()
+	{
+		blockRemove( { blocks: $( '.block.preview' ), position: { x: 0, y: 0, z: 0 } } );
+		return _blocks;
+	}
+
 	_self.init = init;
 	_self.modeUpdate = modeUpdate;
 	_self.colorUpdate = colorUpdate;
@@ -806,7 +836,7 @@ function Canvas()
 	_self.deleteSelected = blocksDeleteSelected;
 	_self.getBlocks = getBlocks;
 	_self.importBlocks = importBlocks;
+	_self.getBlocks = getBlocks;
 
 	_self.getMode = function(){ return _mode };
-	_self.getBlocks = function(){ return _blocks };
 }

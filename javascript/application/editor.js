@@ -119,70 +119,73 @@ function Editor()
 			colorUpdate( new_color );
 		}
 
-		if ( $event.metaKey )
-		{			
-			// Z
-			if ( key === 90 || key === 122 )
-			{
-				if ( $event.shiftKey )
-				{
-					historyUpdate( 'redo' );
-				}
-
-				else
-				{
-					historyUpdate( 'undo' );
-				}
-
-				_navigation.showInfo( mode );
-			}
-
-			//O
-			if ( key === 111 || key === 79 )
-			{
-				$event.preventDefault();
-
-				_navigation.showInfo( 'import' );
-			}
-
-			//E
-			if ( key === 69 || key === 101 ) 
-			{
-				$event.preventDefault();
-
-				_navigation.showInfo( 'export' );
-			}
-
-			//S
-			if ( key === 83 || key === 115 )
-			{
-				$event.preventDefault();
-
-				_navigation.showInfo( 'save' );
-			}
-		}
-
-		else
+		if ( ! $( 'input:focus').length )
 		{
-			// S
-			if ( key === 83 || key === 115 )
-			{
-				modeUpdate( 'single' );
-				_navigation.showInfo( 'single' );
+			if ( $event.metaKey )
+			{			
+				// Z
+				if ( key === 90 || key === 122 )
+				{
+					if ( $event.shiftKey )
+					{
+						historyUpdate( 'redo' );
+					}
+
+					else
+					{
+						historyUpdate( 'undo' );
+					}
+
+					_navigation.showInfo( mode );
+				}
+
+				//O
+				if ( key === 111 || key === 79 )
+				{
+					$event.preventDefault();
+
+					_navigation.showInfo( 'import' );
+				}
+
+				//E
+				if ( key === 69 || key === 101 ) 
+				{
+					$event.preventDefault();
+
+					_navigation.showInfo( 'export' );
+				}
+
+				//S
+				if ( key === 83 || key === 115 )
+				{
+					$event.preventDefault();
+
+					_navigation.showInfo( 'save' );
+				}
 			}
 
-			//M
-			if ( key === 77 || key === 109 )
+			else
 			{
-				modeUpdate( 'multiple' );
-				_navigation.showInfo( 'multiple' );
-			}
+				// S
+				if ( key === 83 || key === 115 )
+				{
+					modeUpdate( 'single' );
+					_navigation.showInfo( 'single' );
+				}
 
-			//D
-			if ( key === 68 || key === 100 )
-			{
-				modeUpdate( 'delete' );
-				_navigation.showInfo( 'delete' );
+				//M
+				if ( key === 77 || key === 109 )
+				{
+					modeUpdate( 'multiple' );
+					_navigation.showInfo( 'multiple' );
+				}
+
+				//D
+				if ( key === 68 || key === 100 )
+				{
+					modeUpdate( 'delete' );
+					_navigation.showInfo( 'delete' );
+				}
 			}
 		}
 	}
