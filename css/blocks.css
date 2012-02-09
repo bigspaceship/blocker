@@ -1,0 +1,55 @@
+#blocks
+{
+	position: relative;
+	top: 0; 
+	left: 0;
+	z-index: 1;
+}
+
+.block
+{
+	width: 28px;
+	height: 28px;
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	background-image: url( ../images/blocks.png );
+	background-repeat: no-repeat;
+}
+
+.color-red
+{
+	background-position: 0 -112px;
+}
+	
+.color-green
+{
+	background-position: 0 -56px;
+}
+
+.color-pink
+{
+	background-position: 0 -84px;
+}
+
+.color-blue
+{
+	background-position: 0 0;
+}
+
+.color-yellow
+{
+	background-position: 0 -140px;
+}
+
+.color-orange
+{
+	background-position: 0 -28px;
+}
+
+.color-transparent
+{
+	background-position: -28px -168px;
+}
