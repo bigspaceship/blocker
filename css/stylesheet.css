@@ -53,6 +53,8 @@ nav
 	background: #FCFCFC;
 	float: left;
 
+	display: none;
+
 	border-top: 1px #ddd solid;
 }
 
@@ -158,6 +160,7 @@ nav
 	min-height: 25px;
 	border-bottom: 1px #efefef solid;
 	color: #666;
+	float: left;
 }
 
 	.info-container h1
@@ -225,8 +228,6 @@ nav
 		text-align: right;
 	}
 
-	
-
 	.delete-info h1,
 	.export-info h1,
 	.import-info h1
@@ -274,7 +275,8 @@ nav
 	}
 
 	.export-info input,
-	.import-info input
+	.import-info input,
+	.save-info input
 	{
 		display: block;
 		float: left;
@@ -301,7 +303,8 @@ nav
 	}
 
 	.export-info label,
-	.import-info label
+	.import-info label,
+	.save-info label
 	{
 		display: block;
 		float: left;
@@ -310,6 +313,46 @@ nav
 		margin-right: 10px;
 		color: #999;
 	}
+
+	.sketch-list
+	{
+		display: block;
+		clear: both;
+		float: left;
+		margin-left: 8px;
+	}
+
+		.sketch-list li
+		{
+			float: left;
+			display: block;
+		}
+
+		.sketch-list a
+		{
+			color: #06f;
+			display: inline;
+			float: none;
+		}
+
+		.sketch-list a:hover
+		{
+			text-decoration: underline;
+		}
+
+		.sketch-list .sketch-name
+		{
+			width: 120px;
+			overflow: hidden;
+			text-align: left;
+		}
+
+		.sketch-list .sketch-date
+		{
+			width: 110px;
+			color: #999;
+		}
+
 
 .color-buttons
 {
@@ -478,7 +521,8 @@ nav
 	left: 50px;
 	z-index: 5;
 	float: left;	
-	color: #666;	
+	color: #666;
+
 }
 
 	.help-text
@@ -488,7 +532,7 @@ nav
 		background: #fff;
 		padding: 30px 35px;
 		line-height: 20px;
-		
+		clear: both;	
 		max-height: 300px;
 		height: 100%;
 		width: 100%;
@@ -531,7 +575,8 @@ nav
 		text-decoration: underline;
 	}
 
-	.help-button
+	.help-button,
+	.gallery-toggle
 	{
 		display: block;
 		background: #fff;
@@ -544,6 +589,19 @@ nav
 		text-align: center;
 		border: 1px #efefef solid;
 		border-radius: 2px;
+		float: left;
+	}
+
+	.gallery-toggle
+	{
+		width: auto;
+		float: left;
+		clear: none;
+		position: absolute;
+		right: 50px;
+		top: 50px;
+		padding: 0 10px;
+		z-index: 10;
 	}
 
 	.help-button:hover,
@@ -552,3 +610,36 @@ nav
 		background-color: #06f;
 		color: #fff;
 	}
+
+	#gallery .block
+	{
+		-webkit-transition: all 0.3s ease-out;
+	}
+
+	.gallery-sketch
+	{
+		display: none
+	}
+
+	.gallery-sketch.active
+	{
+		display: block;
+	}
+
+	.gallery-info
+	{
+		display: block;
+		color: #333;
+
+		position: absolute;
+		right: 50px;
+		top: 90px;
+		float: left;
+	}
+
+		.gallery-info h1
+		{
+			font-size: 12px;
+			font-weight: normal;
+			text-align: right;
+		}

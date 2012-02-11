@@ -121,10 +121,17 @@ function History()
 		_imported_history = [];
 	}
 
+	function clear()
+	{
+		_history = [];
+		_current_index = -1;
+	}
+
 	_self.init = init;
 	_self.save = save;
 	_self.undo = undo;
 	_self.redo = redo;
+	_self.clear = clear;
 	_self.hasNext = hasNext;
 	_self.hasPrev = hasPrev;
 	_self.getHistory = getHistory;

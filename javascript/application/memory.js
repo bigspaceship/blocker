@@ -17,8 +17,7 @@ function Memory()
 			var file = {
 				name: files[i].name,
 				type: files[i].type,
-				size: files[i].size//,
-				//last_modified: files[i].lastModifiedDate.toLocaleDateString()
+				size: files[i].size
 			}
 
 			files_imported.push( file );
@@ -35,6 +34,8 @@ function Memory()
 
 	function importJSON( $text )
 	{
+		editor.clear();
+
 		var object = {};
 
 		try
@@ -50,6 +51,7 @@ function Memory()
 			object.history
 		)
 		{
+			editor.clear();
 			editor.importHistory( object.history );
 			editor.importBlocks( object.blocks );
 		}
@@ -101,13 +103,20 @@ function Memory()
 	{
 		if ( $( '#blocks' ).length )
 		{
+			var date = new Date;
+
 			var data = {
 				blocks: editor.getBlocks(),
 				history: editor.getHistory(),
-				saved: new Date()
+				date: date.format( 'yyyy-mm-dd HH:MM' ),
+				name: $( '#save-sketch' ).val(),
+				id: editor.stringToSlug( $( '#save-sketch' ).val() )
 			};
 
-			localStorage.setItem( 'blocks_data', JSON.stringify( data ) );
+			var store = load() || [];
+				store.push( data );
+
+			localStorage.setItem( 'blocks_data', JSON.stringify( store ) );
 		}
 
 		editor.savedToLocal();
@@ -115,7 +124,7 @@ function Memory()
 
 	function load()
 	{
-		var data = {};
+		var data = [];
 			data = jQuery.parseJSON( localStorage.getItem( 'blocks_data' ) );
 		
 		return data;

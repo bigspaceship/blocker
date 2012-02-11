@@ -7,6 +7,11 @@
 		<link rel="stylesheet" href="css/blocks.css" />
 	</head>
 	<body>
+		<a href="#" class="gallery-button gallery-toggle">Create a New Sketch</a>
+		<article class="gallery-info">
+			<h1 class="sketch-name"></h1>
+			<!-- <p class="sketch-author"></p> -->
+		</article>
 		<section class="help">
 			<a href="#" class="help-button help-toggle">?</a>
 			<article class="help-text help-welcome">
@@ -49,7 +54,8 @@
 					</li>
 					<li>
 						<strong>export</strong> a sketch from a to a file. There are two output formats available:
-						<code>html</code> and <code>json</code>. Export you sketch as <code>html</code> to embed it on other websites. Export it as <code>json</code> if you want to import and modify it later on using this editor.
+						<code>html</code> and <code>json</code>. Export you sketch as <code>html</code> to embed it on other websites.
+						Export it as <code>json</code> if you want to import and modify it later on using this editor.
 					</li>
 				</ul>
 				<p>There are keyboard shortcuts available</p>
@@ -105,8 +111,13 @@
 					<p>Click to add a block. Hold down shift to draw a line.</p>
 				</div>
 				<div class="save-info">
-					<a href="#" class="info-button">Save To Local Storage</a>
-					<p>Save current sketch to local storage. It will load automatically when you come back. This will erase sketches from previous sessions.</p>
+					<a href="#" class="info-button">Save</a>
+					<label for="save-sketch">Sketch Name</label>
+					<input id="save-sketch" type="text" placeholder="myBlocks" />
+					<p>Save current sketch to local storage.</p>
+				</div>
+				<div class="load-info">
+					<p>Load a sketch from Local Storage</p>
 				</div>
 			</div>
 			<div class="mode-buttons">
@@ -139,6 +150,7 @@
 				<h1>File</h1>
 				<ul>
 					<li><a href="#" id="file-save" class="file-button">save</a></li>
+					<li><a href="#" id="file-load" class="file-button">load</a></li>
 					<li><a href="#" id="file-import" class="file-button">import</a></li>
 					<li><a href="#" id="file-export" class="file-button">export</a></li>
 				</ul>

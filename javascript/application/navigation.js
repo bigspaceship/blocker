@@ -24,6 +24,7 @@ var Navigation = function()
 		$( '#file-export' ).click( exportClicked );
 		$( '#file-import' ).click( importClicked );
 		$( '#file-save' ).click( saveClicked );
+		$( '#file-load' ).click( loadClicked );
 
 		$( '.delete-info a' ).click( deleteClicked );
 		$( '.save-info a' ).click( saveToLocal );
@@ -31,7 +32,7 @@ var Navigation = function()
 		$( '#export-html' ).click( exportHTMLClicked );
 		$( '#export-json' ).click( exportJSONClicked );
 
-		// gf: check for file API for
+		// gf: check for file API
 		if (
 			window.File &&
 			window.FileReader &&
@@ -43,6 +44,18 @@ var Navigation = function()
 		}
 
 		editor.modeUpdate( 'single' );
+
+		$( 'nav' ).hover( navOver, navOut );
+	}
+
+	function stop()
+	{
+		$( 'nav' ).hide()
+	}
+
+	function start()
+	{
+		$( 'nav' ).show()
 	}
 
 	function colorChanged( $event )
@@ -132,6 +145,14 @@ var Navigation = function()
 		showInfo( 'save' );
 	}
 
+	function loadClicked( $event )
+	{
+		$event.preventDefault();
+
+		showInfo( 'load' );
+		sketchListShow();
+	}
+
 	function exportHTMLClicked( $event )
 	{
 		$event.preventDefault();
@@ -171,6 +192,54 @@ var Navigation = function()
 		$( '.info-container .' + $subnav + '-info' ).show();
 	}
 
+	function sketchListShow()
+	{
+		var sketches = editor.load();
+		var list_html = '';
+
+		
+		if ( sketches.length )
+		{
+			if ( ! $( '.load-info .sketch-list' ).length )
+			{
+				$( '.load-info' ).append( '<ul class="sketch-list"></ul>' );
+			}
+
+			for ( var i = 0; i < sketches.length; i++ )
+			{
+				list_html += '<li id="sketch-' + i + '">';
+				list_html += 	'<p class="sketch-name"><a href="#">' + sketches[i].name + '</a></p>';
+				list_html += 	'<p class="sketch-date">' + sketches[i].date + '</p>';
+				list_html += '</li>';
+			}
+
+			$( '.load-info .sketch-list' ).html( list_html );
+			$( '.load-info .sketch-list a' ).click( sketchListClicked );
+		}
+
+		else
+		{
+			// gf: no sketches :-(
+		}
+	}
+
+	function sketchListClicked( $event )
+	{
+		var sketch_index = $( $event.target ).closest( 'li' ).attr( 'id' ).replace( 'sketch-', '' );
+		var sketches = editor.load();
+
+		if (
+			sketches &&
+			sketches.length &&
+			sketches[sketch_index] &&
+			sketches[sketch_index].blocks
+		)
+		{
+			editor.clear();
+			editor.importBlocks( sketches[sketch_index].blocks );
+		}
+	}
+
 	function savedToLocal()
 	{
 		setTimeout( function() { 
@@ -180,6 +249,16 @@ var Navigation = function()
 			
 			_saving = false;
 		}, 500 );
+	}
+
+	function navOver( $event )
+	{
+		editor.previewRemove();
+	}
+
+	function navOut( $event )
+	{
+
 	}
 
 	function slidersAdd( $selector )
@@ -232,6 +311,8 @@ var Navigation = function()
 	}
 
 	_self.init = init;
+	_self.stop = stop;
+	_self.start = start;
 	_self.savedToLocal = savedToLocal;
 	_self.showInfo = showInfo;
 	_self.modeUpdate = modeUpdate;
