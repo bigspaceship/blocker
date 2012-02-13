@@ -32,7 +32,6 @@ function Gallery()
 
 		editor.stop();
 		sketchesLoad();
-		sketchAnimate( 0, false );
 	}
 
 	function stop()
@@ -48,21 +47,58 @@ function Gallery()
 
 	function sketchesLoad()
 	{
-		$.getJSON(
-			{
-				url: 'http://gfischer.local/sketches',
-				success: function( $data )
+		if ( ! _sketches.length )
+		{
+			var sketches = [];
+			var json_url = 'sketches/index.php';
+
+			$.ajax(
 				{
-					console.log( 'data from gallery:' + $data );
+	  				url: json_url,
+	  				dataType: 'json',
+	  				success: getSketchesFromJSON,
+					error: getSketchesFromLocal
+				}
+			);		
+
+			function getSketchesFromJSON( $json )
+			{
+				if (
+					$json &&
+					$json.sketches &&
+					$json.sketches.length
+				)
+				{
+					_sketches = $json.sketches;
+					gotSketches();
+				}
+
+				else
+				{
+					getSketchesFromLocal();
 				}
 			}
-		);
 
-		_sketches = editor.load();
+			function getSketchesFromLocal()
+			{
+				_sketches = editor.load() || [];
+				gotSketches();
+			}
+		}
 
-		for ( var i = 0; i < _sketches.length; i++ )
+		else
 		{
-			sketchToDom( i );
+			gotSketches();
+		}
+
+		function gotSketches()
+		{
+			for ( var i = 0; i < _sketches.length; i++ )
+			{
+				sketchToDom( i );
+			}
+
+			sketchAnimate( 0, false );
 		}
 	}
 
@@ -90,7 +126,7 @@ function Gallery()
 				var new_block = sketch.blocks[i];
 
 				var new_block_css = 'style="';
-					new_block_css += 'left:' + random_positions[i].left + 'px';
+					new_block_css += 'left:' + random_positions[i].left + 'px; ';
 					new_block_css += 'top:' + random_positions[i].top + 'px; ';
 					new_block_css += '"';	
 				
@@ -115,23 +151,92 @@ function Gallery()
 				$sketch_index = 0;
 			}
 
+			var block_count = _sketches[$sketch_index].blocks.length;
+			var animation_duration = 500;
+			var block_animation_time = animation_duration / block_count;			
+			var blocks_to_animate = block_count / animation_duration;
+
+			if ( block_animation_time >= 1 )
+			{
+				timeout = parseInt( block_animation_time );
+				blocks_to_animate = 1;
+			}
+
+			else
+			{
+				animation_duration = animation_duration / 10;
+				block_animation_time = animation_duration / block_count;			
+				blocks_to_animate = block_count / animation_duration;
+				timeout = 1;
+				blocks_to_animate = Math.ceil( blocks_to_animate ) * 2;
+			}
+
 			var new_positions = getBlocksPosition( $sketch_index, $direction );
 			var sketch_id = _sketches[$sketch_index].id;
 
 			$( '#gallery .sketch-' + sketch_id ).addClass( 'active' );
 			$( '.gallery-info .sketch-name' ).text( _sketches[$sketch_index].name );
-
-			blockAnimate( 0, 5 );
-
-			function blockAnimate( $block_index, $timeout )
+			$( '.gallery-info .sketch-blocks' ).text( _sketches[$sketch_index].blocks.length + ' blocks' );
+			
+			if ( _sketches[$sketch_index].author )
 			{
-				$( '#gallery #gallery-block-' + _sketches[$sketch_index].blocks[$block_index].index ).css( new_positions[$block_index] );
+				$( '.gallery-info .sketch-author' )
+					.text( 'by ' + _sketches[$sketch_index].author )
+					.show();
+			}
+
+			else
+			{
+				$( '.gallery-info .sketch-author' ).hide();
+			}
+
+			if ( _sketches[$sketch_index].date )
+			{
+				$( '.gallery-info .sketch-date' )
+					.text( _sketches[$sketch_index].date )
+					.show();
+			}
+
+			else
+			{
+				$( '.gallery-info .sketch-date' ).hide();
+			}			
+
+			var animation_options = {
+				blocks_to_animate: blocks_to_animate,
+				timeout: timeout,
+				block_index: 0,
+			};
+
+			blockAnimate( animation_options );
+
+			function blockAnimate( $options )
+			{
+				if ( $options.blocks_to_animate > 1 )
+				{
+					for ( var i = 0; i < $options.blocks_to_animate; i++ )
+					{
+						var index = $options.block_index + i;
+
+						if ( index < _sketches[$sketch_index].blocks.length )
+						{
+							$( '#gallery #gallery-block-' + _sketches[$sketch_index].blocks[index].index ).css( new_positions[index] );
+						}
+					}
+				}
+
+				else
+				{
+					$( '#gallery #gallery-block-' + _sketches[$sketch_index].blocks[$options.block_index].index ).css( new_positions[$options.block_index] );
+				}				
 
 				if ( _active )
 				{
-					if ( $block_index < _sketches[$sketch_index].blocks.length - 1  )
+					if ( $options.block_index < _sketches[$sketch_index].blocks.length - 1  )
 					{
-						setTimeout( function(){ blockAnimate( parseInt( $block_index + 1 ), $timeout ); }, $timeout );
+						$options.block_index++;
+
+						setTimeout( function(){ blockAnimate( $options ); }, $options.timeout );
 					}
 
 					else
@@ -194,8 +299,8 @@ function Gallery()
 			if ( $direction )
 			{
 				var side = {
-					x: editor.getRandomNumber( -1, 1, true ),
-					y: editor.getRandomNumber( -1, 1, true )
+					x: parseInt( editor.getRandomNumber( -1, 1, true ) ),
+					y: parseInt( editor.getRandomNumber( -1, 1, true ) )
 				};
 
 				position.left = - block_size.width;

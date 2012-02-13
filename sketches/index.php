@@ -2,7 +2,7 @@
 $path = pathinfo( $_SERVER['PHP_SELF'] );
 $dir = './';//$path['dirname'];
 $files = scandir( $dir );
-
+$result  = array();
 $list = array();
 
 foreach ( $files as $file )
@@ -13,10 +13,17 @@ foreach ( $files as $file )
 		$file !== 'index.php'
 	)
 	{
-		$list[] = 'http://gfischer.local' . $path['dirname'] . '/' . $file;
+		$file = file_get_contents( 'http://gfischer.local' . $path['dirname'] . '/' . $file );
+		$json = json_decode( $file, true );
+		
+		if ( $json )
+		{
+			$list[] = $json;
+		}
 	}
 }
 
-echo json_encode( $list );
+$result['sketches'] = $list;
+echo json_encode( $result );
 
 ?>

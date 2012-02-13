@@ -176,7 +176,7 @@ var Navigation = function()
 			_saving = true;
 
 			$( $event.target )
-				.text( 'Saving...' )
+				.text( 'Saved' )
 				.addClass( 'inactive' );
 
 			editor.saveToLocal();
@@ -187,9 +187,12 @@ var Navigation = function()
 	{
 		$( '.info-container > *' )
 			.not( '.info-' + $subnav )
+			.removeClass( 'info-container-active' )
 			.hide();
 
-		$( '.info-container .' + $subnav + '-info' ).show();
+		$( '.info-container .' + $subnav + '-info' )
+			.addClass( 'info-container-active' )
+			.show();
 	}
 
 	function sketchListShow()
@@ -244,11 +247,11 @@ var Navigation = function()
 	{
 		setTimeout( function() { 
 			$( '.save-info a' )
-				.text( 'Save To Local Storage' )
+				.text( 'Save' )
 				.removeClass( 'inactive' );
 			
 			_saving = false;
-		}, 500 );
+		}, 1500 );
 	}
 
 	function navOver( $event )

@@ -54,6 +54,7 @@ function Canvas()
 	function stop()
 	{
 		$( '#blocks' ).hide();
+		$( '#cursor' ).hide();
 	}
 
 	function clear()

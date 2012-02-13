@@ -10,7 +10,9 @@
 		<a href="#" class="gallery-button gallery-toggle">Create a New Sketch</a>
 		<article class="gallery-info">
 			<h1 class="sketch-name"></h1>
-			<!-- <p class="sketch-author"></p> -->
+			<p class="sketch-blocks"></p>
+			<p class="sketch-author"></p>
+			<p class="sketch-date"></p>
 		</article>
 		<section class="help">
 			<a href="#" class="help-button help-toggle">?</a>
@@ -95,10 +97,10 @@
 				</div>
 				<div class="export-info">
 					<h1>Export</h1>
-					<label for="export-filename">File Name</label>
-					<input id="export-filename" type="text" placeholder="myBlocks" />
-					<a href="#" id="export-html" class="info-button">Export HTML</a>
-					<a href="#" id="export-json" class="info-button">Export JSON</a>
+					<label for="export-sketch">Sketch Name</label>
+					<input id="export-sketch" type="text" />
+					<a href="#" id="export-json" class="info-button">Export to JSON</a>
+					<a href="#" id="export-html" class="info-button">Export to HTML</a>
 					<p>Export to HTML to use your sketch on a web site. Export to JSON to save your sketch and come back later to continue working on it.</p>
 				</div>
 				<div class="import-info">
@@ -113,7 +115,7 @@
 				<div class="save-info">
 					<a href="#" class="info-button">Save</a>
 					<label for="save-sketch">Sketch Name</label>
-					<input id="save-sketch" type="text" placeholder="myBlocks" />
+					<input id="save-sketch" type="text" />
 					<p>Save current sketch to local storage.</p>
 				</div>
 				<div class="load-info">

@@ -271,7 +271,7 @@ nav
 		margin-bottom: 0;
 		float: left;
 		line-height: 25px;
-		height: 25px;
+		min-height: 25px;
 	}
 
 	.export-info input,
@@ -641,5 +641,10 @@ nav
 		{
 			font-size: 12px;
 			font-weight: normal;
+			text-align: right;
+		}
+
+		.gallery-info p
+		{
 			text-align: right;
 		}

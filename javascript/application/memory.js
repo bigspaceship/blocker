@@ -65,6 +65,12 @@ function Memory()
 			var html = $( '#blocks' ).html();
 			var css = '';
 
+			var data = {
+				id: editor.stringToSlug( $( '#export-sketch' ).val() ),
+				date: now.format( 'yyyy-mm-dd HH:MM' ),
+				name: $( '#export-sketch' ).val()
+			};
+
 			for ( var i = 0; i < blocks_stylesheet.cssRules.length; i++ )
 			{
 				css += blocks_stylesheet.cssRules[i].cssText + '\n';
@@ -72,7 +78,7 @@ function Memory()
 
 			html = '<style>' + css + '</style><div id="blocks">' + html + '</div>';
 
-			textToDownload( $event, html, 'text/html', '.html' );
+			textToDownload( $event, html, data, 'text/html', '.html' );
 		}
 	}
 
@@ -80,9 +86,14 @@ function Memory()
 	{
 		if ( $( '#blocks' ).length )
 		{
+			var now = new Date();
+
 			var data = {
 				blocks: editor.getBlocks(),
-				history: editor.getHistory()
+				history: editor.getHistory(),
+				id: editor.stringToSlug( $( '#export-sketch' ).val() ),
+				date: now.format( 'yyyy-mm-dd HH:MM' ),
+				name: $( '#export-sketch' ).val()
 			};
 
 			var json = '';
@@ -95,7 +106,7 @@ function Memory()
 				json = JSON.stringify( data );
 			}
 
-			textToDownload( $event, json, 'application/json', '.json' );
+			textToDownload( $event, json, data, 'application/json', '.json' );
 		}
 	}
 
@@ -108,9 +119,9 @@ function Memory()
 			var data = {
 				blocks: editor.getBlocks(),
 				history: editor.getHistory(),
+				id: editor.stringToSlug( $( '#save-sketch' ).val() ),
 				date: date.format( 'yyyy-mm-dd HH:MM' ),
-				name: $( '#save-sketch' ).val(),
-				id: editor.stringToSlug( $( '#save-sketch' ).val() )
+				name: $( '#save-sketch' ).val()
 			};
 
 			var store = load() || [];
@@ -130,7 +141,7 @@ function Memory()
 		return data;
 	}
 
-	function textToDownload( $event, $text, $mime_type, $file_extension )
+	function textToDownload( $event, $text, $data, $mime_type, $file_extension )
 	{
 		window.URL = window.webkitURL || window.URL;
 		window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder;
@@ -145,7 +156,7 @@ function Memory()
 		var blob_builder = new BlobBuilder();
 			blob_builder.append( $text );
 
-		var filename = $( '.export-info input' ).val() || 'myBlocks';
+		var filename = $data.id || 'myBlocks';
 			filename += $file_extension;
 
 		var filepath = window.URL.createObjectURL( blob_builder.getBlob( $mime_type ) );

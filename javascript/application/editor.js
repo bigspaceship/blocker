@@ -51,6 +51,7 @@ function Editor()
 		_active = false;
 		_canvas.stop();
 		_navigation.stop();
+		_help.stop();
 	}
 
 	function depencenciesLoaded( $url, $result, $key )
@@ -113,18 +114,6 @@ function Editor()
 			var key = $event.which;
 			var mode = _canvas.getMode();
 
-			// backspace		
-			if ( key === 8 )
-			{
-				if ( mode === 'delete' )
-				{
-					$event.preventDefault();
-
-					_canvas.deleteSelected();
-					_navigation.showInfo( mode );
-				}
-			}
-
 			if ( _number_keys.indexOf( key ) !== -1 )
 			{
 				var index = _number_keys.indexOf( key );
@@ -153,6 +142,18 @@ function Editor()
 
 			if ( ! $( 'input:focus').length )
 			{
+				// backspace		
+				if ( key === 8 )
+				{
+					if ( mode === 'delete' )
+					{
+						$event.preventDefault();
+
+						_canvas.deleteSelected();
+						_navigation.showInfo( mode );
+					}
+				}
+
 				if ( $event.metaKey )
 				{			
 					// Z
@@ -215,6 +216,34 @@ function Editor()
 						modeUpdate( 'delete' );
 						_navigation.showInfo( 'delete' );
 					}
+				}
+			}
+
+			if ( key === 13 )
+			{
+				console.log( 'ENTER' );
+
+				if ( $( '.export-info' ).hasClass( 'info-container-active' ) )
+				{
+					if ( ! $( '.export-info .download-link' ).length )
+					{
+						$( '.export-info #export-json' ).trigger( 'click' );
+					}
+
+					else
+					{
+						//$( '.export-info .download-link' ).trigger( 'click' );
+					}
+				}
+
+				if ( $( '.import-info' ).hasClass( 'info-container-active' ) )
+				{
+					$( '.import-info #import-file' ).trigger( 'click' );
+				}
+
+				if ( $( '.save-info' ).hasClass( 'info-container-active' ) )
+				{
+					$( '.save-info .info-button' ).trigger( 'click' );
 				}
 			}
 		}
