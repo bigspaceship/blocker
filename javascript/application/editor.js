@@ -63,7 +63,6 @@ function Editor()
 		_self.importHistory = _history.importHistory;
 		_self.historyUpdateIDs = _history.historyUpdateIDs;
 
-
 		_memory = new Memory();
 		_self.load = _memory.load;
 		_self.saveToLocal = _memory.save;

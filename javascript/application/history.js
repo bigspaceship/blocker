@@ -21,8 +21,10 @@ function History()
 			_history = _history.slice( 0, _current_index );
 		}
 
-		_history.push( { action: $item.action, block: $item.block } );
+		_history.push( { action: $item.action, blocks: $item.blocks } );
 		_current_index = _history.length;
+
+		//console.log( _history );
 	}
 
 	function undo()
@@ -110,12 +112,19 @@ function History()
 	{
 		for ( var i = 0; i < _imported_history.length; i++ )
 		{
-			if ( _imported_history[i].block.index === $old_index )
-			{
-				_imported_history[i].block.index = $new_index;
-			}
+			var blocks_to_add = [];
 
-			save( { action: 'add', block: _imported_history[i].block } );
+			for ( var j = 0; j < _imported_history[i].blocks.length; j++ )
+			{
+				if ( _imported_history[i].blocks[j].index === $old_index )
+				{
+					_imported_history[i].blocks[j].index = $new_index;
+				}
+
+				blocks_to_add.push( _imported_history[i].blocks[j] );
+			}
+			
+			save( { action: 'add', blocks: blocks_to_add } );
 		}
 
 		_imported_history = [];

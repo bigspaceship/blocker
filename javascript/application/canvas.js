@@ -118,7 +118,9 @@ function Canvas()
 					if ( ! $( '.block.preview' ).length )
 					{
 						previewUpdateBlocks();
-					}				
+					}
+
+					$( '#blocks' ).removeClass( 'no-preview' );
 				}
 
 				else
@@ -129,6 +131,8 @@ function Canvas()
 					{
 						blockRemove( $( '.block.preview' ) );
 					}
+
+					$( '#blocks' ).addClass( 'no-preview' );
 				}
 			}
 
@@ -142,6 +146,8 @@ function Canvas()
 				{
 					previewRemove();
 				}
+
+				$( '#blocks' ).addClass( 'no-preview' );
 			}
 
 			if ( $event.shiftKey )
@@ -369,13 +375,15 @@ function Canvas()
 			{
 				if ( $options.index )
 				{
+					var blocks_to_remove = [];
+
 					var i = _blocks.length; while ( i-- )
 					{
 						if ( _blocks[i].index === $options.index )
 						{
 							if ( _blocks[i].type !== 'preview' )
 							{
-								editor.historyUpdate( 'save', { action: 'remove', block: _blocks[i] } );
+								blocks_to_remove.push( _blocks[i] );	
 							}
 
 							_blocks.splice( i, 1 );
@@ -385,6 +393,11 @@ function Canvas()
 							break;
 						}
 					}
+
+					if ( blocks_to_remove.length )
+					{
+						editor.historyUpdate( 'save', { action: 'remove', blocks: blocks_to_remove } );
+					}
 				}
 
 				if ( $options.blocks )
@@ -392,6 +405,7 @@ function Canvas()
 					$( $options.blocks ).each(
 						function()
 						{
+							var blocks_to_remove = [];
 							var block_index = getBlockID( $( this ) );
 
 							var i = _blocks.length; while ( i-- )
@@ -400,7 +414,7 @@ function Canvas()
 								{
 									if ( _blocks[i].type !== 'preview' )
 									{
-										editor.historyUpdate( 'save', { action: 'remove', block: _blocks[i] } );
+										blocks_to_remove.push( _blocks[i] );
 									}
 
 									$( '#block-' + block_index ).remove();
@@ -410,12 +424,19 @@ function Canvas()
 									break;
 								}
 							}
+
+							if ( blocks_to_remove.length )
+							{
+								editor.historyUpdate( 'save', { action: 'remove', blocks: blocks_to_remove } );
+							}
 						}
 					);
 				}
 
 				if ( $options.position )
 				{
+					var blocks_to_remove = [];
+
 					var i = _blocks.length; while ( i-- )
 					{
 						if (
@@ -426,7 +447,7 @@ function Canvas()
 						{
 							if ( _blocks[i].type !== 'preview' )
 							{
-								editor.historyUpdate( 'save', { action: 'remove', block: _blocks[i] } );
+								blocks_to_remove.push( _blocks[i] );
 							}
 
 							$( '#block-' + _blocks[i].index ).remove();
@@ -435,6 +456,11 @@ function Canvas()
 
 							break;
 						}
+					}
+
+					if ( blocks_to_remove.length )
+					{
+						editor.historyUpdate( 'save', { action: 'remove', blocks: blocks_to_remove } );
 					}
 				}
 			}
@@ -617,6 +643,8 @@ function Canvas()
 	{
 		if ( editor.getActive() )
 		{
+			var blocks_to_add = [];
+
 			$( '.block.preview' ).each(
 				function()
 				{
@@ -628,14 +656,18 @@ function Canvas()
 					{
 						if ( _blocks[i].index === block_index )
 						{
-							editor.historyUpdate( 'save', { action: 'add', block: _blocks[i] } );
-
+							blocks_to_add.push( _blocks[i] );
 							_blocks[i].type = 'solid';
 							break;
 						}
 					}
 				}
 			);
+
+			if ( blocks_to_add.length )
+			{
+				editor.historyUpdate( 'save', { action: 'add', blocks: blocks_to_add } );
+			}
 
 			updateCounter();
 		}
@@ -657,7 +689,7 @@ function Canvas()
 		{
 			if (
 				$options &&
-				$options.block &&
+				$options.blocks &&
 				$options.action &&
 				$options.history_action
 			)
@@ -666,12 +698,12 @@ function Canvas()
 				{
 					if ( $options.action === 'add' )
 					{
-						historyRemoveBlock( $options );
+						historyRemoveBlocks( $options );
 					}
 
 					if ( $options.action === 'remove' )
 					{
-						historyAddBlock( $options );
+						historyAddBlocks( $options );
 					}
 				}
 
@@ -679,12 +711,12 @@ function Canvas()
 				{
 					if ( $options.action === 'remove' )
 					{
-						historyRemoveBlock( $options );
+						historyRemoveBlocks( $options );
 					}
 
 					if ( $options.action === 'add' )
 					{
-						historyAddBlock( $options );
+						historyAddBlocks( $options );
 					}
 				}
 			}
@@ -696,48 +728,57 @@ function Canvas()
 		}
 	}
 
-	function historyAddBlock( $options )
+	function historyAddBlocks( $options )
 	{
 		if ( editor.getActive() )
 		{
-			var block = $options.block;
+			var blocks = $options.blocks;
 
-			block.index = parseInt( getHighestBlockIndex() + 1 );
+			var i = blocks.length; while ( i-- )
+			{
+				var block = blocks[i];
+					block.index = parseInt( getHighestBlockIndex() + 1 );
 
-			var new_block_html = '<div class="block color-' + block.color + '" id="block-' + block.index + '"></div>';
-			
-			var new_block_css = {
-				top: block.position.y + ( - _block_size.height * block.position.z ),
-				left: block.position.x
-			};
+				var new_block_html = '<div class="block color-' + block.color + '" id="block-' + block.index + '"></div>';
+				
+				var new_block_css = {
+					top: block.position.y + ( - _block_size.height * block.position.z ),
+					left: block.position.x
+				};
 
-			_blocks.push( block );
+				_blocks.push( block );
 
-			$( '#blocks' ).append( new_block_html );
-			$( '#block-' + block.index ).css( new_block_css );
+				$( '#blocks' ).append( new_block_html );
+				$( '#block-' + block.index ).css( new_block_css );
 
-			blocksUpdateZ();
-			updateCounter();
+				blocksUpdateZ();
+				updateCounter();
+			}
 		}
 	}
 
-	function historyRemoveBlock( $options )
+	function historyRemoveBlocks( $options )
 	{
 		if ( editor.getActive() )
 		{
-			var block = $options.block;
+			var blocks = $options.blocks;
 
-			var i = _blocks.length; while ( i-- )
+			var i = blocks.length; while ( i-- )
 			{
-				if ( _blocks[i].index === block.index )
+				var block = blocks[i];
+
+				var j = _blocks.length; while ( j-- )
 				{
-					$( '#block-' + block.index ).remove();
+					if ( _blocks[j].index === block.index )
+					{
+						$( '#block-' + block.index ).remove();
 
-					_blocks.splice( i, 1 );
+						_blocks.splice( j, 1 );
 
-					blocksUpdateZ();
+						blocksUpdateZ();
 
-					break;
+						break;
+					}
 				}
 			}
 		}

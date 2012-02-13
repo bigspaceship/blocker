@@ -33,15 +33,29 @@ body
 	z-index: 2;
 }
 
-.block.active
+#blocks
 {
-	background-position: 0 -168px;
-}
 
-.block.preview
-{
-	opacity: 0.4;
 }
+	.block.active
+	{
+		background-position: 0 -168px;
+	}
+
+	.block.preview
+	{
+		opacity: 0.4;
+	}
+
+	#blocks.no-preview .block.preview
+	{
+		display: none;
+	}
+
+	#blocks.no-preview #cursor
+	{
+		display: none;
+	}
 
 nav
 {
