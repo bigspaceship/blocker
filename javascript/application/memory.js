@@ -17,8 +17,7 @@ function Memory()
 			var file = {
 				name: files[i].name,
 				type: files[i].type,
-				size: files[i].size//,
-				//last_modified: files[i].lastModifiedDate.toLocaleDateString()
+				size: files[i].size
 			}
 
 			files_imported.push( file );
@@ -35,6 +34,8 @@ function Memory()
 
 	function importJSON( $text )
 	{
+		editor.clear();
+
 		var object = {};
 
 		try
@@ -50,6 +51,7 @@ function Memory()
 			object.history
 		)
 		{
+			editor.clear();
 			editor.importHistory( object.history );
 			editor.importBlocks( object.blocks );
 		}
@@ -63,6 +65,12 @@ function Memory()
 			var html = $( '#blocks' ).html();
 			var css = '';
 
+			var data = {
+				id: editor.stringToSlug( $( '#export-sketch' ).val() ),
+				date: now.format( 'yyyy-mm-dd HH:MM' ),
+				name: $( '#export-sketch' ).val()
+			};
+
 			for ( var i = 0; i < blocks_stylesheet.cssRules.length; i++ )
 			{
 				css += blocks_stylesheet.cssRules[i].cssText + '\n';
@@ -70,7 +78,7 @@ function Memory()
 
 			html = '<style>' + css + '</style><div id="blocks">' + html + '</div>';
 
-			textToDownload( $event, html, 'text/html', '.html' );
+			textToDownload( $event, html, data, 'text/html', '.html' );
 		}
 	}
 
@@ -78,9 +86,14 @@ function Memory()
 	{
 		if ( $( '#blocks' ).length )
 		{
+			var now = new Date();
+
 			var data = {
 				blocks: editor.getBlocks(),
-				history: editor.getHistory()
+				history: editor.getHistory(),
+				id: editor.stringToSlug( $( '#export-sketch' ).val() ),
+				date: now.format( 'yyyy-mm-dd HH:MM' ),
+				name: $( '#export-sketch' ).val()
 			};
 
 			var json = '';
@@ -93,7 +106,7 @@ function Memory()
 				json = JSON.stringify( data );
 			}
 
-			textToDownload( $event, json, 'application/json', '.json' );
+			textToDownload( $event, json, data, 'application/json', '.json' );
 		}
 	}
 
@@ -101,13 +114,20 @@ function Memory()
 	{
 		if ( $( '#blocks' ).length )
 		{
+			var date = new Date;
+
 			var data = {
 				blocks: editor.getBlocks(),
 				history: editor.getHistory(),
-				saved: new Date()
+				id: editor.stringToSlug( $( '#save-sketch' ).val() ),
+				date: date.format( 'yyyy-mm-dd HH:MM' ),
+				name: $( '#save-sketch' ).val()
 			};
 
-			localStorage.setItem( 'blocks_data', JSON.stringify( data ) );
+			var store = load() || [];
+				store.push( data );
+
+			localStorage.setItem( 'blocks_data', JSON.stringify( store ) );
 		}
 
 		editor.savedToLocal();
@@ -115,13 +135,13 @@ function Memory()
 
 	function load()
 	{
-		var data = {};
+		var data = [];
 			data = jQuery.parseJSON( localStorage.getItem( 'blocks_data' ) );
 		
 		return data;
 	}
 
-	function textToDownload( $event, $text, $mime_type, $file_extension )
+	function textToDownload( $event, $text, $data, $mime_type, $file_extension )
 	{
 		window.URL = window.webkitURL || window.URL;
 		window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder;
@@ -136,7 +156,7 @@ function Memory()
 		var blob_builder = new BlobBuilder();
 			blob_builder.append( $text );
 
-		var filename = $( '.export-info input' ).val() || 'myBlocks';
+		var filename = $data.id || 'myBlocks';
 			filename += $file_extension;
 
 		var filepath = window.URL.createObjectURL( blob_builder.getBlob( $mime_type ) );

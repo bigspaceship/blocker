@@ -7,6 +7,13 @@
 		<link rel="stylesheet" href="css/blocks.css" />
 	</head>
 	<body>
+		<a href="#" class="gallery-button gallery-toggle">Create a New Sketch</a>
+		<article class="gallery-info">
+			<h1 class="sketch-name"></h1>
+			<p class="sketch-blocks"></p>
+			<p class="sketch-author"></p>
+			<p class="sketch-date"></p>
+		</article>
 		<section class="help">
 			<a href="#" class="help-button help-toggle">?</a>
 			<article class="help-text help-welcome">
@@ -42,22 +49,25 @@
 				<ul>
 					<li>
 						<strong>save</strong> your sketch. This saves your sketch on your local machine.
-						it will automatically load when you return to the editor the next time
+					</li>
+					<li>
+						<strong>load</strong> a sketch. you cann choose from sketches you saved before.
 					</li>
 					<li>
 						<strong>import</strong> a sketch from a file.
 					</li>
 					<li>
 						<strong>export</strong> a sketch from a to a file. There are two output formats available:
-						<code>html</code> and <code>json</code>. Export you sketch as <code>html</code> to embed it on other websites. Export it as <code>json</code> if you want to import and modify it later on using this editor.
+						<code>html</code> and <code>json</code>. Export you sketch as <code>html</code> to embed it on other websites.
+						Export it as <code>json</code> if you want to import and modify it later on using this editor.
 					</li>
 				</ul>
 				<p>There are keyboard shortcuts available</p>
 				<ul>
 					<li>Press the numbers <strong>1 - 6</strong> to change the block color.</li>
-					<li>Press <code>S</code> for single block mode.</li>
-					<li>Press <code>M</code> for multiple block mode.</li>
-					<li>Press <code>D</code> for delete mode.</li>
+					<!-- <li>Press <code>cmd + i</code> for single block mode.</li> -->
+					<li>Press <code>cmd + m</code> for multiple block mode.</li>
+					<li>Press <code>cmd + d</code> for delete mode.</li>
 					<li>Press <code>cmd + z</code> for undo.</li>
 					<li>Press <code>cmd + shift + z</code> for redo.</li>
 					<li>Press <code>cmd + s</code> to open the save menu.</li>
@@ -67,6 +77,9 @@
 					<li>In delete mode, hold <code>shift</code> while dragging to select multiple blocks.</li>
 					<li>In delete mode, press <code>backspace</code> to delete selected blocks.</li>
 				</ul>
+				<p>If you want to show add your sketch to our gallery, send it to blocksbuilder@bigspaceship.com</p>
+				<p>In this case, please make sure your model has no more than 700 blocks.</p>
+				<p>We will review your submission and add it to to the gallery if everything is OK.</p>
 				<p><a class="help-toggle" href="#">close</a></p>
 			</article>
 		</section>
@@ -89,24 +102,30 @@
 				</div>
 				<div class="export-info">
 					<h1>Export</h1>
-					<label for="export-filename">File Name</label>
-					<input id="export-filename" type="text" placeholder="myBlocks" />
-					<a href="#" id="export-html" class="info-button">Export HTML</a>
-					<a href="#" id="export-json" class="info-button">Export JSON</a>
+					<label for="export-sketch">Sketch Name</label>
+					<input id="export-sketch" type="text" />
+					<a href="#" id="export-json" class="info-button">Export to JSON</a>
+					<a href="#" id="export-html" class="info-button">Export to HTML</a>
 					<p>Export to HTML to use your sketch on a web site. Export to JSON to save your sketch and come back later to continue working on it.</p>
 				</div>
 				<div class="import-info">
 					<h1>Import</h1>
 					<label for="import-file">Choose JSON File</label>
-					<input id="import-file" type="file" accept="application/json,text/json,text/plain" />
+					<!-- <input id="import-file" type="file" accept="application/json,text/json,text/plain" /> -->
+					<input id="import-file" type="file" />
 					<p>You can import .json files that you saved from previous sessions.</p>
 				</div>
 				<div class="single-info">
 					<p>Click to add a block. Hold down shift to draw a line.</p>
 				</div>
 				<div class="save-info">
-					<a href="#" class="info-button">Save To Local Storage</a>
-					<p>Save current sketch to local storage. It will load automatically when you come back. This will erase sketches from previous sessions.</p>
+					<a href="#" class="info-button">Save</a>
+					<label for="save-sketch">Sketch Name</label>
+					<input id="save-sketch" type="text" />
+					<p>Save current sketch to local storage.</p>
+				</div>
+				<div class="load-info">
+					<p>Load a sketch from Local Storage</p>
 				</div>
 			</div>
 			<div class="mode-buttons">
@@ -139,6 +158,7 @@
 				<h1>File</h1>
 				<ul>
 					<li><a href="#" id="file-save" class="file-button">save</a></li>
+					<li><a href="#" id="file-load" class="file-button">load</a></li>
 					<li><a href="#" id="file-import" class="file-button">import</a></li>
 					<li><a href="#" id="file-export" class="file-button">export</a></li>
 				</ul>

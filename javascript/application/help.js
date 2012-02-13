@@ -8,13 +8,23 @@ function Help()
 	function init()
 	{
 		_help = $( '.help' );
-		_help.addClass( 'active' );
+		//_help.addClass( 'active' );
 
 		_button = $( '.help-toggle' );
 		_button.click( buttonClicked );
 
 		$( window ).resize( resized );
 		resized();
+	}
+
+	function start()
+	{
+		_help.addClass( 'active' );
+	}
+
+	function stop()
+	{
+		_help.removeClass( 'active' );
 	}
 
 	function buttonClicked( $event )
@@ -34,4 +44,6 @@ function Help()
 	}
 
 	_self.init = init;
+	_self.start = start;
+	_self.stop = stop;
 }

@@ -13,6 +13,8 @@ function Canvas()
 	var _mouse_on_canvas = true;
 	var _shift_pressed = false;
 
+	var _drag_cache = {};
+
 	function init()
 	{
 		$( 'body' )
@@ -29,216 +31,293 @@ function Canvas()
 		_colors = editor.getColors();
 		_size = editor.getSize();
 
-		blocksLoadFromStorage();
-
 		previewUpdateBlocks();
 		previewUpdate();
 	}
 
+	function start()
+	{
+		$( '#blocks' ).show();
+
+		if ( ! _mode )
+		{
+			_mode = 'single';
+			editor.showInfo( 'single' );
+
+			$( '#cursor' ).show();
+
+			if ( ! $( '.block.preview' ).length )
+			{
+				previewUpdateBlocks();
+			}
+		}
+	}
+
+	function stop()
+	{
+		$( '#blocks' ).hide();
+		$( '#cursor' ).hide();
+	}
+
+	function clear()
+	{
+		blockRemove( { blocks: $( '.block' ) } );
+	}
+
 	function clicked( $event )
 	{
-		if (
-			! $( $event.target ).is( 'nav' ) &&
-			! $( $event.target ).closest( 'nav' ).length &&
-			! $( $event.target ).is( '.help' ) &&
-			! $( $event.target ).closest( '.help' ).length
-		)
+		if ( editor.getActive() )
 		{
 			if (
-				_mouse_on_canvas &&
-				_mode !== 'delete'
+				! $( $event.target ).is( 'nav' ) &&
+				! $( $event.target ).closest( 'nav' ).length &&
+				! $( $event.target ).is( '.help' ) &&
+				! $( $event.target ).closest( '.help' ).length &&
+				! $( $event.target ).is( '.gallery-toggle' ) &&
+				! $( $event.target ).closest( '.gallery-toggle' ).length
 			)
 			{
-				previewToBlock();
-				blocksUpdateZ();
-				previewUpdateBlocks();
-				previewUpdate();
-			}
+				if (
+					_mouse_on_canvas &&
+					( _mode === 'single' || _mode === 'multiple' )
+				)
+				{
+					previewToBlock();
+					blocksUpdateZ();
+					previewUpdateBlocks();
+					previewUpdate();
+				}
 
-			if ( _mode === 'delete' )
-			{
-				blockAddToSelection( $event );
+				if ( _mode === 'delete' )
+				{
+					blockAddToSelection( $event );
+				}
 			}
 		}
 	}
 
 	function mouseMoved( $event )
 	{
-		if ( $event.pageY < $( window ).height() - $( 'nav' ).height() )
+		if ( editor.getActive() )
 		{
-			_cursor.target.x = getGridPosition( $event.pageX, $event.pageY ).x;
-			_cursor.target.y = getGridPosition( $event.pageX, $event.pageY ).y;
-
-			_mouse_on_canvas = true;
-
-			cursorUpdate();
-			previewUpdate();
-			
-			if ( _mode === 'delete' )
+			if ( $event.pageY < $( window ).height() - $( 'nav' ).height() )
 			{
-				$( '#cursor' ).hide();
+				_cursor.target.x = getGridPosition( $event.pageX, $event.pageY ).x;
+				_cursor.target.y = getGridPosition( $event.pageX, $event.pageY ).y;
+
+				_mouse_on_canvas = true;
+
+				cursorUpdate();
+				previewUpdate();
+				
+				if (
+					_mode === 'single' ||
+					_mode === 'multiple'
+				)
+				{
+					$( '#cursor' ).show();
+
+					if ( ! $( '.block.preview' ).length )
+					{
+						previewUpdateBlocks();
+					}
+
+					$( '#blocks' ).removeClass( 'no-preview' );
+				}
+
+				else
+				{
+					$( '#cursor' ).hide();
+
+					if ( $( '.block.preview' ).length )
+					{
+						blockRemove( $( '.block.preview' ) );
+					}
+
+					$( '#blocks' ).addClass( 'no-preview' );
+				}
 			}
 
 			else
 			{
-				$( '#cursor' ).show();
-
-				if ( ! $( '.block.preview' ).length )
+				_mouse_on_canvas = false;
+				
+				$( '#cursor' ).hide();
+				
+				if ( $( '.block.preview' ).length )
 				{
-					previewUpdateBlocks();
+					previewRemove();
+				}
+
+				$( '#blocks' ).addClass( 'no-preview' );
+			}
+
+			if ( $event.shiftKey )
+			{
+				_shift_pressed = true;
+
+				if (
+					_mode === 'single' &&
+					_mouse_on_canvas &&
+					$( '.block.preview' ).length
+				)
+				{
+					previewToBlock();
 				}
 			}
-		}
 
-		else
-		{
-			_mouse_on_canvas = false;
-			
-			$( '#cursor' ).hide();
-			blockRemove( { blocks: $( '.block.preview' ) } );
-		}
-
-		if ( $event.shiftKey )
-		{
-			_shift_pressed = true;
-
-			if (
-				_mode === 'single' &&
-				_mouse_on_canvas
-			)
+			else
 			{
-				previewToBlock();
+				shift_pressed = false;
 			}
-		}
-
-		else
-		{
-			shift_pressed = false;
 		}
 	}
 
 	function dragStarted( $event, $object )
 	{
-		if (
-			_shift_pressed &&
-			_mode === 'delete'
-		)
+		if ( editor.getActive() )
 		{
-			$( 'body' ).append( '<div id="selection"></div>' );
-			
-			var selection = {
-				width: $object.deltaX,
-				height:  $object.deltaY,
-				left: $object.startX,
-				top: $object.startY
-			}
-			
-			if ( $object.deltaX < 0 )
+			_drag_cache = {};
+
+			if (
+				_shift_pressed &&
+				_mode === 'delete'
+			)
 			{
-				selection.width =  $object.deltaX;
-				selection.left = $object.startX + $object.deltaX;
-			}
+				$( 'body' ).append( '<div id="selection"></div>' );
 				
-			if ( $object.deltaY < 0 )
-			{
-				selection.height = $object.deltaY;
-				selection.top = $object.startY + $object.deltaY;
-			}
+				var selection = {
+					width: $object.deltaX,
+					height:  $object.deltaY,
+					left: $object.startX,
+					top: $object.startY
+				}
 				
-			$( '#selection' ).css( selection );
+				if ( $object.deltaX < 0 )
+				{
+					selection.width =  $object.deltaX;
+					selection.left = $object.startX + $object.deltaX;
+				}
+					
+				if ( $object.deltaY < 0 )
+				{
+					selection.height = $object.deltaY;
+					selection.top = $object.startY + $object.deltaY;
+				}
+					
+				$( '#selection' ).css( selection );
+			}
 		}
 	}
 
 	function dragged( $event, $object )
 	{
-		if ( _mode === 'single' )
+		if ( editor.getActive() )
 		{
-			if ( ! $( '.block.preview' ).length )
+			if ( _mode === 'single' && _mouse_on_canvas )
 			{
-				previewUpdateBlocks();
-			}
-
-			previewToBlock();
-		}
-
-		if (
-			_shift_pressed &&
-			_mode === 'delete'
-		)
-		{
-			var selection = {
-				width: $object.deltaX,
-				height:  $object.deltaY,
-				left: $object.startX,
-				top: $object.startY
-			}
-
-			if ( $object.deltaX < 0 )
-			{
-				selection.width = $object.deltaX * -1;
-				selection.left = $object.startX + $object.deltaX;
-			}
-					
-			if ( $object.deltaY < 0 )
-			{
-				selection.height = $object.deltaY * -1;
-				selection.top = $object.startY + $object.deltaY;
-			}
-
-			var i = _blocks.length; while ( i-- )
-			{
-				var block = $( '#block-' + _blocks[i].index );
-				
-				if ( block.length )
+				if ( ! $( '.block.preview' ).length )
 				{
-					var position = block.position();
+					previewUpdateBlocks();
+				}
 
-					if (
-						position.left >= selection.left &&
-						position.left + _block_size.width <= selection.left + selection.width &&
-						position.top >= selection.top &&
-						position.top + _block_size.height <= selection.top + selection.height
-					)
-					{
-						block.addClass( 'selected' );
-					}
+				var cursor_position = $( '#cursor' ).position();
+					
+				if (
+					_drag_cache.top !== cursor_position.top &&
+					_drag_cache.left !== cursor_position.left
+				)
+				{
+					previewToBlock();
+					_drag_cache = cursor_position;
+				}				
+			}
 
-					else
+			if (
+				_shift_pressed &&
+				_mode === 'delete'
+			)
+			{
+				var selection = {
+					width: $object.deltaX,
+					height:  $object.deltaY,
+					left: $object.startX,
+					top: $object.startY
+				}
+
+				if ( $object.deltaX < 0 )
+				{
+					selection.width = $object.deltaX * -1;
+					selection.left = $object.startX + $object.deltaX;
+				}
+						
+				if ( $object.deltaY < 0 )
+				{
+					selection.height = $object.deltaY * -1;
+					selection.top = $object.startY + $object.deltaY;
+				}
+
+				var i = _blocks.length; while ( i-- )
+				{
+					var block = $( '#block-' + _blocks[i].index );
+					
+					if ( block.length )
 					{
-						block.removeClass( 'selected' );
+						var position = block.position();
+
+						if (
+							position.left >= selection.left &&
+							position.left + _block_size.width <= selection.left + selection.width &&
+							position.top >= selection.top &&
+							position.top + _block_size.height <= selection.top + selection.height
+						)
+						{
+							block.addClass( 'selected' );
+						}
+
+						else
+						{
+							block.removeClass( 'selected' );
+						}
 					}
 				}
+						
+				$( '#selection' ).css( selection );
 			}
-					
-			$( '#selection' ).css( selection );
 		}
 	}
 
 	function dragEnded( $event )
 	{
-		if ( _mode === 'delete' )
+		if ( editor.getActive() )
 		{
-			$( '#selection' ).remove();
+			if ( _mode === 'delete' )
+			{
+				$( '#selection' ).remove();
+			}
 		}
 	}
 
 	function cursorUpdate()
 	{
-		if (
-			_cursor.x != _cursor.target.x ||
-			_cursor.y != _cursor.target.y
-		)
+		if ( editor.getActive() )
 		{
-			_cursor.x += parseInt( _cursor.target.x - _cursor.x );
-			_cursor.y += parseInt( _cursor.target.y - _cursor.y );
+			if (
+				_cursor.x != _cursor.target.x ||
+				_cursor.y != _cursor.target.y
+			)
+			{
+				_cursor.x += parseInt( _cursor.target.x - _cursor.x );
+				_cursor.y += parseInt( _cursor.target.y - _cursor.y );
+			}
+
+			var cursor_position = {
+				 top:	_cursor.y + ( _block_size.height / 2 ),
+				 left:	_cursor.x - ( _block_size.height / 2 )
+			};
+
+			$( '#cursor' ).css( cursor_position );
 		}
-
-		var cursor_position = {
-			 top:	_cursor.y + ( _block_size.height / 2 ),
-			 left:	_cursor.x - ( _block_size.height / 2 )
-		};
-
-		$( '#cursor' ).css( cursor_position );
 	}
 
 	function blocksUpdateZ( $blocks )
@@ -267,114 +346,140 @@ function Canvas()
 
 	function blockAdd( $type )
 	{
-		var type = $type || 'solid';
-
-		var new_block = {
-			index: parseInt( getHighestBlockIndex() + 1 ),
-			color: editor.getColor(),
-			position: { x: _cursor.x, y: _cursor.y, z: getGridZ( _cursor.x, _cursor.y ) },
-			type: $type	
-		}
-
-		var new_block_html = '<div class="block color-' + new_block.color + '" id="block-' + new_block.index + '"></div>';
-		
-		var new_block_css = {
-			top: new_block.position.y + ( - _block_size.height * new_block.position.z ),
-			left: new_block.position.x
-		};
-
-		_blocks.push( new_block );
-
-		$( '#blocks' ).append( new_block_html );
-		$( '#block-' + new_block.index )
-			.css( new_block_css )
-			.hover( blockOver, blockOut );
-
-		if ( $type === 'preview' )
+		if ( editor.getActive() )
 		{
-			$( '#block-' + new_block.index ).addClass( 'preview' );
-		}
+			var type = $type || 'solid';
 
-		updateCounter();
+			var new_block = {
+				index: parseInt( getHighestBlockIndex() + 1 ),
+				color: editor.getColor(),
+				position: { x: _cursor.x, y: _cursor.y, z: getGridZ( _cursor.x, _cursor.y ) },
+				type: $type	
+			}
+
+			var new_block_html = '<div class="block color-' + new_block.color + '" id="block-' + new_block.index + '"></div>';
+			
+			var new_block_css = {
+				top: new_block.position.y + ( - _block_size.height * new_block.position.z ),
+				left: new_block.position.x
+			};
+
+			_blocks.push( new_block );
+
+			$( '#blocks' ).append( new_block_html );
+			$( '#block-' + new_block.index )
+				.css( new_block_css )
+				.hover( blockOver, blockOut );
+
+			if ( $type === 'preview' )
+			{
+				$( '#block-' + new_block.index ).addClass( 'preview' );
+			}
+
+			updateCounter();
+		}
 	}
 
 	function blockRemove( $options )
 	{
-		if ( $options )
+		if ( editor.getActive() )
 		{
-			if ( $options.index )
+			if ( $options )
 			{
-				var i = _blocks.length; while ( i-- )
+				if ( $options.index )
 				{
-					if ( _blocks[i].index === $options.index )
+					var blocks_to_remove = [];
+
+					var i = _blocks.length; while ( i-- )
 					{
-						if ( _blocks[i].type !== 'preview' )
+						if ( _blocks[i].index === $options.index )
 						{
-							editor.historyUpdate( 'save', { action: 'remove', block: _blocks[i] } );
+							if ( _blocks[i].type !== 'preview' )
+							{
+								blocks_to_remove.push( _blocks[i] );	
+							}
+
+							_blocks.splice( i, 1 );
+							
+							$( '#block-' + _blocks[i].index ).remove();
+
+							break;
 						}
+					}
 
-						_blocks.splice( i, 1 );
-						
-						$( '#block-' + _blocks[i].index ).remove();
-
-						break;
+					if ( blocks_to_remove.length )
+					{
+						editor.historyUpdate( 'save', { action: 'remove', blocks: blocks_to_remove } );
 					}
 				}
-			}
 
-			if ( $options.blocks )
-			{
-				$( $options.blocks ).each(
-					function()
-					{
-						var block_index = getBlockID( $( this ) );
-
-						var i = _blocks.length; while ( i-- )
+				if ( $options.blocks )
+				{
+					$( $options.blocks ).each(
+						function()
 						{
-							if ( _blocks[i].index == block_index )
+							var blocks_to_remove = [];
+							var block_index = getBlockID( $( this ) );
+
+							var i = _blocks.length; while ( i-- )
 							{
-								if ( _blocks[i].type !== 'preview' )
+								if ( _blocks[i].index == block_index )
 								{
-									editor.historyUpdate( 'save', { action: 'remove', block: _blocks[i] } );
+									if ( _blocks[i].type !== 'preview' )
+									{
+										blocks_to_remove.push( _blocks[i] );
+									}
+
+									$( '#block-' + block_index ).remove();
+
+									_blocks.splice( i, 1 );
+
+									break;
 								}
+							}
 
-								$( '#block-' + block_index ).remove();
-
-								_blocks.splice( i, 1 );
-
-								break;
+							if ( blocks_to_remove.length )
+							{
+								editor.historyUpdate( 'save', { action: 'remove', blocks: blocks_to_remove } );
 							}
 						}
-					}
-				);
-			}
+					);
+				}
 
-			if ( $options.position )
-			{
-				var i = _blocks.length; while ( i-- )
+				if ( $options.position )
 				{
-					if (
-						_blocks[i].position.x === $options.position.x &&
-						_blocks[i].position.y === $options.position.y &&
-						_blocks[i].position.z === $options.position.z
-					)
+					var blocks_to_remove = [];
+
+					var i = _blocks.length; while ( i-- )
 					{
-						if ( _blocks[i].type !== 'preview' )
+						if (
+							_blocks[i].position.x === $options.position.x &&
+							_blocks[i].position.y === $options.position.y &&
+							_blocks[i].position.z === $options.position.z
+						)
 						{
-							editor.historyUpdate( 'save', { action: 'remove', block: _blocks[i] } );
+							if ( _blocks[i].type !== 'preview' )
+							{
+								blocks_to_remove.push( _blocks[i] );
+							}
+
+							$( '#block-' + _blocks[i].index ).remove();
+
+							_blocks.splice( i, 1 );
+
+							break;
 						}
+					}
 
-						$( '#block-' + _blocks[i].index ).remove();
-
-						_blocks.splice( i, 1 );
-
-						break;
+					if ( blocks_to_remove.length )
+					{
+						editor.historyUpdate( 'save', { action: 'remove', blocks: blocks_to_remove } );
 					}
 				}
 			}
-		}
 
-		updateCounter();
+			updateCounter();
+		}
 	}
 
 	function blocksDeleteSelected()
@@ -382,26 +487,16 @@ function Canvas()
 		blockRemove( { blocks: $( '.selected' ) } );
 	}
 
-	function blocksLoadFromStorage()
-	{
-		var storage = editor.load();
-
-		if (
-			storage &&
-			storage.blocks
-		)
-		{
-			importBlocks( storage.blocks );
-		}
-	}
-
 	function blockAddToSelection( $event )
 	{
-		var target = $( $event.target );
-		
-		if ( target.hasClass( 'block' ) )
+		if ( editor.getActive() )
 		{
-			target.toggleClass( 'selected' );
+			var target = $( $event.target );
+			
+			if ( target.hasClass( 'block' ) )
+			{
+				target.toggleClass( 'selected' );
+			}
 		}
 	}
 
@@ -417,17 +512,25 @@ function Canvas()
 
 	function previewUpdate()
 	{
-		if ( _mode === 'single' )
+		if ( editor.getActive() )
 		{
-			previewSingleBlock();
-		}
+			if ( _mode === 'single' )
+			{
+				previewSingleBlock();
+			}
 
-		if ( _mode === 'multiple' )
-		{
-			previewMultipleBlocks();
-		}
+			if ( _mode === 'multiple' )
+			{
+				previewMultipleBlocks();
+			}
 
-		blocksUpdateZ();
+			blocksUpdateZ();
+		}
+	}
+
+	function previewRemove()
+	{
+		blockRemove( { blocks: $( '.block.preview' ) } );
 	}
 
 	function previewSingleBlock()
@@ -455,207 +558,241 @@ function Canvas()
 
 	function previewMultipleBlocks()
 	{
-		$( '.block.preview' ).each(
-			function( $index, $item )
-			{
-				var preview_offset = {
-					x: $index % _size.depth,
-					y: Math.floor( $index / _size.depth )
-				};
-
-				var preview_position = { 
-					x: _cursor.x,
-					y: _cursor.y,
-					z: 1
-				};
-
-				var block_index = getBlockID( $( $item ) );
-
-				if ( preview_offset.x > 0 )
+		if ( editor.getActive() )
+		{
+			$( '.block.preview' ).each(
+				function( $index, $item )
 				{
-					preview_position.x += _block_size.height * preview_offset.x
-					preview_position.y += _block_size.height * preview_offset.x / 2;
-				}
+					var preview_offset = {
+						x: $index % _size.depth,
+						y: Math.floor( $index / _size.depth )
+					};
 
-				if ( preview_offset.y > 0 )
-				{
-					preview_position.x += _block_size.height * preview_offset.y
-					preview_position.y -= _block_size.height * preview_offset.y / 2;
-				}
+					var preview_position = { 
+						x: _cursor.x,
+						y: _cursor.y,
+						z: 1
+					};
 
-				preview_position.z = getGridZ( preview_position.x, preview_position.y );
+					var block_index = getBlockID( $( $item ) );
 
-				var i = _blocks.length; while ( i-- )
-				{
-					if ( _blocks[i].index === block_index )
+					if ( preview_offset.x > 0 )
 					{
-						_blocks[i].position = preview_position;
-
-						break;
+						preview_position.x += _block_size.height * preview_offset.x
+						preview_position.y += _block_size.height * preview_offset.x / 2;
 					}
+
+					if ( preview_offset.y > 0 )
+					{
+						preview_position.x += _block_size.height * preview_offset.y
+						preview_position.y -= _block_size.height * preview_offset.y / 2;
+					}
+
+					preview_position.z = getGridZ( preview_position.x, preview_position.y );
+
+					var i = _blocks.length; while ( i-- )
+					{
+						if ( _blocks[i].index === block_index )
+						{
+							_blocks[i].position = preview_position;
+
+							break;
+						}
+					}
+
+					var preview_css = {
+						top: preview_position.y + ( - _block_size.height * preview_position.z ),
+						left: preview_position.x
+					};
+
+					$( $item ).css( preview_css );
 				}
-
-				var preview_css = {
-					top: preview_position.y + ( - _block_size.height * preview_position.z ),
-					left: preview_position.x
-				};
-
-				$( $item ).css( preview_css );
-			}
-		);
+			);
+		}
 	}
 
 	function previewUpdateBlocks()
 	{
-		if ( _mode === 'single' )
+		if ( editor.getActive() )
 		{
-			if ( $( '.block.preview' ).length > 1 )
+			if ( _mode === 'single' )
 			{
-				blockRemove( { blocks: $( '.block.preview' ).not( ':first' ) } );
-			}
+				if ( $( '.block.preview' ).length > 1 )
+				{
+					blockRemove( { blocks: $( '.block.preview' ).not( ':first' ) } );
+				}
 
-			if ( ! $( '.block.preview' ).length )
-			{
-				blockAdd( 'preview' );
-			}
-		}
-
-		if ( _mode === 'multiple' )
-		{
-			if ( $( '.block.preview' ).length < _size.width * _size.depth )
-			{
-				var blocks_to_add =  _size.width * _size.depth - $( '.block.preview' ).length;
-				
-				for ( var i = 0; i < blocks_to_add; i++ )
+				if ( ! $( '.block.preview' ).length )
 				{
 					blockAdd( 'preview' );
 				}
 			}
 
-			if ( $( '.block.preview' ).length > ( _size.width * _size.depth ) )
+			if ( _mode === 'multiple' )
 			{
-				var blocks_to_remove_index = ( $( '.block.preview' ).length - ( _size.width * _size.depth ) ) - 1;
+				if ( $( '.block.preview' ).length < _size.width * _size.depth )
+				{
+					var blocks_to_add =  _size.width * _size.depth - $( '.block.preview' ).length;
+					
+					for ( var i = 0; i < blocks_to_add; i++ )
+					{
+						blockAdd( 'preview' );
+					}
+				}
 
-				blockRemove( { blocks: $( '.block.preview:gt(' + blocks_to_remove_index + ')' ) } );
+				if ( $( '.block.preview' ).length > ( _size.width * _size.depth ) )
+				{
+					var blocks_to_remove_index = ( $( '.block.preview' ).length - ( _size.width * _size.depth ) ) - 1;
+
+					blockRemove( { blocks: $( '.block.preview:gt(' + blocks_to_remove_index + ')' ) } );
+				}
 			}
-		}
 
-		updateCounter();
+			updateCounter();
+		}
 	}
 
 	function previewToBlock()
 	{
-		$( '.block.preview' ).each(
-			function()
-			{
-				var block_index = getBlockID( $( this ) );
+		if ( editor.getActive() )
+		{
+			var blocks_to_add = [];
 
-				$( this ).removeClass( 'preview' );
-
-				var i = _blocks.length; while ( i-- )
+			$( '.block.preview' ).each(
+				function()
 				{
-					if ( _blocks[i].index === block_index )
-					{
-						editor.historyUpdate( 'save', { action: 'add', block: _blocks[i] } );
+					var block_index = getBlockID( $( this ) );
 
-						_blocks[i].type = 'solid';
-						break;
+					$( this ).removeClass( 'preview' );
+
+					var i = _blocks.length; while ( i-- )
+					{
+						if ( _blocks[i].index === block_index )
+						{
+							blocks_to_add.push( _blocks[i] );
+							_blocks[i].type = 'solid';
+							break;
+						}
 					}
 				}
-			}
-		);
+			);
 
-		updateCounter();
+			if ( blocks_to_add.length )
+			{
+				editor.historyUpdate( 'save', { action: 'add', blocks: blocks_to_add } );
+			}
+
+			updateCounter();
+		}
 	}
 
 	function previewUpdateColor( $new_color, $old_color )
 	{
-		$( '.block.preview' )
-			.addClass( 'color-' + $new_color )
-			.removeClass( 'color-' + $old_color );
-			
+		if ( editor.getActive() )
+		{
+			$( '.block.preview' )
+				.addClass( 'color-' + $new_color )
+				.removeClass( 'color-' + $old_color );
+		}			
 	}
 
 	function historyUpdate( $options )
 	{
-		if (
-			$options &&
-			$options.block &&
-			$options.action &&
-			$options.history_action
-		)
+		if ( editor.getActive() )
 		{
-			if ( $options.history_action === 'undo' )
+			if (
+				$options &&
+				$options.blocks &&
+				$options.action &&
+				$options.history_action
+			)
 			{
-				if ( $options.action === 'add' )
+				if ( $options.history_action === 'undo' )
 				{
-					historyRemoveBlock( $options );
+					if ( $options.action === 'add' )
+					{
+						historyRemoveBlocks( $options );
+					}
+
+					if ( $options.action === 'remove' )
+					{
+						historyAddBlocks( $options );
+					}
 				}
 
-				if ( $options.action === 'remove' )
+				if ( $options.history_action === 'redo' )
 				{
-					historyAddBlock( $options );
+					if ( $options.action === 'remove' )
+					{
+						historyRemoveBlocks( $options );
+					}
+
+					if ( $options.action === 'add' )
+					{
+						historyAddBlocks( $options );
+					}
 				}
 			}
 
-			if ( $options.history_action === 'redo' )
+			else
 			{
-				if ( $options.action === 'remove' )
-				{
-					historyRemoveBlock( $options );
-				}
 
-				if ( $options.action === 'add' )
-				{
-					historyAddBlock( $options );
-				}
 			}
 		}
-
-		else
-		{
-
-		}
 	}
 
-	function historyAddBlock( $options )
+	function historyAddBlocks( $options )
 	{
-		var block = $options.block;
-
-		block.index = parseInt( getHighestBlockIndex() + 1 );
-
-		var new_block_html = '<div class="block color-' + block.color + '" id="block-' + block.index + '"></div>';
-		
-		var new_block_css = {
-			top: block.position.y + ( - _block_size.height * block.position.z ),
-			left: block.position.x
-		};
-
-		_blocks.push( block );
-
-		$( '#blocks' ).append( new_block_html );
-		$( '#block-' + block.index ).css( new_block_css );
-
-		blocksUpdateZ();
-
-		updateCounter();
-	}
-
-	function historyRemoveBlock( $options )
-	{
-		var block = $options.block;
-
-		var i = _blocks.length; while ( i-- )
+		if ( editor.getActive() )
 		{
-			if ( _blocks[i].index === block.index )
+			var blocks = $options.blocks;
+
+			var i = blocks.length; while ( i-- )
 			{
-				$( '#block-' + block.index ).remove();
+				var block = blocks[i];
+					block.index = parseInt( getHighestBlockIndex() + 1 );
 
-				_blocks.splice( i, 1 );
+				var new_block_html = '<div class="block color-' + block.color + '" id="block-' + block.index + '"></div>';
+				
+				var new_block_css = {
+					top: block.position.y + ( - _block_size.height * block.position.z ),
+					left: block.position.x
+				};
+
+				_blocks.push( block );
+
+				$( '#blocks' ).append( new_block_html );
+				$( '#block-' + block.index ).css( new_block_css );
 
 				blocksUpdateZ();
+				updateCounter();
+			}
+		}
+	}
 
-				break;
+	function historyRemoveBlocks( $options )
+	{
+		if ( editor.getActive() )
+		{
+			var blocks = $options.blocks;
+
+			var i = blocks.length; while ( i-- )
+			{
+				var block = blocks[i];
+
+				var j = _blocks.length; while ( j-- )
+				{
+					if ( _blocks[j].index === block.index )
+					{
+						$( '#block-' + block.index ).remove();
+
+						_blocks.splice( j, 1 );
+
+						blocksUpdateZ();
+
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -732,92 +869,100 @@ function Canvas()
 
 	function modeUpdate( $mode )
 	{
-		_mode = $mode;
-		previewUpdateBlocks();
-		previewUpdate();
-
-		if ( _mode === 'delete' )
+		if ( editor.getActive() )
 		{
-			blockRemove( { blocks: $( '.block.preview' ) } );
-		}
+			_mode = $mode;
+			previewUpdateBlocks();
+			previewUpdate();
 
-		else
-		{
-			$( '.block.selected' ).removeClass( 'selected' );
+			if ( _mode === 'delete' )
+			{
+				previewRemove();
+			}
+
+			else
+			{
+				$( '.block.selected' ).removeClass( 'selected' );
+			}
 		}
 	}
 	
 	function colorUpdate( $new_color, $old_color )
 	{
-		previewUpdateColor( $new_color, $old_color );
-		_color = $new_color;
-		previewUpdate();
+		if ( editor.getActive() )
+		{
+			previewUpdateColor( $new_color, $old_color );
+			_color = $new_color;
+			previewUpdate();
+		}
 	}
 
 	function sizeUpdate( $size )
 	{
-		_size = $size;
-		previewUpdateBlocks();
-		previewUpdate();
-	}
-
-	function getBlocks()
-	{
-		blockRemove( { blocks: $( '.block.preview' ) } );
-		
-		return _blocks;
+		if ( editor.getActive() )
+		{
+			_size = $size;
+			previewUpdateBlocks();
+			previewUpdate();
+		}
 	}
 
 	function importBlocks( $blocks )
 	{
-		for ( var i = 0; i < $blocks.length; i++ )
+		if ( editor.getActive() )
 		{
-			var old_index = $blocks[i].index;
+			for ( var i = 0; i < $blocks.length; i++ )
+			{
+				var old_index = $blocks[i].index;
 
-			var new_block = $blocks[i];
-				new_block.index = getHighestBlockIndex() + 1;
+				var new_block = $blocks[i];
+					new_block.index = getHighestBlockIndex() + 1;
 
-			var new_block_html = '<div class="block color-' + new_block.color + '" id="block-' + new_block.index + '"></div>';
-		
-			var new_block_css = {
-				top: new_block.position.y + ( - _block_size.height * new_block.position.z ),
-				left: new_block.position.x
-			};
+				var new_block_html = '<div class="block color-' + new_block.color + '" id="block-' + new_block.index + '"></div>';
+			
+				var new_block_css = {
+					top: new_block.position.y + ( - _block_size.height * new_block.position.z ),
+					left: new_block.position.x
+				};
 
-			editor.historyUpdateIDs( old_index, new_block.index );
+				editor.historyUpdateIDs( old_index, new_block.index );
 
-			_blocks.push( new_block );
+				_blocks.push( new_block );
 
-			$( '#blocks' ).append( new_block_html );
-			$( '#block-' + new_block.index )
-				.css( new_block_css )
-				.hover( blockOver, blockOut );
+				$( '#blocks' ).append( new_block_html );
+				$( '#block-' + new_block.index )
+					.css( new_block_css )
+					.hover( blockOver, blockOut );
+			}
+
+			updateCounter();
 		}
-
-		updateCounter();
 	}
 
 	function updateCounter()
 	{
-		$( '.stats .count span' ).text( $( '.block:not(.preview)' ).length );
-
-		if ( ! _colors )
+		if ( editor.getActive() )
 		{
-			_colors = editor.getColors();
-		}
+			$( '.stats .count span' ).text( $( '.block:not(.preview)' ).length );
 
-		var i = _colors.length; while ( i-- )
-		{
-			var color_count = $( '.block.color-' + _colors[i] + ':not(.preview)' ).length;
-			
-			if ( color_count )
+			if ( ! _colors )
 			{
-				if ( ! $( '.stats .count-color-' + _colors[i] ).length )
-				{
-					$( '.stats' ).prepend( '<p class="count-color count-color-' + _colors[i] + '"><span></span> ' + _colors[i] + ' blocks</p>' )
-				}
+				_colors = editor.getColors();
+			}
 
-				$( '.stats .count-color-' + _colors[i] + ' span' ).text( color_count );
+			var i = _colors.length; while ( i-- )
+			{
+				var color_count = $( '.block.color-' + _colors[i] + ':not(.preview)' ).length;
+				
+				if ( color_count )
+				{
+					if ( ! $( '.stats .count-color-' + _colors[i] ).length )
+					{
+						$( '.stats' ).prepend( '<p class="count-color count-color-' + _colors[i] + '"><span></span> ' + _colors[i] + ' blocks</p>' )
+					}
+
+					$( '.stats .count-color-' + _colors[i] + ' span' ).text( color_count );
+				}
 			}
 		}
 	}
@@ -829,6 +974,9 @@ function Canvas()
 	}
 
 	_self.init = init;
+	_self.start = start;
+	_self.stop = stop;
+	_self.clear = clear;
 	_self.modeUpdate = modeUpdate;
 	_self.colorUpdate = colorUpdate;
 	_self.sizeUpdate = sizeUpdate;
@@ -837,6 +985,8 @@ function Canvas()
 	_self.getBlocks = getBlocks;
 	_self.importBlocks = importBlocks;
 	_self.getBlocks = getBlocks;
+	_self.previewRemove = previewRemove;
 
+	_self.getBlockSize = function(){ return _block_size };
 	_self.getMode = function(){ return _mode };
 }
