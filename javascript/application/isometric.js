@@ -157,10 +157,7 @@ $(document).ready(
 	           $event.preventDefault();
 	            alert('dude, what the f**k. add a title, man!');
 	            $("#title").focus();
-	        }
-	        
-	        //console.log($('#cubes_text').val());
-	        
+	        }	        
 		}
 		
 		function formUpdateValue()

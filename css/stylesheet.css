@@ -391,6 +391,8 @@ nav
 		border-radius: 20px;
 
 			    transition: all 0.2s linear;
+			 -o-transition: all 0.2s linear;
+		   -moz-transition: all 0.2s linear;
 		-webkit-transition: all 0.2s linear;
 	}
 
@@ -627,6 +629,9 @@ nav
 
 	#gallery .block
 	{
+				transition: all 0.3s ease-out;
+			 -o-transition: all 0.3s ease-out;
+		   -moz-transition: all 0.3s ease-out;
 		-webkit-transition: all 0.3s ease-out;
 	}
 

@@ -52,15 +52,6 @@ function Gallery()
 			var sketches = [];
 			var json_url = 'sketches/index.php';
 
-			$.ajax(
-				{
-	  				url: json_url,
-	  				dataType: 'json',
-	  				success: getSketchesFromJSON,
-					error: getSketchesFromLocal
-				}
-			);		
-
 			function getSketchesFromJSON( $json )
 			{
 				if (
@@ -84,6 +75,15 @@ function Gallery()
 				_sketches = editor.load() || [];
 				gotSketches();
 			}
+
+			$.ajax(
+				{
+					url: json_url,
+					dataType: 'json',
+	  				success: getSketchesFromJSON,
+					error: getSketchesFromLocal
+				}
+			);	
 		}
 
 		else
@@ -208,8 +208,6 @@ function Gallery()
 				block_index: 0,
 			};
 
-			blockAnimate( animation_options );
-
 			function blockAnimate( $options )
 			{
 				if ( $options.blocks_to_animate > 1 )
@@ -245,6 +243,8 @@ function Gallery()
 					}
 				}
 			}
+
+			blockAnimate( animation_options );
 		}
 	}
 

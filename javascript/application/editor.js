@@ -220,8 +220,6 @@ function Editor()
 
 			if ( key === 13 )
 			{
-				console.log( 'ENTER' );
-
 				if ( $( '.export-info' ).hasClass( 'info-container-active' ) )
 				{
 					if ( ! $( '.export-info .download-link' ).length )

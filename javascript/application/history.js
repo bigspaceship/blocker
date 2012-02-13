@@ -23,8 +23,6 @@ function History()
 
 		_history.push( { action: $item.action, blocks: $item.blocks } );
 		_current_index = _history.length;
-
-		//console.log( _history );
 	}
 
 	function undo()

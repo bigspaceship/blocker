@@ -13,6 +13,8 @@ function Canvas()
 	var _mouse_on_canvas = true;
 	var _shift_pressed = false;
 
+	var _drag_cache = {};
+
 	function init()
 	{
 		$( 'body' )
@@ -175,6 +177,8 @@ function Canvas()
 	{
 		if ( editor.getActive() )
 		{
+			_drag_cache = {};
+
 			if (
 				_shift_pressed &&
 				_mode === 'delete'
@@ -217,7 +221,16 @@ function Canvas()
 					previewUpdateBlocks();
 				}
 
-				previewToBlock();
+				var cursor_position = $( '#cursor' ).position();
+					
+				if (
+					_drag_cache.top !== cursor_position.top &&
+					_drag_cache.left !== cursor_position.left
+				)
+				{
+					previewToBlock();
+					_drag_cache = cursor_position;
+				}				
 			}
 
 			if (
