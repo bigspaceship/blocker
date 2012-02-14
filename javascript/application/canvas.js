@@ -37,7 +37,7 @@ function Canvas()
 
 	function start()
 	{
-		$( '#blocks' ).show();
+		$( '#blocks' ).addClass( 'blocks-active' );
 
 		if ( ! _mode )
 		{
@@ -55,7 +55,7 @@ function Canvas()
 
 	function stop()
 	{
-		$( '#blocks' ).hide();
+		$( '#blocks' ).removeClass( 'blocks-active' );
 		$( '#cursor' ).hide();
 	}
 

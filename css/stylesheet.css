@@ -35,7 +35,12 @@ body
 
 #blocks
 {
+	display: none;
+}
 
+#blocks.blocks-active
+{
+	display: block;
 }
 	.block.active
 	{
@@ -608,6 +613,57 @@ nav
 		float: left;
 	}
 
+	.help-button
+	{
+		display: none;
+	}
+
+	.help-button.help-button-active
+	{
+		display: block;
+	}
+
+	.help-text div > *
+	{
+		display: none;
+	}
+
+	.help-text div > h1
+	{
+		display: block;
+		color: #06f;
+		cursor: pointer;
+	}
+
+	.help-text > .help-getting-started
+	{
+		margin-top: 10px;
+		border-top: 1px #EEE solid;
+		padding-top: 10px;
+	}
+
+	.help-text > div
+	{
+		border-bottom: 1px #EEE solid;
+		margin-bottom: 10px;
+	}
+
+	.help-text div > h1:hover
+	{
+		color: #333;
+		text-decoration: underline;
+	}
+
+	.help-text div.help-item-active > *
+	{
+		display: block;
+	}
+
+	.help-text div.help-item-active > h1
+	{
+		color: #333;
+	}
+
 	.gallery-toggle
 	{
 		width: auto;
@@ -626,6 +682,16 @@ nav
 		background-color: #06f;
 		color: #fff;
 	}
+
+#gallery
+{
+	display: none;
+}
+
+#gallery.gallery-active
+{
+	display: block;
+}
 
 	#gallery .block
 	{

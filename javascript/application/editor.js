@@ -34,7 +34,6 @@ function Editor()
 	function init()
 	{
 		yepnope( { load: _dependencies, complete: depencenciesLoaded } );
-		//start();
 	}
 
 	function start()
@@ -44,6 +43,8 @@ function Editor()
 		if( _canvas ){ _canvas.start(); }
 		if( _navigation ){ _navigation.start(); }
 		if( _help ){ _help.start(); }
+
+		$( '.help-button' ).addClass( 'help-button-active' );
 	}
 
 	function stop()
@@ -52,6 +53,8 @@ function Editor()
 		_canvas.stop();
 		_navigation.stop();
 		_help.stop();
+
+		$( '.help-button' ).removeClass( 'help-button-active' );
 	}
 
 	function depencenciesLoaded( $url, $result, $key )
@@ -108,13 +111,15 @@ function Editor()
 
 	function keyDown( $event )
 	{
+		var key = $event.which;
+		var mode = _canvas.getMode();
+		
 		if ( _active )
 		{
-			var key = $event.which;
-			var mode = _canvas.getMode();
-
 			if ( _number_keys.indexOf( key ) !== -1 )
 			{
+				$event.preventDefault();
+
 				var index = _number_keys.indexOf( key );
 				var target = $( '.color-buttons a' ).eq( index );
 				var new_color = target.attr( 'id' ).replace( 'color-button-', '' );
@@ -153,18 +158,20 @@ function Editor()
 					}
 				}
 
-				if ( $event.metaKey )
+				if ( $event.metaKey || $event.ctrlKey )
 				{			
 					// Z
 					if ( key === 90 || key === 122 )
 					{
 						if ( $event.shiftKey )
 						{
+							$event.preventDefault();
 							historyUpdate( 'redo' );
 						}
 
 						else
 						{
+							$event.preventDefault();
 							historyUpdate( 'undo' );
 						}
 
@@ -195,16 +202,18 @@ function Editor()
 						_navigation.showInfo( 'save' );
 					}
 
-					//// S
-					//if ( key === 83 || key === 115 )
-					//{
-					//	modeUpdate( 'single' );
-					//	_navigation.showInfo( 'single' );
-					//}
+					// A
+					if ( key === 65 )
+					{
+						$event.preventDefault();
+						modeUpdate( 'single' );
+						_navigation.showInfo( 'single' );
+					}
 
 					//M
 					if ( key === 77 || key === 109 )
 					{
+						$event.preventDefault();
 						modeUpdate( 'multiple' );
 						_navigation.showInfo( 'multiple' );
 					}
@@ -212,8 +221,19 @@ function Editor()
 					//D
 					if ( key === 68 || key === 100 )
 					{
+						$event.preventDefault();
 						modeUpdate( 'delete' );
 						_navigation.showInfo( 'delete' );
+					}
+
+					//H
+					if ( key === 72 )
+					{
+						if( $( '#blocks' ).hasClass( 'blocks-active' ) )
+						{
+							$event.preventDefault();
+							_help.toggle();
+						}
 					}
 				}
 			}
@@ -243,6 +263,17 @@ function Editor()
 					$( '.save-info .info-button' ).trigger( 'click' );
 				}
 			}
+		}
+
+		//K
+		if (
+			key === 75 && 
+			! $( 'input:focus').length &&
+			( $event.metaKey || $event.ctrlKey )
+		)
+		{
+			$event.preventDefault();
+			_gallery.toggle();
 		}
 	}
 
