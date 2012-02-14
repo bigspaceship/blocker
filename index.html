@@ -7,7 +7,7 @@
 		<link rel="stylesheet" href="css/blocks.css" />
 	</head>
 	<body>
-		<a href="#" class="gallery-button gallery-toggle">Create a New Sketch</a>
+		<a href="#" class="gallery-button gallery-toggle">Show Editor</a>
 		<article class="gallery-info">
 			<h1 class="sketch-name"></h1>
 			<p class="sketch-blocks"></p>
@@ -85,7 +85,7 @@
 						<li>Press <code>ctrl + e</code> to open the export menu.</li>
 						<li>Press <code>ctrl + h</code> to toggle this help box.</li>
 						<li>Press <code>ctrl + k</code> to switch between editor and gallery.</li>
-						<li>In delete mode, hold <code>shift</code> while moving the mouse to draw blocks faster.</li>
+						<li>In single block mode, hold <code>shift</code> while moving the mouse to draw blocks faster.</li>
 						<li>In delete mode, hold <code>shift</code> while dragging to select multiple blocks.</li>
 						<li>In delete mode, press <code>backspace</code> to delete selected blocks.</li>
 					</ul>
@@ -111,7 +111,8 @@
 				</div>
 				<div class="delete-info">
 					<h1>Delete</h1>
-					<a href="#" class="info-button">Delete Selected Blocks</a>
+					<a href="#" id="delete-selected" class="info-button">Delete Selected Blocks</a>
+					<a href="#" id="delete-all" class="info-button">Delete All Blocks</a>
 					<p>Click on a block to select it. Hold down shift while dragging to select multiple blocks.</p>
 				</div>
 				<div class="export-info">
@@ -130,7 +131,7 @@
 					<p>You can import .json files that you saved from previous sessions.</p>
 				</div>
 				<div class="single-info">
-					<p>Click to add a block. Hold down shift to draw a line.</p>
+					<p>Click or drag the mouse to add blocks. Hold down shift to draw even more blocks.</p>
 				</div>
 				<div class="save-info">
 					<a href="#" class="info-button">Save</a>

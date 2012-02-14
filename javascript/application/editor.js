@@ -84,6 +84,7 @@ function Editor()
 		_self.getMode = _canvas.getMode;
 		_self.previewRemove = _canvas.previewRemove;
 		_self.getBlockSize = _canvas.getBlockSize;
+		_self.allRemove = _canvas.allRemove;
 		
 		_help = new Help();
 
