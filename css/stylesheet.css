@@ -11,7 +11,7 @@ body, html
 
 body
 {
-	background: url(../images/grid_larger_tile2.png);
+	background: url(../images/grid.png);
 	font-family: sans-serif;
 	font-size: 13px;
 	color: #fff;
@@ -27,10 +27,11 @@ body
 	left: 0;
 	background: url(../images/select.png) no-repeat;
 	margin-left: 5px;
-	margin-top: 16px;
+	margin-top: 7px;
 	width: 32px;
-	height: 8px;
+	height: 18px;
 	z-index: 2;
+	background-position: 0 -4px;
 }
 
 #blocks
@@ -713,13 +714,17 @@ nav
 
 	.gallery-info
 	{
-		display: block;
+		display: none;
 		color: #333;
-
 		position: absolute;
 		right: 50px;
 		top: 90px;
 		float: left;
+	}
+
+	.gallery-info.gallery-active
+	{
+		display: block;
 	}
 
 		.gallery-info h1
@@ -733,3 +738,41 @@ nav
 		{
 			text-align: right;
 		}
+
+.dialog
+{
+	position: absolute;
+	left: 50%;
+	top: 80px;
+	width: 300px;
+	padding: 25px;
+	background: #fff;
+	border: 1px #eee solid;
+	margin-left: -175px;
+	z-index: 12;
+}
+
+	.dialog p
+	{
+		color: #333;
+		margin-bottom: 6px;
+	}
+
+	.dialog a
+	{
+		color: #06f;
+		text-decoration: none;
+		display: block;
+		float: left;
+		margin-right: 5px;
+	}
+
+	.dialog-confirm
+	{
+		clear: both;
+	}
+
+	.dialog a:hover
+	{
+		text-decoration: underline;
+	}

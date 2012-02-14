@@ -14,16 +14,6 @@ function Gallery()
 			var gallery_html = '<div id="gallery"></div>';
 
 			$( 'body' ).append( gallery_html );
-
-			// if ( ! _active )
-			// {
-			// 	$( '#gallery' ).removeClass( 'gallery-active' );
-			// }
-
-			// else
-			// {
-			// 	$( '#gallery' ).addClass( 'gallery-active' );
-			// }
 		}
 
 		$( '.gallery-toggle' ).click( galleryClicked );
@@ -33,7 +23,8 @@ function Gallery()
 	{
 		_active = true;
 		
-		$( '#gallery' ).addClass( 'gallery-active' );
+		$( '#gallery, .gallery-info' ).addClass( 'gallery-active' );
+		$( '.gallery-toggle' ).text( 'Show Editor' );
 
 		editor.stop();
 		sketchesLoad();
@@ -46,6 +37,9 @@ function Gallery()
 		$( '#gallery' )
 			.html( '' )
 			.removeClass( 'gallery-active' );
+
+		$( '.gallery-info' ).removeClass( 'gallery-active' );
+		$( '.gallery-toggle' ).text( 'Show Gallery' );
 
 		editor.start();
 	}
@@ -369,14 +363,12 @@ function Gallery()
 			_active = false;
 
 			$( $event.target ).text( 'Show Gallery' );
-			$( '.gallery-info' ).hide();
 			stop();
 		}
 
 		else
 		{
 			$( $event.target  ).text( 'Create a New Sketch' );
-			$( '.gallery-info' ).show();
 			
 			_active = true;
 			start();

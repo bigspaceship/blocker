@@ -25,5 +25,4 @@ foreach ( $files as $file )
 
 $result['sketches'] = $list;
 echo json_encode( $result );
-
 ?>

@@ -208,12 +208,18 @@ function Canvas()
 				$( '#selection' ).css( selection );
 			}
 		}
+
+		_shift_pressed = $event.shiftKey;
 	}
 
 	function dragged( $event, $object )
 	{
 		if ( editor.getActive() )
 		{
+			_shift_pressed = $event.shiftKey;
+
+			console.log( $event );
+
 			if ( _mode === 'single' && _mouse_on_canvas )
 			{
 				if ( ! $( '.block.preview' ).length )
@@ -283,7 +289,7 @@ function Canvas()
 				}
 						
 				$( '#selection' ).css( selection );
-			}
+			}	
 		}
 	}
 
@@ -295,6 +301,8 @@ function Canvas()
 			{
 				$( '#selection' ).remove();
 			}
+
+			_shift_pressed = false;
 		}
 	}
 
@@ -531,6 +539,11 @@ function Canvas()
 	function previewRemove()
 	{
 		blockRemove( { blocks: $( '.block.preview' ) } );
+	}
+
+	function allRemove()
+	{
+		blockRemove( { blocks: $( '.block' ) } );
 	}
 
 	function previewSingleBlock()
@@ -986,6 +999,7 @@ function Canvas()
 	_self.importBlocks = importBlocks;
 	_self.getBlocks = getBlocks;
 	_self.previewRemove = previewRemove;
+	_self.allRemove = allRemove;
 
 	_self.getBlockSize = function(){ return _block_size };
 	_self.getMode = function(){ return _mode };

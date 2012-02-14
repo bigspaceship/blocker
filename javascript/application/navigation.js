@@ -26,7 +26,9 @@ var Navigation = function()
 		$( '#file-save' ).click( saveClicked );
 		$( '#file-load' ).click( loadClicked );
 
-		$( '.delete-info a' ).click( deleteClicked );
+		$( '#delete-selected' ).click( deleteSelectedClicked );
+		$( '#delete-all' ).click( deleteAllClicked );
+
 		$( '.save-info a' ).click( saveToLocal );
 		
 		$( '#export-html' ).click( exportHTMLClicked );
@@ -117,11 +119,45 @@ var Navigation = function()
 		editor.historyUpdate( action );
 	}
 
-	function deleteClicked( $event )
+	function deleteSelectedClicked( $event )
 	{
 		$event.preventDefault();
 
 		editor.deleteSelected();
+	}
+
+	function deleteAllClicked( $event )
+	{
+		$event.preventDefault();
+
+		var dialog_html = '';
+			dialog_html += '<div class="dialog dialog-remove-all">';
+			dialog_html += 		'<p>Delete all Blocks?</p>';
+			dialog_html += 		'<a href="#" id="dialog-confirm">OK</p>';
+			dialog_html += 		'<a href="#" id="dialog-cancel">Cancel</p>';
+			dialog_html += '</div>';
+
+		$( 'body' ).append( dialog_html );
+		$( '.dialog-remove-all #dialog-confirm' ).click( deleteAll );
+		$( '.dialog-remove-all #dialog-cancel' ).click( dialogClose );
+	}
+
+	function deleteAll( $event )
+	{
+		$event.preventDefault();
+
+		editor.allRemove();
+		dialogClose();
+	}
+
+	function dialogClose( $event )
+	{
+		if ( $event )
+		{
+			$event.preventDefault();
+		}
+
+		$( '.dialog' ).remove();
 	}
 
 	function exportClicked( $event )
