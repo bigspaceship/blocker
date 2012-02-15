@@ -209,7 +209,10 @@ function Canvas()
 			}
 		}
 
-		_shift_pressed = $event.shiftKey;
+		if ( $event )
+		{
+			_shift_pressed = $event.shiftKey;
+		}
 	}
 
 	function dragged( $event, $object )
@@ -544,6 +547,11 @@ function Canvas()
 	function allRemove()
 	{
 		blockRemove( { blocks: $( '.block' ) } );
+	}
+
+	function deleteTransparent()
+	{
+		blockRemove( { blocks: $( '.block.color-transparent' ) } );
 	}
 
 	function previewSingleBlock()
@@ -1000,6 +1008,7 @@ function Canvas()
 	_self.getBlocks = getBlocks;
 	_self.previewRemove = previewRemove;
 	_self.allRemove = allRemove;
+	_self.deleteTransparent = deleteTransparent;
 
 	_self.getBlockSize = function(){ return _block_size };
 	_self.getMode = function(){ return _mode };

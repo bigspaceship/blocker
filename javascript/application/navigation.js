@@ -28,6 +28,7 @@ var Navigation = function()
 
 		$( '#delete-selected' ).click( deleteSelectedClicked );
 		$( '#delete-all' ).click( deleteAllClicked );
+		$( '#delete-transparent' ).click( deleteTransparentClicked );
 
 		$( '.save-info a' ).click( saveToLocal );
 		
@@ -148,6 +149,13 @@ var Navigation = function()
 
 		editor.allRemove();
 		dialogClose();
+	}
+
+	function deleteTransparentClicked( $event )
+	{
+		$event.preventDefault();
+
+		editor.deleteTransparent();
 	}
 
 	function dialogClose( $event )

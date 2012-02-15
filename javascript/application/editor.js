@@ -85,6 +85,7 @@ function Editor()
 		_self.previewRemove = _canvas.previewRemove;
 		_self.getBlockSize = _canvas.getBlockSize;
 		_self.allRemove = _canvas.allRemove;
+		_self.deleteTransparent = _canvas.deleteTransparent
 		
 		_help = new Help();
 
