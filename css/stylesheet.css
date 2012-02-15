@@ -19,6 +19,19 @@ body
 	position: relative;
 }
 
+.browser-warning
+{
+	display: block;
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	color: #333;
+	background: #fff;
+	position: absolute;
+	z-index: 200;
+}
+
 #cursor
 {
 	display: block;
@@ -50,12 +63,19 @@ body
 
 	.block.preview
 	{
-		opacity: 0.4;
+		opacity: 0.6;
+	}
+
+	.block.preview.color-transparent
+	{
+		opacity: 0.8;
+		background-position: -56px -168px;
 	}
 
 	#blocks.no-preview .block.preview
 	{
 		display: none;
+
 	}
 
 	#blocks.no-preview #cursor
@@ -417,7 +437,6 @@ nav
 	{
 		background-image: url(../images/blocks.png);
 		background-repeat: no-repeat;
-		background-position: center;
 		display: block;
 		text-indent: -5000px;
 		overflow: hidden;
@@ -480,41 +499,6 @@ nav
 	float: right;
 }
 	
-#color-button-red
-{
-	background-position: 0 -112px;
-}
-	
-#color-button-green
-{
-	background-position: 0 -56px;
-}
-
-#color-button-pink
-{
-	background-position: 0 -84px;
-}
-
-#color-button-blue
-{
-	background-position: 0 0;
-}
-
-#color-button-yellow
-{
-	background-position: 0 -140px;
-}
-
-#color-button-orange
-{
-	background-position: 0 -28px;
-}
-
-#color-button-transparent
-{
-	background-position: -28px -168px;
-}
-
 .block.selected
 {
 	background-position: 0 -168px;

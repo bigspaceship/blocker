@@ -221,8 +221,6 @@ function Canvas()
 		{
 			_shift_pressed = $event.shiftKey;
 
-			console.log( $event );
-
 			if ( _mode === 'single' && _mouse_on_canvas )
 			{
 				if ( ! $( '.block.preview' ).length )

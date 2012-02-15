@@ -39,6 +39,16 @@
 	background-position: 0 0;
 }
 
+.color-brown
+{
+	background-position: 0 -225px;
+}
+
+.color-white
+{
+	background-position: 0 -196px;
+}
+
 .color-yellow
 {
 	background-position: 0 -140px;
