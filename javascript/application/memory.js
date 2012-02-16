@@ -65,6 +65,8 @@ function Memory()
 			var html = $( '#blocks' ).html();
 			var css = '';
 
+			var now = new Date();
+
 			var data = {
 				id: editor.stringToSlug( $( '#export-sketch' ).val() ),
 				date: now.format( 'yyyy-mm-dd HH:MM' ),
@@ -86,7 +88,7 @@ function Memory()
 	{
 		if ( $( '#blocks' ).length )
 		{
-			var now = new Date();
+			var now = new Date();			
 
 			var data = {
 				blocks: editor.getBlocks(),
