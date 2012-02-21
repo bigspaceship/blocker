@@ -1,11 +1,15 @@
 function Gallery()
 {
 	var _self = this;
-	var _sketches = [];
-	var _sketch_index = 0;
-	var _active = false;
 
-	var _sketch_memory = [];
+	var _sketches = [];
+	var _sketch_ids = [];
+
+	var _sketch_active_id = undefined;
+	var _sketch_next_id = undefined;
+
+	var _active = false;
+	var _play = true;
 
 	function init()
 	{
@@ -27,7 +31,7 @@ function Gallery()
 		$( '.gallery-toggle' ).text( 'Show Editor' );
 
 		editor.stop();
-		sketchesLoad();
+		sketchIDsLoad();
 	}
 
 	function stop()
@@ -57,77 +61,131 @@ function Gallery()
 		}
 	}
 
-
-	function sketchesLoad()
-	{
-		if ( ! _sketches.length )
+	function sketchIDsLoad()
+	{		
+		if ( _active )
 		{
-			var sketches = [];
-			var json_url = 'sketches/index.php';
-
-			function getSketchesFromJSON( $json )
-			{
-				if (
-					$json &&
-					$json.sketches &&
-					$json.sketches.length
-				)
-				{
-					_sketches = $json.sketches;
-					gotSketches();
-				}
-
-				else
-				{
-					getSketchesFromLocal();
-				}
-			}
-
-			function getSketchesFromLocal()
-			{
-				_sketches = editor.load() || [];
-				gotSketches();
-			}
-
+			
+			var json_url = 'sketches/public-api?action=get-sketch-ids';
+			
 			$.ajax(
 				{
 					url: json_url,
 					dataType: 'json',
-	  				success: getSketchesFromJSON,
-					error: getSketchesFromLocal
+					success: sketchIDsLoaded
 				}
-			);	
+			);
+		}
+	}
+
+	function sketchIDsLoaded( $ids )
+	{
+		_sketch_ids = $ids;
+
+		if ( _sketch_next_id === undefined )
+		{
+			_sketch_next_id = _sketch_ids[0];
+		}
+
+		sketchLoad( _sketch_next_id );	
+	}
+
+	function sketchLoad( $id )
+	{		
+		if (
+			_sketch_ids.indexOf( $id ) !== -1 &&
+			getSketchIndex( $id ) !== -1
+		)
+		{
+			sketchLoaded( _sketches[_sketch_ids.indexOf( $id )] );
 		}
 
 		else
 		{
-			gotSketches();
+			if (
+				_sketch_ids.indexOf( $id ) !== -1 &&
+				getSketchIndex( $id ) === -1
+			)
+			{
+				var json_url = 'sketches/public-api?action=get-sketch&value=' + $id;
+		
+				$.ajax(
+					{
+						url: json_url,
+						dataType: 'json',
+						success: sketchLoaded
+					}
+				);
+			}
+		}			
+	}
+
+	function sketchLoaded( $sketch )
+	{
+		if ( getSketchIndex( $sketch.id ) === -1 )
+		{
+			_sketches.push( $sketch );
+
+			sketchToDom( $sketch.id );
 		}
 
-		function gotSketches()
+		if ( _sketch_active_id !== undefined )
 		{
-			for ( var i = 0; i < _sketches.length; i++ )
-			{
-				sketchToDom( i );
-			}
+			var callback = function(){ sketchShow( $sketch.id ); };
 
-			sketchAnimate( 0, false );
+			sketchAnimate( _sketch_active_id, true, callback );
+		}
+
+		else
+		{
+			sketchShow( $sketch.id );
 		}
 	}
 
-	function sketchToDom( $sketch_index )
+	function sketchShow( $id )
+	{
+		_sketch_active_id = $id;
+
+		var callback = _play ? function(){ setTimeout( sketchLoadNext, 2000 ) } : undefined;
+		
+		sketchAnimate( _sketch_active_id, false, callback );
+	}
+
+
+	function sketchLoadNext()
+	{
+		if ( _play )
+		{
+			if ( _sketch_ids.indexOf( _sketch_active_id ) < _sketch_ids.length - 1 )
+			{
+				var next_index = _sketch_ids.indexOf( _sketch_active_id ) + 1;
+				
+				_sketch_next_id = _sketch_ids[next_index];
+			}
+
+			else
+			{
+				_sketch_next_id = _sketch_ids[0];
+			}
+
+			sketchLoad( _sketch_next_id );
+		}
+	}
+
+	function sketchToDom( $id )
 	{
 		var block_size = editor.getBlockSize();
+		var sketch_index = getSketchIndex( $id );
 
 		if (
-			_sketches[$sketch_index] &&
-			_sketches[$sketch_index].id &&
-			_sketches[$sketch_index].blocks
+			_sketches[sketch_index] &&
+			_sketches[sketch_index].id &&
+			_sketches[sketch_index].blocks
 		)
 		{
-			var sketch = _sketches[$sketch_index];			
+			var sketch = _sketches[sketch_index];			
 			var sketch_html = '';
-			var random_positions = getBlocksPosition( $sketch_index, true );
+			var random_positions = getBlocksPosition( $id, true );
 
 			if ( ! $( '#gallery .sketch-' + sketch.id ).length )
 			{
@@ -143,7 +201,7 @@ function Gallery()
 					new_block_css += 'top:' + random_positions[i].top + 'px; ';
 					new_block_css += '"';	
 				
-				var new_block_html = '<div class="block color-' + new_block.color + '" id="gallery-block-' + new_block.index + '" ' + new_block_css + '></div>';
+				var new_block_html = '<div class="block color-' + new_block.color + '" id="gallery-sketch-' + $id + '-block-' + new_block.index + '" ' + new_block_css + '></div>';
 				
 				sketch_html += new_block_html;				
 			}
@@ -152,23 +210,21 @@ function Gallery()
 		}
 	}
 
-	function sketchAnimate( $sketch_index, $direction )
+	function sketchAnimate( $id, $direction, $callback )
 	{
 		if ( _active )
 		{
-			if (
-				$sketch_index === undefined ||
-				! _sketches[$sketch_index]
-			)
-			{
-				$sketch_index = 0;
-			}
-
-			var block_count = _sketches[$sketch_index].blocks.length;
+			var sketch_index = getSketchIndex( $id );
+			
+			var block_count = _sketches[sketch_index].blocks.length;
 			var animation_duration = 500;
+			
 			var block_animation_time = animation_duration / block_count;			
 			var blocks_to_animate = block_count / animation_duration;
-
+			
+			var new_positions = getBlocksPosition( $id, $direction );
+			var sketch_id = _sketches[sketch_index].id;
+			
 			if ( block_animation_time >= 1 )
 			{
 				timeout = parseInt( block_animation_time );
@@ -182,19 +238,20 @@ function Gallery()
 				blocks_to_animate = block_count / animation_duration;
 				timeout = 1;
 				blocks_to_animate = Math.ceil( blocks_to_animate ) * 2;
+			}			
+
+			if ( ! $direction )
+			{
+				$( '#gallery .sketch-' + sketch_id ).addClass( 'active' );
 			}
 
-			var new_positions = getBlocksPosition( $sketch_index, $direction );
-			var sketch_id = _sketches[$sketch_index].id;
-
-			$( '#gallery .sketch-' + sketch_id ).addClass( 'active' );
-			$( '.gallery-info .sketch-name' ).text( _sketches[$sketch_index].name );
-			$( '.gallery-info .sketch-blocks' ).text( _sketches[$sketch_index].blocks.length + ' blocks' );
+			$( '.gallery-info .sketch-name' ).text( _sketches[sketch_index].name );
+			$( '.gallery-info .sketch-blocks' ).text( _sketches[sketch_index].blocks.length + ' blocks' );
 			
-			if ( _sketches[$sketch_index].author )
+			if ( _sketches[sketch_index].author )
 			{
 				$( '.gallery-info .sketch-author' )
-					.text( 'by ' + _sketches[$sketch_index].author )
+					.text( 'by ' + _sketches[sketch_index].author )
 					.show();
 			}
 
@@ -203,10 +260,10 @@ function Gallery()
 				$( '.gallery-info .sketch-author' ).hide();
 			}
 
-			if ( _sketches[$sketch_index].date )
+			if ( _sketches[sketch_index].date )
 			{
 				$( '.gallery-info .sketch-date' )
-					.text( _sketches[$sketch_index].date )
+					.text( _sketches[sketch_index].date )
 					.show();
 			}
 
@@ -229,21 +286,21 @@ function Gallery()
 					{
 						var index = $options.block_index + i;
 
-						if ( index < _sketches[$sketch_index].blocks.length )
+						if ( index < _sketches[sketch_index].blocks.length )
 						{
-							$( '#gallery #gallery-block-' + _sketches[$sketch_index].blocks[index].index ).css( new_positions[index] );
+							$( '#gallery #gallery-sketch-' + _sketches[sketch_index].id + '-block-' + _sketches[sketch_index].blocks[index].index ).css( new_positions[index] );
 						}
 					}
 				}
 
 				else
 				{
-					$( '#gallery #gallery-block-' + _sketches[$sketch_index].blocks[$options.block_index].index ).css( new_positions[$options.block_index] );
+					$( '#gallery #gallery-sketch-' + _sketches[sketch_index].id + '-block-' + _sketches[sketch_index].blocks[$options.block_index].index ).css( new_positions[$options.block_index] );
 				}				
 
 				if ( _active )
 				{
-					if ( $options.block_index < _sketches[$sketch_index].blocks.length - 1  )
+					if ( $options.block_index < _sketches[sketch_index].blocks.length - 1  )
 					{
 						$options.block_index++;
 
@@ -252,7 +309,7 @@ function Gallery()
 
 					else
 					{
-						sketchAnimated( $sketch_index, $direction );
+						sketchAnimated( $id, $direction, $callback );
 					}
 				}
 			}
@@ -261,51 +318,31 @@ function Gallery()
 		}
 	}
 
-	function sketchAnimated( $sketch_index, $direction )
+	function sketchAnimated( $id, $direction, $callback )
 	{
 		if ( _active )
-		{
-			setTimeout( function()
+		{	
+			if ( $direction )
 			{
-				if ( $direction )
-				{
-					var next = parseInt( $sketch_index + 1 );
+				$( '.sketch-' + $id ).removeClass( 'active' );
+			}
 
-					if ( ! _sketches[$sketch_index] )
-					{
-						
-						next = 0;
-					}
-					
-					setTimeout( function()
-					{ 
-						if ( next !== $sketch_index )
-						{
-							$( '#gallery .sketch-' + _sketches[$sketch_index].id ).removeClass( 'active' );
-						}
-
-						sketchAnimate( next, false );
-
-					}, 500 );
-				}
-
-				else
-				{
-					setTimeout( function(){ sketchAnimate( $sketch_index, true ); }, 500 );
-				}
-
-			}, 500 );
+			if ( $callback )
+			{
+				$callback();
+			}
 		}
 	}
 
-	function getBlocksPosition( $sketch_index, $direction )
+	function getBlocksPosition( $id, $direction )
 	{
 		var return_value = [];
 		var window_width = $( window ).width();
 		var window_height = $( window ).height();
 		var block_size = editor.getBlockSize();
+		var sketch_index = getSketchIndex( $id ) !== -1 ? getSketchIndex( $id ) : 0;
 
-		for ( var i = 0; i < _sketches[$sketch_index].blocks.length; i++ )
+		for ( var i = 0; i < _sketches[sketch_index].blocks.length; i++ )
 		{
 			var position = {};
 
@@ -342,13 +379,29 @@ function Gallery()
 
 			else
 			{
-				var original_position = _sketches[$sketch_index].blocks[i].position;
+				var original_position = _sketches[sketch_index].blocks[i].position;
 
 				position.left = original_position.x;
 				position.top = parseInt( original_position.y + ( - block_size.height * original_position.z ) );
 			}
 
 			return_value.push( position );
+		}
+
+		return return_value;
+	}
+
+	function getSketchIndex( $id )
+	{
+		var return_value = -1;
+
+		for ( var i = 0; i < _sketches.length; i++ )
+		{
+			if ( _sketches[i].id === $id )
+			{
+				return_value = i;
+				break;
+			}
 		}
 
 		return return_value;
@@ -368,10 +421,20 @@ function Gallery()
 
 		else
 		{
-			$( $event.target  ).text( 'Create a New Sketch' );
+			$( $event.target  ).text( 'Show Editor' );
 			
 			_active = true;
 			start();
+		}
+	}
+
+	function showSketchByAddress( $address )
+	{
+		if ( $address.indexOf( 'gallery' ) !== -1 )
+		{
+			var sketch_id = $address[$address.indexOf( 'gallery' ) + 1];
+			
+			sketchShow( sketch_id );
 		}
 	}
 
@@ -381,4 +444,5 @@ function Gallery()
 	_self.getActive = function(){ return _active };
 	_self.start = start;
 	_self.stop = stop;
+	_self.showSketchByAddress = showSketchByAddress;
 }

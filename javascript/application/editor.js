@@ -7,6 +7,7 @@ function Editor()
 		'javascript/libraries/jquery.mousewheel.js',
 		'javascript/libraries/jquery.event.drag-2.0.js',
 		'javascript/libraries/date.format.js',
+		'javascript/libraries/jquery.address-1.4.min.js',
 		'javascript/application/navigation.js',
 		'javascript/application/canvas.js',
 		'javascript/application/history.js',
@@ -85,7 +86,7 @@ function Editor()
 		_self.previewRemove = _canvas.previewRemove;
 		_self.getBlockSize = _canvas.getBlockSize;
 		_self.allRemove = _canvas.allRemove;
-		_self.deleteTransparent = _canvas.deleteTransparent
+		_self.deleteTransparent = _canvas.deleteTransparent;
 		
 		_help = new Help();
 
@@ -98,17 +99,15 @@ function Editor()
 		_gallery.init();
 		_gallery.start();
 
-		$( document )
-			.keydown( keyDown )
-			.keypress( keyPressed )
+		$( document ).keydown( keyDown );
+		$.address.change( addressChanged );
 	}
 
-	function keyPressed( $event )
+	function addressChanged()
 	{
-		if ( _active )
-		{
+		var address = $.address.pathNames();
 
-		}
+		_gallery.showSketchByAddress( address );
 	}
 
 	function keyDown( $event )
