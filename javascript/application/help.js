@@ -5,7 +5,7 @@ function Help()
 	var _help;
 	var _button;
 
-	function init()
+	function init( _modules )
 	{
 		_help = $( '.help' );
 		//_help.addClass( 'active' );

@@ -5,9 +5,12 @@ function History()
 	var _history = [];
 	var _current_index = -1;
 	var _imported_history = [];
+	var _modules = {};
 
-	function init()
+	function init( $modules )
 	{
+		_modules = $modules;
+
 		historyLoadFromStorage();
 	}
 
@@ -90,7 +93,7 @@ function History()
 
 	function historyLoadFromStorage()
 	{
-		var storage = editor.load();
+		var storage = _modules.memory.load();
 
 		if ( 
 			storage &&

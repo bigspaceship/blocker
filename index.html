@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
+<!--[if lt IE 7]> <html itemscope itemtype="http://schema.org/Product" class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html itemscope itemtype="http://schema.org/Product" class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html itemscope itemtype="http://schema.org/Product" class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if IE 9]>    <html itemscope itemtype="http://schema.org/Product" class="no-js ie9" lang="en"> <![endif]-->
 <html>
 	<head>
 		<title>Isometric Block Editor</title>
@@ -7,13 +11,12 @@
 		<link rel="stylesheet" href="css/blocks.css" />
 	</head>
 	<body>
-		<a href="#" class="gallery-button gallery-toggle">Show Editor</a>
-		<article class="gallery-info">
-			<h1 class="sketch-name"></h1>
-			<p class="sketch-blocks"></p>
-			<p class="sketch-author"></p>
-			<p class="sketch-date"></p>
-		</article>
+		<!--[if lte IE 9]><article class="browser-warning">
+			<strong>Unsupported Browser</strong> You are using an unsupported browser. The application may become unresponsive, show errors or not work at all.
+			Please upgrade or change your browser.
+		</article><![endif]-->
+		</div>		
+		<a href="gallery/" class="toggle-button show-gallery">Go to Gallery</a>
 		<section class="help">
 			<a href="#" class="help-button help-toggle">?</a>
 			<article class="help-text help-welcome">
@@ -89,7 +92,18 @@
 						<li>In delete mode, hold <code>shift</code> while dragging to select multiple blocks.</li>
 						<li>In delete mode, press <code>backspace</code> to delete selected blocks.</li>
 					</ul>
-					<p>Mac users can use the <code>cmd</code> key instead of <code>ctrl</code> for shortcuts.</p>
+				</div>
+				<div class="help-keyboard-shortcuts">
+					<h1>Pro Tips</h1>
+					<ul>
+						<li>
+							You can use transparent blocks to build hovering objects. Just build an object as you normally would 
+							and then click "Delete Blocks" / "Delete transparent blocks".
+						</li>
+						<li>
+							Mac users can use the <code>cmd</code> key instead of <code>ctrl</code> for shortcuts.
+						</li>
+					</ul>
 				</div>
 				<p>If you want to show add your sketch to our gallery, send it to blocksbuilder@bigspaceship.com</p>
 				<p>In this case, please make sure your model has no more than 700 blocks.</p>
@@ -113,6 +127,7 @@
 					<h1>Delete</h1>
 					<a href="#" id="delete-selected" class="info-button">Delete Selected Blocks</a>
 					<a href="#" id="delete-all" class="info-button">Delete All Blocks</a>
+					<a href="#" id="delete-transparent" class="info-button">Delete Transparent Blocks</a>
 					<p>Click on a block to select it. Hold down shift while dragging to select multiple blocks.</p>
 				</div>
 				<div class="export-info">
@@ -154,12 +169,15 @@
 			<div class="color-buttons">
 				<h1>Block Color</h1>
 				<ul>
-					<li><a href="#" id="color-button-yellow">yellow</a></li>
-					<li><a href="#" id="color-button-blue">blue</a></li>
-					<li><a href="#" id="color-button-pink">pink</a></li>
-					<li><a href="#" id="color-button-green">green</a></li>
-					<li><a href="#" id="color-button-red">red</a></li>
-					<li><a href="#" id="color-button-transparent">transparent</a></li>
+					<li><a href="#" class="color-yellow"id="color-button-yellow">yellow</a></li>
+					<li><a href="#" class="color-orange"id="color-button-orange">orange</a></li>
+					<li><a href="#" class="color-red"id="color-button-red">red</a></li>
+					<li><a href="#" class="color-blue"id="color-button-blue">blue</a></li>
+					<li><a href="#" class="color-pink"id="color-button-pink">pink</a></li>
+					<li><a href="#" class="color-brown"id="color-button-brown">brown</a></li>
+					<li><a href="#" class="color-green"id="color-button-green">green</a></li>
+					<li><a href="#" class="color-white"id="color-button-white">white</a></li>
+					<li><a href="#" class="color-transparent"id="color-button-transparent">transparent</a></li>
 				</ul>
 			</div>
 			<div class="history-buttons">
@@ -179,6 +197,6 @@
 				</ul>
 			</div>
 		</nav>
-		<script src="javascript/application/editor.js"></script>
+		<script src="javascript/application/loader.js"></script>
 	</body>
 </html>
