@@ -1,10 +1,11 @@
 function Memory()
 {
 	var _self = this;
+	var _modules = {};
 
-	function init()
+	function init( $modules )
 	{
-
+		_modules = $modules
 	}
 
 	function fileImported( $event )
@@ -34,7 +35,8 @@ function Memory()
 
 	function importJSON( $text )
 	{
-		editor.clear();
+		_modules.canvas.clear();
+		_modules.history.clear();
 
 		var object = {};
 
@@ -51,9 +53,11 @@ function Memory()
 			object.history
 		)
 		{
-			editor.clear();
-			editor.importHistory( object.history );
-			editor.importBlocks( object.blocks );
+			_modules.canvas.clear();
+			_modules.history.clear();
+
+			_modules.history.importHistory( object.history );
+			_modules.canvas.importBlocks( object.blocks );
 		}
 	}
 
@@ -68,7 +72,7 @@ function Memory()
 			var now = new Date();
 
 			var data = {
-				id: editor.stringToSlug( $( '#export-sketch' ).val() ),
+				id: stringToSlug( $( '#export-sketch' ).val() ),
 				date: now.format( 'yyyy-mm-dd HH:MM' ),
 				name: $( '#export-sketch' ).val()
 			};
@@ -91,9 +95,9 @@ function Memory()
 			var now = new Date();			
 
 			var data = {
-				blocks: editor.getBlocks(),
-				history: editor.getHistory(),
-				id: editor.stringToSlug( $( '#export-sketch' ).val() ),
+				blocks: _modules.canvas.getBlocks(),
+				history: _modules.history.getHistory(),
+				id: stringToSlug( $( '#export-sketch' ).val() ),
 				date: now.format( 'yyyy-mm-dd HH:MM' ),
 				name: $( '#export-sketch' ).val()
 			};
@@ -119,9 +123,9 @@ function Memory()
 			var date = new Date;
 
 			var data = {
-				blocks: editor.getBlocks(),
-				history: editor.getHistory(),
-				id: editor.stringToSlug( $( '#save-sketch' ).val() ),
+				blocks: _modules.canvas.getBlocks(),
+				history: _modules.history.getHistory(),
+				id: stringToSlug( $( '#save-sketch' ).val() ),
 				date: date.format( 'yyyy-mm-dd HH:MM' ),
 				name: $( '#save-sketch' ).val()
 			};
@@ -132,7 +136,7 @@ function Memory()
 			localStorage.setItem( 'blocks_data', JSON.stringify( store ) );
 		}
 
-		editor.savedToLocal();
+		_modules.navigation.savedToLocal();
 	}
 
 	function load()
