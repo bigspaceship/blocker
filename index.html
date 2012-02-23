@@ -1,4 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
+<!--[if lt IE 7]> <html itemscope itemtype="http://schema.org/Product" class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html itemscope itemtype="http://schema.org/Product" class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html itemscope itemtype="http://schema.org/Product" class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if IE 9]>    <html itemscope itemtype="http://schema.org/Product" class="no-js ie9" lang="en"> <![endif]-->
 <html>
 	<head>
 		<title>Isometric Block Editor</title>
@@ -7,13 +11,12 @@
 		<link rel="stylesheet" href="css/blocks.css" />
 	</head>
 	<body>
-		<a href="#" class="gallery-button gallery-toggle">Create a New Sketch</a>
-		<article class="gallery-info">
-			<h1 class="sketch-name"></h1>
-			<p class="sketch-blocks"></p>
-			<p class="sketch-author"></p>
-			<p class="sketch-date"></p>
-		</article>
+		<!--[if lte IE 9]><article class="browser-warning">
+			<strong>Unsupported Browser</strong> You are using an unsupported browser. The application may become unresponsive, show errors or not work at all.
+			Please upgrade or change your browser.
+		</article><![endif]-->
+		</div>		
+		<a href="gallery/" class="toggle-button show-gallery">Go to Gallery</a>
 		<section class="help">
 			<a href="#" class="help-button help-toggle">?</a>
 			<article class="help-text help-welcome">
@@ -21,62 +24,87 @@
 				<p>
 					With this Editor you can draw isometric pixel sketches in your browser.
 				</p>
-				<p>
-					To get started, select a color from the toolbar on the bottom of the screen and
-					click on the canvas. A transparent block shows you where the next block will be positioned
-					when you click.
-				</p>
-				<p>
-					There are three edit modes available. You can switch between modes in the toolbar.
-				</p>
-				<ul>
-					<li>
-						In <strong>single block</strong> mode you can add one block at a time to the canvas.
-					</li>
-					<li>
-						In the <strong>multiple blocks</strong> mode, you can add multiple blocks
-						to the canvas. Using the sliders in the toolbar, you can adjust the size of the
-						grid.
-					</li>
-					<li>
-						You can use the <strong>delete</strong> mode to remove blocks from the canvas.
-						Click on a block to add it to the selection (it turns black). To remove all selected
-						blocks, click on the delete button in the toolbar or backspace on you keyboard.
-					</li>
-				</ul>
-				<p>You can use the history buttons to undo and redo your actions.</p>
-				<p>In the <strong>file</strong> menu you can:</p>
-				<ul>
-					<li>
-						<strong>save</strong> your sketch. This saves your sketch on your local machine.
-					</li>
-					<li>
-						<strong>load</strong> a sketch. you cann choose from sketches you saved before.
-					</li>
-					<li>
-						<strong>import</strong> a sketch from a file.
-					</li>
-					<li>
-						<strong>export</strong> a sketch from a to a file. There are two output formats available:
-						<code>html</code> and <code>json</code>. Export you sketch as <code>html</code> to embed it on other websites.
-						Export it as <code>json</code> if you want to import and modify it later on using this editor.
-					</li>
-				</ul>
-				<p>There are keyboard shortcuts available</p>
-				<ul>
-					<li>Press the numbers <strong>1 - 6</strong> to change the block color.</li>
-					<!-- <li>Press <code>cmd + i</code> for single block mode.</li> -->
-					<li>Press <code>cmd + m</code> for multiple block mode.</li>
-					<li>Press <code>cmd + d</code> for delete mode.</li>
-					<li>Press <code>cmd + z</code> for undo.</li>
-					<li>Press <code>cmd + shift + z</code> for redo.</li>
-					<li>Press <code>cmd + s</code> to open the save menu.</li>
-					<li>Press <code>cmd + o</code> to open the import menu.</li>
-					<li>Press <code>cmd + e</code> to open the export menu.</li>
-					<li>In delete mode, hold <code>shift</code> while moving the mouse to draw blocks faster.</li>
-					<li>In delete mode, hold <code>shift</code> while dragging to select multiple blocks.</li>
-					<li>In delete mode, press <code>backspace</code> to delete selected blocks.</li>
-				</ul>
+				<div class="help-getting-started">
+					<h1>Getting Started</h1>
+					<p>
+						To get started, select a color from the toolbar on the bottom of the screen and
+						click on the canvas. A transparent block shows you where the next block will be positioned
+						when you click.
+					</p>
+					<p>
+						There are three edit modes available. You can switch between modes in the toolbar.
+					</p>
+				</div>
+				<div class="help-drawing-modes">
+					<h1>Drawing Modes</h1>
+					<ul>
+						<li>
+							In <strong>single block</strong> mode you can add one block at a time to the canvas.
+						</li>
+						<li>
+							In the <strong>multiple blocks</strong> mode, you can add multiple blocks
+							to the canvas. Using the sliders in the toolbar, you can adjust the size of the
+							grid.
+						</li>
+						<li>
+							You can use the <strong>delete</strong> mode to remove blocks from the canvas.
+							Click on a block to add it to the selection (it turns black). To remove all selected
+							blocks, click on the delete button in the toolbar or backspace on you keyboard.
+						</li>
+					</ul>
+					<p>You can use the history buttons to undo and redo your actions.</p>
+				</div>
+				<div class="help-import-export">
+					<h1>Import and Export</h1>
+					<p>In the <strong>file</strong> menu you can:</p>
+					<ul>
+						<li>
+							<strong>save</strong> your sketch. This saves your sketch on your local machine.
+						</li>
+						<li>
+							<strong>load</strong> a sketch. you can choose from sketches you saved before.
+						</li>
+						<li>
+							<strong>import</strong> a sketch from a file.
+						</li>
+						<li>
+							<strong>export</strong> a sketch from a to a file. There are two output formats available:
+							<code>html</code> and <code>json</code>. Export your sketch as <code>html</code> to embed it on other websites.
+							Export it as <code>json</code> if you want to import and modify it later on using this editor.
+						</li>
+					</ul>
+				</div>
+				<div class="help-keyboard-shortcuts">
+					<h1>Keyboard shortcuts</h1>
+					<ul>
+						<li>Press the numbers <strong>1 - 6</strong> to change the block color.</li>
+						<li>Press <code>ctrl + q</code> for single block mode.</li>
+						<li>Press <code>ctrl + m</code> for multiple block mode.</li>
+						<li>Press <code>ctrl + d</code> for delete mode.</li>
+						<li>Press <code>ctrl + z</code> for undo.</li>
+						<li>Press <code>ctrl + shift + z</code> for redo.</li>
+						<li>Press <code>ctrl + s</code> to open the save menu.</li>
+						<li>Press <code>ctrl + o</code> to open the import menu.</li>
+						<li>Press <code>ctrl + e</code> to open the export menu.</li>
+						<li>Press <code>ctrl + h</code> to toggle this help box.</li>
+						<li>Press <code>ctrl + k</code> to switch between editor and gallery.</li>
+						<li>In single block mode, hold <code>shift</code> while moving the mouse to draw blocks faster.</li>
+						<li>In delete mode, hold <code>shift</code> while dragging to select multiple blocks.</li>
+						<li>In delete mode, press <code>backspace</code> to delete selected blocks.</li>
+					</ul>
+				</div>
+				<div class="help-keyboard-shortcuts">
+					<h1>Pro Tips</h1>
+					<ul>
+						<li>
+							You can use transparent blocks to build hovering objects. Just build an object as you normally would 
+							and then click "Delete Blocks" / "Delete transparent blocks".
+						</li>
+						<li>
+							Mac users can use the <code>cmd</code> key instead of <code>ctrl</code> for shortcuts.
+						</li>
+					</ul>
+				</div>
 				<p>If you want to show add your sketch to our gallery, send it to blocksbuilder@bigspaceship.com</p>
 				<p>In this case, please make sure your model has no more than 700 blocks.</p>
 				<p>We will review your submission and add it to to the gallery if everything is OK.</p>
@@ -97,7 +125,9 @@
 				</div>
 				<div class="delete-info">
 					<h1>Delete</h1>
-					<a href="#" class="info-button">Delete Selected Blocks</a>
+					<a href="#" id="delete-selected" class="info-button">Delete Selected Blocks</a>
+					<a href="#" id="delete-all" class="info-button">Delete All Blocks</a>
+					<a href="#" id="delete-transparent" class="info-button">Delete Transparent Blocks</a>
 					<p>Click on a block to select it. Hold down shift while dragging to select multiple blocks.</p>
 				</div>
 				<div class="export-info">
@@ -116,7 +146,7 @@
 					<p>You can import .json files that you saved from previous sessions.</p>
 				</div>
 				<div class="single-info">
-					<p>Click to add a block. Hold down shift to draw a line.</p>
+					<p>Click or drag the mouse to add blocks. Hold down shift to draw even more blocks.</p>
 				</div>
 				<div class="save-info">
 					<a href="#" class="info-button">Save</a>
@@ -139,12 +169,15 @@
 			<div class="color-buttons">
 				<h1>Block Color</h1>
 				<ul>
-					<li><a href="#" id="color-button-yellow">yellow</a></li>
-					<li><a href="#" id="color-button-blue">blue</a></li>
-					<li><a href="#" id="color-button-pink">pink</a></li>
-					<li><a href="#" id="color-button-green">green</a></li>
-					<li><a href="#" id="color-button-red">red</a></li>
-					<li><a href="#" id="color-button-transparent">transparent</a></li>
+					<li><a href="#" class="color-yellow"id="color-button-yellow">yellow</a></li>
+					<li><a href="#" class="color-orange"id="color-button-orange">orange</a></li>
+					<li><a href="#" class="color-red"id="color-button-red">red</a></li>
+					<li><a href="#" class="color-blue"id="color-button-blue">blue</a></li>
+					<li><a href="#" class="color-pink"id="color-button-pink">pink</a></li>
+					<li><a href="#" class="color-brown"id="color-button-brown">brown</a></li>
+					<li><a href="#" class="color-green"id="color-button-green">green</a></li>
+					<li><a href="#" class="color-white"id="color-button-white">white</a></li>
+					<li><a href="#" class="color-transparent"id="color-button-transparent">transparent</a></li>
 				</ul>
 			</div>
 			<div class="history-buttons">
@@ -164,6 +197,6 @@
 				</ul>
 			</div>
 		</nav>
-		<script src="javascript/application/editor.js"></script>
+		<script src="javascript/application/loader.js"></script>
 	</body>
 </html>

@@ -1,22 +1,27 @@
 function Canvas()
 {
 	var _self = this;
+	var _active = false;
+	var _modules = {};
 
-	var _block_size = { width: 28, height: 14 };
+	var _block_size = getBlockSize();
 	var _blocks = [];
 	var _cursor = { x: 0, y: 0, target: { x: 0, y: 0 } };
 	var _mode;
-	var _color;
+	var _colors = getColors();
+	var _color = _colors[0];
 	var _colors;
-	var _size;
+	var _size = { width: 1, depth: 1 };
 
 	var _mouse_on_canvas = true;
 	var _shift_pressed = false;
 
 	var _drag_cache = {};
 
-	function init()
+	function init( $modules )
 	{
+		_modules = $modules;
+
 		$( 'body' )
 			.click( clicked )
 			.mousemove( mouseMoved )
@@ -26,37 +31,42 @@ function Canvas()
 			.append('<div id="cursor"></div>')
 			.append('<div id="blocks"></div>')
 
-		_mode = editor.getMode();
-		_color = editor.getColor();
-		_colors = editor.getColors();
-		_size = editor.getSize();
-
 		previewUpdateBlocks();
 		previewUpdate();
 	}
 
 	function start()
 	{
-		$( '#blocks' ).show();
-
-		if ( ! _mode )
+		if ( ! _active )
 		{
-			_mode = 'single';
-			editor.showInfo( 'single' );
+			_active = true;
 
-			$( '#cursor' ).show();
+			$( '#blocks' ).addClass( 'blocks-active' );
 
-			if ( ! $( '.block.preview' ).length )
+			if ( ! _mode )
 			{
-				previewUpdateBlocks();
+				_mode = 'single';
+				_modules.navigation.showInfo( 'single' );
+
+				$( '#cursor' ).show();
+
+				if ( ! $( '.block.preview' ).length )
+				{
+					previewUpdateBlocks();
+				}
 			}
 		}
 	}
 
 	function stop()
 	{
-		$( '#blocks' ).hide();
-		$( '#cursor' ).hide();
+		if ( _active )
+		{
+			_active = false;
+
+			$( '#blocks' ).removeClass( 'blocks-active' );
+			$( '#cursor' ).hide();
+		}
 	}
 
 	function clear()
@@ -66,7 +76,7 @@ function Canvas()
 
 	function clicked( $event )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			if (
 				! $( $event.target ).is( 'nav' ) &&
@@ -98,7 +108,7 @@ function Canvas()
 
 	function mouseMoved( $event )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			if ( $event.pageY < $( window ).height() - $( 'nav' ).height() )
 			{
@@ -175,7 +185,7 @@ function Canvas()
 
 	function dragStarted( $event, $object )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			_drag_cache = {};
 
@@ -208,12 +218,19 @@ function Canvas()
 				$( '#selection' ).css( selection );
 			}
 		}
+
+		if ( $event )
+		{
+			_shift_pressed = $event.shiftKey;
+		}
 	}
 
 	function dragged( $event, $object )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
+			_shift_pressed = $event.shiftKey;
+
 			if ( _mode === 'single' && _mouse_on_canvas )
 			{
 				if ( ! $( '.block.preview' ).length )
@@ -283,24 +300,26 @@ function Canvas()
 				}
 						
 				$( '#selection' ).css( selection );
-			}
+			}	
 		}
 	}
 
 	function dragEnded( $event )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			if ( _mode === 'delete' )
 			{
 				$( '#selection' ).remove();
 			}
+
+			_shift_pressed = false;
 		}
 	}
 
 	function cursorUpdate()
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			if (
 				_cursor.x != _cursor.target.x ||
@@ -346,13 +365,13 @@ function Canvas()
 
 	function blockAdd( $type )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			var type = $type || 'solid';
 
 			var new_block = {
 				index: parseInt( getHighestBlockIndex() + 1 ),
-				color: editor.getColor(),
+				color: _color,
 				position: { x: _cursor.x, y: _cursor.y, z: getGridZ( _cursor.x, _cursor.y ) },
 				type: $type	
 			}
@@ -382,7 +401,7 @@ function Canvas()
 
 	function blockRemove( $options )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			if ( $options )
 			{
@@ -409,7 +428,7 @@ function Canvas()
 
 					if ( blocks_to_remove.length )
 					{
-						editor.historyUpdate( 'save', { action: 'remove', blocks: blocks_to_remove } );
+						_modules.history.save( { action: 'remove', blocks: blocks_to_remove } );
 					}
 				}
 
@@ -440,7 +459,7 @@ function Canvas()
 
 							if ( blocks_to_remove.length )
 							{
-								editor.historyUpdate( 'save', { action: 'remove', blocks: blocks_to_remove } );
+								_modules.history.save( { action: 'remove', blocks: blocks_to_remove } );
 							}
 						}
 					);
@@ -473,7 +492,7 @@ function Canvas()
 
 					if ( blocks_to_remove.length )
 					{
-						editor.historyUpdate( 'save', { action: 'remove', blocks: blocks_to_remove } );
+						_modules.history.save( { action: 'remove', blocks: blocks_to_remove } );
 					}
 				}
 			}
@@ -489,7 +508,7 @@ function Canvas()
 
 	function blockAddToSelection( $event )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			var target = $( $event.target );
 			
@@ -512,7 +531,7 @@ function Canvas()
 
 	function previewUpdate()
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			if ( _mode === 'single' )
 			{
@@ -531,6 +550,16 @@ function Canvas()
 	function previewRemove()
 	{
 		blockRemove( { blocks: $( '.block.preview' ) } );
+	}
+
+	function allRemove()
+	{
+		blockRemove( { blocks: $( '.block' ) } );
+	}
+
+	function deleteTransparent()
+	{
+		blockRemove( { blocks: $( '.block.color-transparent' ) } );
 	}
 
 	function previewSingleBlock()
@@ -558,7 +587,7 @@ function Canvas()
 
 	function previewMultipleBlocks()
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			$( '.block.preview' ).each(
 				function( $index, $item )
@@ -613,7 +642,7 @@ function Canvas()
 
 	function previewUpdateBlocks()
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			if ( _mode === 'single' )
 			{
@@ -654,7 +683,7 @@ function Canvas()
 
 	function previewToBlock()
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			var blocks_to_add = [];
 
@@ -679,7 +708,7 @@ function Canvas()
 
 			if ( blocks_to_add.length )
 			{
-				editor.historyUpdate( 'save', { action: 'add', blocks: blocks_to_add } );
+				_modules.history.save( { action: 'add', blocks: blocks_to_add } );
 			}
 
 			updateCounter();
@@ -688,7 +717,7 @@ function Canvas()
 
 	function previewUpdateColor( $new_color, $old_color )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			$( '.block.preview' )
 				.addClass( 'color-' + $new_color )
@@ -698,7 +727,7 @@ function Canvas()
 
 	function historyUpdate( $options )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			if (
 				$options &&
@@ -743,7 +772,7 @@ function Canvas()
 
 	function historyAddBlocks( $options )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			var blocks = $options.blocks;
 
@@ -772,7 +801,7 @@ function Canvas()
 
 	function historyRemoveBlocks( $options )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			var blocks = $options.blocks;
 
@@ -867,9 +896,9 @@ function Canvas()
 		return return_value;
 	}
 
-	function modeUpdate( $mode )
+	function setMode( $mode )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			_mode = $mode;
 			previewUpdateBlocks();
@@ -886,10 +915,15 @@ function Canvas()
 			}
 		}
 	}
+
+	function getMode()
+	{
+		return _mode;
+	}
 	
 	function colorUpdate( $new_color, $old_color )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			previewUpdateColor( $new_color, $old_color );
 			_color = $new_color;
@@ -899,9 +933,11 @@ function Canvas()
 
 	function sizeUpdate( $size )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
-			_size = $size;
+			//console.log( _size, $size );
+			_size[$size.id] = $size.value;
+
 			previewUpdateBlocks();
 			previewUpdate();
 		}
@@ -909,7 +945,7 @@ function Canvas()
 
 	function importBlocks( $blocks )
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			for ( var i = 0; i < $blocks.length; i++ )
 			{
@@ -925,7 +961,7 @@ function Canvas()
 					left: new_block.position.x
 				};
 
-				editor.historyUpdateIDs( old_index, new_block.index );
+				_modules.history.historyUpdateIDs( old_index, new_block.index );
 
 				_blocks.push( new_block );
 
@@ -941,13 +977,13 @@ function Canvas()
 
 	function updateCounter()
 	{
-		if ( editor.getActive() )
+		if ( _active )
 		{
 			$( '.stats .count span' ).text( $( '.block:not(.preview)' ).length );
 
 			if ( ! _colors )
 			{
-				_colors = editor.getColors();
+				_colors = getColors();
 			}
 
 			var i = _colors.length; while ( i-- )
@@ -977,7 +1013,8 @@ function Canvas()
 	_self.start = start;
 	_self.stop = stop;
 	_self.clear = clear;
-	_self.modeUpdate = modeUpdate;
+	_self.setMode = setMode;
+	_self.getMode = getMode;
 	_self.colorUpdate = colorUpdate;
 	_self.sizeUpdate = sizeUpdate;
 	_self.historyUpdate = historyUpdate;
@@ -986,7 +1023,7 @@ function Canvas()
 	_self.importBlocks = importBlocks;
 	_self.getBlocks = getBlocks;
 	_self.previewRemove = previewRemove;
-
-	_self.getBlockSize = function(){ return _block_size };
-	_self.getMode = function(){ return _mode };
+	_self.previewUpdateBlocks = previewUpdateBlocks;
+	_self.allRemove = allRemove;
+	_self.deleteTransparent = deleteTransparent;
 }

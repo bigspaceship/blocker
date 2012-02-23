@@ -6,10 +6,13 @@ function Gallery()
 	var _sketch_ids = [];
 
 	var _sketch_active_id = undefined;
-	var _sketch_next_id = undefined;
+	var _sketch_load_id = undefined;
 
 	var _active = false;
 	var _play = true;
+	var _animating = false;
+
+	var _just_opened = false;
 
 	function init()
 	{
@@ -18,76 +21,153 @@ function Gallery()
 			var gallery_html = '<div id="gallery"></div>';
 
 			$( 'body' ).append( gallery_html );
+			$( '#gallery-playpause' ).click( playPause );
 		}
-
-		$( '.gallery-toggle' ).click( galleryClicked );
 	}
 
 	function start()
 	{
-		_active = true;
-		
-		$( '#gallery, .gallery-info' ).addClass( 'gallery-active' );
-		$( '.gallery-toggle' ).text( 'Show Editor' );
+		if ( ! _active )
+		{
+			_active = true;
+			_just_opened = true;
 
-		editor.stop();
-		sketchIDsLoad();
+			$( '#gallery, .gallery-info' ).addClass( 'gallery-active' );
+			
+			$( '.show-editor' ).addClass( 'active' );
+		}
 	}
 
 	function stop()
 	{
-		_active = false;
+		if ( _active )
+		{
+			_active = false;
+			_just_opened = false;
 
-		$( '#gallery' )
-			.html( '' )
-			.removeClass( 'gallery-active' );
+			$( '#gallery' )
+				.removeClass( 'gallery-active' )
+				.find( '.gallery-sketch' )
+				.remove();
 
-		$( '.gallery-info' ).removeClass( 'gallery-active' );
-		$( '.gallery-toggle' ).text( 'Show Gallery' );
-
-		editor.start();
+			$( '.gallery-info' ).removeClass( 'gallery-active' );
+			$( '.gallery-toggle' ).text( 'Show Gallery' );
+		}
 	}
 
-	function toggle()
+	function playPause( $event )
 	{
-		if ( $( '#gallery' ).hasClass( 'gallery-active' ) )
+		if ( $event.preventDefault )
 		{
-			stop();
+			$event.preventDefault();
+		}
+
+		if ( $event !== undefined )
+		{
+			if ( ! $event )
+			{
+				_play = false;
+			}
+
+			else
+			{
+				if ( $event === true )
+				{
+					_play = true;
+				}
+				
+				else
+				{
+					if ( $event.target && ! _animating )
+					{
+						var target = $( $event.target );
+						
+						if ( ! target.is( 'a' ) )
+						{
+							target = target.closest( 'a' );
+
+							target
+								.find( '.active' )
+								.removeClass( 'active' )
+
+							_play = ! _play;
+
+							if ( _play )
+							{
+								target
+									.find( '.gallery-play' )
+									.addClass( 'active' )
+
+								play();
+							}
+
+							else
+							{
+								target
+									.find( '.gallery-pause' )
+									.addClass( 'active' )
+							}
+						}
+					}
+				}
+			}
 		}
 
 		else
 		{
-			start();
+			_play = ! _play;
+		}
+	}
+
+	function play()
+	{
+		if ( _play ) { sketchLoadNext(); };
+	}
+
+	function addressChanged( $address )
+	{
+		if ( $address.length )
+		{
+			sketchShowByAddress( $address )
+		}
+
+		else
+		{
+			play();
 		}
 	}
 
 	function sketchIDsLoad()
 	{		
-		if ( _active )
-		{
+		var json_url = 'api/public-api?action=get-sketch-ids';
 			
-			var json_url = 'sketches/public-api?action=get-sketch-ids';
-			
-			$.ajax(
-				{
-					url: json_url,
-					dataType: 'json',
-					success: sketchIDsLoaded
-				}
-			);
-		}
+		$.ajax(
+			{
+				url: json_url,
+				dataType: 'json',
+				success: sketchIDsLoaded
+			}
+		);
 	}
 
 	function sketchIDsLoaded( $ids )
 	{
 		_sketch_ids = $ids;
 
-		if ( _sketch_next_id === undefined )
+		if ( _active )
 		{
-			_sketch_next_id = _sketch_ids[0];
-		}
+			if ( _sketch_load_id !== undefined )
+			{
+				sketchLoad( _sketch_load_id );
 
-		sketchLoad( _sketch_next_id );	
+				_sketch_load_id = undefined;
+			}
+
+			else
+			{
+				play();
+			}
+		}
 	}
 
 	function sketchLoad( $id )
@@ -107,7 +187,7 @@ function Gallery()
 				getSketchIndex( $id ) === -1
 			)
 			{
-				var json_url = 'sketches/public-api?action=get-sketch&value=' + $id;
+				var json_url = 'api/public-api?action=get-sketch&value=' + $id;
 		
 				$.ajax(
 					{
@@ -117,7 +197,7 @@ function Gallery()
 					}
 				);
 			}
-		}			
+		}
 	}
 
 	function sketchLoaded( $sketch )
@@ -125,7 +205,10 @@ function Gallery()
 		if ( getSketchIndex( $sketch.id ) === -1 )
 		{
 			_sketches.push( $sketch );
+		}
 
+		if ( ! $( '.sketch-' + $sketch.id ).length )
+		{
 			sketchToDom( $sketch.id );
 		}
 
@@ -146,35 +229,76 @@ function Gallery()
 	{
 		_sketch_active_id = $id;
 
-		var callback = _play ? function(){ setTimeout( sketchLoadNext, 2000 ) } : undefined;
+		var callback = function(){ setTimeout( play, 3000 ) };
 		
 		sketchAnimate( _sketch_active_id, false, callback );
 	}
 
-
-	function sketchLoadNext()
+	function sketchShowByAddress( $address )
 	{
-		if ( _play )
+		var sketch_id = $address[$address.length - 1];
+
+		if ( sketch_id )
 		{
-			if ( _sketch_ids.indexOf( _sketch_active_id ) < _sketch_ids.length - 1 )
+			if ( _sketch_ids.indexOf( sketch_id ) !== -1 )
 			{
-				var next_index = _sketch_ids.indexOf( _sketch_active_id ) + 1;
-				
-				_sketch_next_id = _sketch_ids[next_index];
+				sketchLoad( sketch_id );
 			}
 
 			else
 			{
-				_sketch_next_id = _sketch_ids[0];
+				if ( ! _sketch_ids.length )
+				{
+					_sketch_load_id = sketch_id;
+
+					sketchIDsLoad();
+				}
+			}
+		}
+
+		else
+		{
+			if ( ! _sketch_ids.length )
+			{
+				sketchIDsLoad();
 			}
 
-			sketchLoad( _sketch_next_id );
+			else
+			{
+				play();
+			}
+		}
+	}
+
+	function sketchLoadNext()
+	{
+		if ( ! _sketch_ids.length )
+		{
+			sketchIDsLoad();
+		}
+
+		else
+		{
+			var sketch_next_id = _sketch_ids[0];
+
+			if ( _sketch_active_id !== undefined )
+			{
+				if (
+					_sketch_ids.indexOf( _sketch_active_id ) !== -1 &&
+					_sketch_ids.indexOf( _sketch_active_id ) < _sketch_ids.length - 1
+				)
+				{
+					sketch_next_id = _sketch_ids[_sketch_ids.indexOf( _sketch_active_id ) + 1];
+				}
+			}
+
+			$.address.value( sketch_next_id );
 		}
 	}
 
 	function sketchToDom( $id )
 	{
-		var block_size = editor.getBlockSize();
+		var block_size = getBlockSize();
 		var sketch_index = getSketchIndex( $id );
 
 		if (
@@ -212,18 +336,23 @@ function Gallery()
 
 	function sketchAnimate( $id, $direction, $callback )
 	{
-		if ( _active )
-		{
-			var sketch_index = getSketchIndex( $id );
-			
-			var block_count = _sketches[sketch_index].blocks.length;
+		//if ( _active )
+		//{
+			var sketch_index = getSketchIndex( $id );			
+			var sketch_block_count = _sketches[sketch_index].blocks.length;
+
 			var animation_duration = 500;
 			
-			var block_animation_time = animation_duration / block_count;			
-			var blocks_to_animate = block_count / animation_duration;
+			var block_animation_time = animation_duration / sketch_block_count;			
+			var blocks_to_animate = sketch_block_count / animation_duration;
 			
 			var new_positions = getBlocksPosition( $id, $direction );
 			var sketch_id = _sketches[sketch_index].id;
+
+			_animating = true;
+
+			$( '#gallery-playpause' ).addClass( 'disabled' );
+			$( '#gallery-page' ).text( 'Sketch ' + parseInt( sketch_index + 1 ) + ' of ' + _sketch_ids.length );
 			
 			if ( block_animation_time >= 1 )
 			{
@@ -234,8 +363,8 @@ function Gallery()
 			else
 			{
 				animation_duration = animation_duration / 10;
-				block_animation_time = animation_duration / block_count;			
-				blocks_to_animate = block_count / animation_duration;
+				block_animation_time = animation_duration / sketch_block_count;			
+				blocks_to_animate = sketch_block_count / animation_duration;
 				timeout = 1;
 				blocks_to_animate = Math.ceil( blocks_to_animate ) * 2;
 			}			
@@ -245,32 +374,10 @@ function Gallery()
 				$( '#gallery .sketch-' + sketch_id ).addClass( 'active' );
 			}
 
-			$( '.gallery-info .sketch-name' ).text( _sketches[sketch_index].name );
-			$( '.gallery-info .sketch-blocks' ).text( _sketches[sketch_index].blocks.length + ' blocks' );
-			
-			if ( _sketches[sketch_index].author )
-			{
-				$( '.gallery-info .sketch-author' )
-					.text( 'by ' + _sketches[sketch_index].author )
-					.show();
-			}
-
 			else
 			{
-				$( '.gallery-info .sketch-author' ).hide();
+				$( '.gallery-info .active' ).not( '.gallery-controls, .gallery-controls *' ).removeClass( 'active' );
 			}
-
-			if ( _sketches[sketch_index].date )
-			{
-				$( '.gallery-info .sketch-date' )
-					.text( _sketches[sketch_index].date )
-					.show();
-			}
-
-			else
-			{
-				$( '.gallery-info .sketch-date' ).hide();
-			}			
 
 			var animation_options = {
 				blocks_to_animate: blocks_to_animate,
@@ -315,22 +422,114 @@ function Gallery()
 			}
 
 			blockAnimate( animation_options );
-		}
+		//}
 	}
 
 	function sketchAnimated( $id, $direction, $callback )
 	{
-		if ( _active )
-		{	
+		//if ( _active )
+		//{
+			_animating = false;
+
+			$( '#gallery-playpause' ).removeClass( 'disabled' );
+
 			if ( $direction )
 			{
 				$( '.sketch-' + $id ).removeClass( 'active' );
 			}
 
+			else
+			{
+				_sketch_active_id = $id;
+
+				sketchInfoUpdate( _sketches[getSketchIndex( $id )] );
+			}
+
 			if ( $callback )
 			{
-				$callback();
+				setTimeout( $callback, 2000 );
 			}
+		//}
+	}
+
+	function sketchInfoUpdate( $sketch )
+	{
+		var sketch_block_count = $sketch.blocks.length;
+
+		$( '.gallery-info .sketch-blocks' )
+			.text( sketch_block_count + ' blocks' )
+			.addClass( 'active' );
+
+		if ( $sketch.author )
+		{
+			var author_html = 'by ';
+
+			if ( $sketch.author )
+			{
+				if ( $sketch.website )
+				{
+					author_html += '<a href="' + $sketch.website + '">' + $sketch.author + '</a>';
+				}
+
+				else
+				{
+					author_html += $sketch.author;
+				}
+
+				$( '.gallery-info .sketch-author' )
+					.html( author_html )
+					.addClass( 'active' );
+			}			
+		}
+
+		else
+		{
+			$( '.gallery-info .sketch-author' )
+				.text( '' )
+				.removeClass( 'active' );
+		}
+
+		if ( $sketch.name )
+		{
+			$( '.gallery-info .sketch-name' )
+				.text( $sketch.name )
+				.addClass( 'active' );
+		}
+
+		else
+		{
+			$( '.gallery-info .sketch-name' )
+				.text( '' )
+				.removeClass( 'active' );
+		}
+
+		if ( $sketch.twitter )
+		{
+			$( '.gallery-info .sketch-twitter' )
+				.html( '<a href="http://www.twitter.com/' + $sketch.twitter + '">@' + $sketch.twitter + '</a>' )
+				.addClass( 'active' );
+		}
+
+		else
+		{
+			$( '.gallery-info .sketch-twitter' )
+				.text( '' )
+				.removeClass( 'active' );
+		}
+
+		if ( $sketch.date )
+		{
+			var date = 'on ' + $sketch.date.split( ' ' )[0];
+			$( '.gallery-info .sketch-date' )
+				.text( date )
+				.addClass( 'active' );
+		}
+
+		else
+		{
+			$( '.gallery-info .sketch-date' )
+				.text( '' )
+				.removeClass( 'active' );
 		}
 	}
 
@@ -339,7 +538,7 @@ function Gallery()
 		var return_value = [];
 		var window_width = $( window ).width();
 		var window_height = $( window ).height();
-		var block_size = editor.getBlockSize();
+		var block_size = getBlockSize();
 		var sketch_index = getSketchIndex( $id ) !== -1 ? getSketchIndex( $id ) : 0;
 
 		for ( var i = 0; i < _sketches[sketch_index].blocks.length; i++ )
@@ -349,8 +548,8 @@ function Gallery()
 			if ( $direction )
 			{
 				var side = {
-					x: parseInt( editor.getRandomNumber( -1, 1, true ) ),
-					y: parseInt( editor.getRandomNumber( -1, 1, true ) )
+					x: parseInt( getRandomNumber( -1, 1, true ) ),
+					y: parseInt( getRandomNumber( -1, 1, true ) )
 				};
 
 				position.left = - block_size.width;
@@ -407,42 +606,14 @@ function Gallery()
 		return return_value;
 	}
 
-	function galleryClicked( $event )
+	function keyDown( $event, $key )
 	{
-		$event.preventDefault();
 
-		if ( _active )
-		{
-			_active = false;
-
-			$( $event.target ).text( 'Show Gallery' );
-			stop();
-		}
-
-		else
-		{
-			$( $event.target  ).text( 'Show Editor' );
-			
-			_active = true;
-			start();
-		}
-	}
-
-	function showSketchByAddress( $address )
-	{
-		if ( $address.indexOf( 'gallery' ) !== -1 )
-		{
-			var sketch_id = $address[$address.indexOf( 'gallery' ) + 1];
-			
-			sketchShow( sketch_id );
-		}
-	}
+	} 
 
 	_self.init = init;
-	_self.toggle = toggle;
-	_self.sketchAnimate = sketchAnimate;
-	_self.getActive = function(){ return _active };
 	_self.start = start;
 	_self.stop = stop;
-	_self.showSketchByAddress = showSketchByAddress;
+	_self.addressChanged = addressChanged;
+	_self.keyDown = keyDown;
 }
