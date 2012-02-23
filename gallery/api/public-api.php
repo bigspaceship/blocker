@@ -14,7 +14,7 @@ if ( isset ( $_GET[ 'action' ] ) )
 
 		foreach ( $ids as $id )
 		{
-			$output[] = $id['id'];
+			$output[] = $id['slug'];
 		}
 
 		sort( $output );
@@ -30,12 +30,40 @@ if ( isset ( $_GET[ 'action' ] ) )
 
 			foreach ( $sketches as $sketch )
 			{
-				if ( $sketch['blocks'] )
+				if ( isset( $sketch['blocks'] ) )
 				{
 					$sketch['blocks'] = unserialize( stripslashes( $sketch['blocks'] ) );
 				}
 
 				if ( ! $sketch['name'] )
+				{
+					$sketch['name'] = 'untitled';
+				}
+
+				$sketch['id'] = $sketch['slug'];
+
+				$output = $sketch;
+			}
+		}
+
+		if ( $action === 'download-sketch' )
+		{
+			$sketches = downloadSketch( $value );
+			$output = $sketches;
+
+			foreach ( $sketches as $sketch )
+			{
+				if ( isset( $sketch['blocks'] ) )
+				{
+					$sketch['blocks'] = unserialize( stripslashes( $sketch['blocks'] ) );
+				}
+
+				if ( isset( $sketch['history'] ) )
+				{
+					$sketch['history'] = unserialize( stripslashes( $sketch['history'] ) );
+				}
+
+				if ( ! isset( $sketch['name'] ) )
 				{
 					$sketch['name'] = 'untitled';
 				}

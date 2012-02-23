@@ -13,15 +13,29 @@ function Gallery()
 	var _animating = false;
 
 	var _just_opened = false;
+	var _playing_tmp = false;
 
 	function init()
 	{
+		window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder
+		window.URL = window.webkitURL || window.URL;
+
 		if ( ! $( '#gallery' ).length )
 		{
 			var gallery_html = '<div id="gallery"></div>';
 
 			$( 'body' ).append( gallery_html );
 			$( '#gallery-playpause' ).click( playPause );
+
+			if ( ! window.BlobBuilder )
+			{
+				$( '.sketch-download' ).remove();
+			}
+
+			else
+			{
+				$( '.sketch-download a' ).click( sketchGenerateDownload );
+			}
 		}
 	}
 
@@ -376,7 +390,7 @@ function Gallery()
 
 			else
 			{
-				$( '.gallery-info .active' ).not( '.gallery-controls, .gallery-controls *' ).removeClass( 'active' );
+				$( '.gallery-info' ).removeClass( 'active' );
 			}
 
 			var animation_options = {
@@ -530,6 +544,77 @@ function Gallery()
 			$( '.gallery-info .sketch-date' )
 				.text( '' )
 				.removeClass( 'active' );
+		}
+
+		$( '.gallery-info ').addClass( 'active' );
+	}
+
+	function sketchGenerateDownload( $event )
+	{
+		$event.preventDefault();
+
+		var sketch_index = getSketchIndex( _sketch_active_id );
+		var sketch = _sketches[sketch_index];
+
+		var json_url = 'api/public-api?action=download-sketch&value=' + _sketch_active_id;
+			
+		$.ajax(
+			{
+				url: json_url,
+				dataType: 'json',
+				success: function( $data )
+				{
+					var dialog_html = '';
+						dialog_html += '<div class="dialog dialog-download">';
+						dialog_html += 		'<p>Download Sketch "' + sketch.name + '"</p>';
+						dialog_html += 		'<a href="#" id="dialog-confirm" class="info-button">download</p>';
+						dialog_html += '</div>';
+
+					$( 'body' ).append( dialog_html );
+
+					textToDownload( JSON.stringify( $data ), $data, 'application/json', '.json', $( '#dialog-confirm' ) );
+				}
+			}
+		);
+	}
+
+	function sketchDownloaded( $event )
+	{
+		//$event.preventDefault();
+
+		var target = $( $event.target );
+		var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+
+		// gf: chrome is the only browser that supports the a[download] attribute. :-/
+		if ( ! is_chrome )
+		{
+			window.open( target.attr( 'href' ) );
+		}
+
+		$( '.dialog-download' ).remove();
+	}
+
+	function textToDownload( $text, $data, $mime_type, $file_extension, $link )
+	{
+		if ( window.BlobBuilder )
+		{
+			var blob_builder = new BlobBuilder();
+				blob_builder.append( $text );
+
+			var filename = $data.slug || 'myBlocks';
+				filename += $file_extension;
+
+			var filepath = window.URL.createObjectURL( blob_builder.getBlob( $mime_type ) );
+
+			var download_link_attributes = {
+				download: filename,
+				href: filepath,
+				'data-downloadurl': [ $mime_type, filename, filepath ].join( ':' )
+			}
+
+			$link
+				.attr( download_link_attributes )
+				.click( sketchDownloaded );
 		}
 	}
 

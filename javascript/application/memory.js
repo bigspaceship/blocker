@@ -5,7 +5,7 @@ function Memory()
 
 	function init( $modules )
 	{
-		_modules = $modules
+		_modules = $modules;
 	}
 
 	function fileImported( $event )
@@ -24,7 +24,10 @@ function Memory()
 			files_imported.push( file );
 		}
 
-		if ( files_imported.length )
+		if (
+			files_imported.length &&
+			window.FileReader
+		)
 		{
 			var reader = new FileReader();
 
@@ -133,7 +136,14 @@ function Memory()
 			var store = load() || [];
 				store.push( data );
 
-			localStorage.setItem( 'blocks_data', JSON.stringify( store ) );
+			if (
+				Modernizr.localstorage &&
+				JSON &&
+				JSON.stringify
+			)
+			{
+				localStorage.setItem( 'blocks_data', JSON.stringify( store ) );
+			}
 		}
 
 		_modules.navigation.savedToLocal();
@@ -142,47 +152,65 @@ function Memory()
 	function load()
 	{
 		var data = [];
+		
+		if ( Modernizr.localstorage )
+		{
 			data = jQuery.parseJSON( localStorage.getItem( 'blocks_data' ) );
+		}
 		
 		return data;
 	}
 
 	function textToDownload( $event, $text, $data, $mime_type, $file_extension )
 	{
-		window.URL = window.webkitURL || window.URL;
-		window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder;
-
-		$( '.export-info input, .export-info label, .export-info .info-button' ).hide();
-		
-		if ( ! $( '.export-info .download-link' ).length )
+		if ( window.BlobBuilder )
 		{
-			$( '.export-info h1' ).after( '<a class="download-link info-button">Download File</a>' );
+			$( '.export-info input, .export-info label, .export-info .info-button' ).hide();
+			
+			if ( ! $( '.export-info .download-link' ).length )
+			{
+				$( '.export-info h1' ).after( '<a class="download-link info-button">Download File</a>' );
+			}
+
+			var blob_builder = new BlobBuilder();
+				blob_builder.append( $text );
+
+			var filename = $data.id || 'myBlocks';
+				filename += $file_extension;
+
+			var filepath = window.URL.createObjectURL( blob_builder.getBlob( $mime_type ) );
+
+			var download_link = $( '.export-info .download-link' );
+
+			var download_link_attributes = {
+				download: filename,
+				href: filepath,
+				'data-downloadurl': [ $mime_type, filename, filepath ].join( ':' )
+			}
+
+			download_link
+				.attr( download_link_attributes )
+				.click( fileDownloaded );
 		}
-
-		var blob_builder = new BlobBuilder();
-			blob_builder.append( $text );
-
-		var filename = $data.id || 'myBlocks';
-			filename += $file_extension;
-
-		var filepath = window.URL.createObjectURL( blob_builder.getBlob( $mime_type ) );
-
-		var download_link = $( '.export-info .download-link' );
-
-		var download_link_attributes = {
-			download: filename,
-			href: filepath,
-			'data-downloadurl': [ $mime_type, filename, filepath ].join( ':' )
-		}
-
-		download_link
-			.attr( download_link_attributes )
-			.click( fileDownloaded );
 	}
 
 	function fileDownloaded( $event )
 	{
-		$( $event.target ).remove();
+		var target = $( $event.target );
+		var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+
+		// gf: chrome is the only browser that suppports the a[download] attribute. :-/
+		if ( ! is_chrome )
+		{
+			$event.preventDefault();
+			$event.stopPropagation();
+			window.open( target.attr( 'href' ) );
+		}
+
+		target.remove();
+
+		
+
 		$( '.export-info input, .export-info label, .export-info a' ).show();
 	}
 

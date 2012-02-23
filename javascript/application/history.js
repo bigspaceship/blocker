@@ -95,7 +95,7 @@ function History()
 	{
 		var storage = _modules.memory.load();
 
-		if ( 
+		if (
 			storage &&
 			storage.history
 		)
@@ -115,14 +115,27 @@ function History()
 		{
 			var blocks_to_add = [];
 
-			for ( var j = 0; j < _imported_history[i].blocks.length; j++ )
+			if ( _imported_history[i].blocks )
 			{
-				if ( _imported_history[i].blocks[j].index === $old_index )
+				for ( var j = 0; j < _imported_history[i].blocks.length; j++ )
 				{
-					_imported_history[i].blocks[j].index = $new_index;
+					if ( _imported_history[i].blocks[j].index === $old_index )
+					{
+						_imported_history[i].blocks[j].index = $new_index;
+					}
+
+					blocks_to_add.push( _imported_history[i].blocks[j] );
+				}
+			}
+
+			if ( _imported_history[i].block )
+			{
+				if ( _imported_history[i].block.index === $old_index )
+				{
+					_imported_history[i].block.index = $new_index;
 				}
 
-				blocks_to_add.push( _imported_history[i].blocks[j] );
+				blocks_to_add.push( _imported_history[i].block );
 			}
 			
 			save( { action: 'add', blocks: blocks_to_add } );

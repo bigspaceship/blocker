@@ -725,40 +725,42 @@ function Canvas()
 		}			
 	}
 
-	function historyUpdate( $options )
+	function historyUpdate( $action, $item )
 	{
+		options = _modules.history[$action]( $item );
+
 		if ( _active )
 		{
 			if (
-				$options &&
-				$options.blocks &&
-				$options.action &&
-				$options.history_action
+				options &&
+				options.blocks &&
+				options.action &&
+				options.history_action
 			)
 			{
-				if ( $options.history_action === 'undo' )
+				if ( options.history_action === 'undo' )
 				{
-					if ( $options.action === 'add' )
+					if ( options.action === 'add' )
 					{
-						historyRemoveBlocks( $options );
+						historyRemoveBlocks( options );
 					}
 
-					if ( $options.action === 'remove' )
+					if ( options.action === 'remove' )
 					{
-						historyAddBlocks( $options );
+						historyAddBlocks( options );
 					}
 				}
 
-				if ( $options.history_action === 'redo' )
+				if ( options.history_action === 'redo' )
 				{
-					if ( $options.action === 'remove' )
+					if ( options.action === 'remove' )
 					{
-						historyRemoveBlocks( $options );
+						historyRemoveBlocks( options );
 					}
 
-					if ( $options.action === 'add' )
+					if ( options.action === 'add' )
 					{
-						historyAddBlocks( $options );
+						historyAddBlocks( options );
 					}
 				}
 			}
