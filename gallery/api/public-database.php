@@ -1,5 +1,6 @@
 <?php
-include( 'config.php' );
+include_once( 'config.php' );
+include_once( 'slug.php' );
 
 $connection = mysql_connect( $db_host, $db_username, $db_password );
 
@@ -10,33 +11,70 @@ if ( $connection )
 
 function sketchSave( $sketch )
 {	
-	$name = $sketch['name'] ? mysql_real_escape_string( $sketch['name'] ) : 'untitled';
-	$blocks = mysql_real_escape_string( serialize( $sketch['blocks'] ) );
-	$author = $sketch['author'] ? mysql_real_escape_string( $sketch['author'] ) : 'anonymous';
-	$website = $sketch['website'] ? mysql_real_escape_string( $sketch['website'] ) : '';
-	$twitter = $sketch['twitter'] ? mysql_real_escape_string( $sketch['twitter'] ) : '';
-	$date = $sketch['date'] ? mysql_real_escape_string( $sketch['date'] ) : '';
+	$field_keys= array();
+	$field_values = array();
 
-	mysql_query( "INSERT INTO blocks (blocks, name, author, website, twitter, date, accepted, moderated) VALUES ('" . $blocks . "', '" . $name . "', '" . $author . "', '" . $website . "', '" . $twitter . "', '" . $date . "', '0', '0')" );
+	$db_fields['name'] = $sketch['name'] ? mysql_real_escape_string( $sketch['name'] ) : 'untitled';
+	$db_fields['blocks'] = mysql_real_escape_string( serialize( $sketch['blocks'] ) );
+	$db_fields['history'] = mysql_real_escape_string( serialize( $sketch['history'] ) );
+	$db_fields['author'] = isset( $sketch['author'] ) ? mysql_real_escape_string( $sketch['author'] ) : 'anonymous';
+	$db_fields['website'] = isset( $sketch['website'] ) ? mysql_real_escape_string( $sketch['website'] ) : '';
+	$db_fields['name'] = isset( $sketch['name'] ) ? mysql_real_escape_string( $sketch['name'] ) : '';
+	$db_fields['twitter'] = isset( $sketch['twitter'] ) ? mysql_real_escape_string( $sketch['twitter'] ) : '';
+	$db_fields['date'] = isset( $sketch['date'] ) ? mysql_real_escape_string( $sketch['date'] ) : '';
+	$db_fields['slug'] = generateSlug( $sketch['name'] );
+	$db_fields['accepted'] = '0';
+
+	foreach( $db_fields as $key => $value )
+	{
+		$field_keys[] = $key;
+		$field_values[] = "'" . $value . "'";
+	}
+
+	$query_string = "INSERT INTO blocks (";
+	$query_string .= join( ',', $field_keys );
+	$query_string .= ") VALUES (";
+	$query_string .= join( ', ', $field_values );
+	$query_string .= ")";
+
+	mysql_query( $query_string );
 }
 
 function getAcceptedSketchIDs()
 {
-	return resultToArray( mysql_query( "SELECT id FROM blocks WHERE accepted = '1' ORDER BY id DESC" ) );
+	return resultToArray( mysql_query( "SELECT slug FROM blocks WHERE accepted = '1' ORDER BY id DESC" ) );
 }
 
-function getSketch( $id )
+function getSketch( $slug )
 {
-	$id = mysql_real_escape_string( $id );
-	$result = resultToArray( mysql_query( "SELECT id,name,blocks,author,website,twitter,date,accepted,moderated FROM blocks WHERE id = '" . $id .  "'" ) );
+	$slug = mysql_real_escape_string( $slug );
+	$result = resultToArray( mysql_query( "SELECT name,blocks,author,website,twitter,date,slug FROM blocks WHERE slug = '" . $slug .  "'" ) );
 	
-	//print_r( $result );
+	return $result;
+}
 
-	//$result['blocks'] = unserialize( stripslashes( $result['blocks'] ) );
-	//$result['author'] = stripslashes( $result['author'] );
-	//$result['website'] = stripslashes( $result['website'] );
+function downloadSketch( $slug )
+{
+	$slug = mysql_real_escape_string( $slug );
+	$result = resultToArray( mysql_query( "SELECT name,slug,blocks,history,author,website,twitter FROM blocks WHERE slug = '" . $slug .  "'" ) );
 
 	return $result;
+}
+
+function generateSlug( $name )
+{
+	$slug = mysql_real_escape_string( slug( $name ) );
+	$slug = str_replace( '-json', '', $slug );
+	$slug = substr( $slug, 0, 27 );
+
+	$in_database = resultToArray( mysql_query( "SELECT slug FROM blocks WHERE slug LIKE '" . $slug . "%'" ) );
+
+	if ( count( $in_database ) > 0 )
+	{
+		$slug .= '-' . count( $in_database );
+	}
+
+	return $slug;
 }
 
 function resultToArray( $result )
@@ -44,7 +82,7 @@ function resultToArray( $result )
 	$return_value = array();
 
 	while ( $row = mysql_fetch_array( $result, MYSQL_ASSOC ) )
-	{
+	{	
 		$return_value[] = $row;
 	}
 

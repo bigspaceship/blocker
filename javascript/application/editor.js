@@ -13,6 +13,9 @@ function Editor()
 
 	function init()
 	{
+		window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder
+		window.URL = window.webkitURL || window.URL;
+		
 		modulesCall( 'init', _modules );
 	}
 

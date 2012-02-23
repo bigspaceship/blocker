@@ -40,6 +40,21 @@ var Navigation = function()
 
 		var color = $( '.color-buttons li.active a' ).attr( 'id' ).replace( 'color-button-', '' );
 
+		if ( ! Modernizr.localstorage )
+		{
+			$( '#file-save, #file-load' ).remove();
+		}
+
+		if ( ! window.FileReader )
+		{
+			$( '#file-import' ).remove();
+		}
+
+		if ( ! window.BlobBuilder || ! window.URL )
+		{
+			$( '#file-export' ).remove();
+		}
+
 		_modules.canvas.setMode( 'single' );
 		_modules.canvas.colorUpdate( color );		
 	}

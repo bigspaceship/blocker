@@ -1,6 +1,6 @@
 <?php
-require_once( 'slug.php' );
-require_once( 'public-database.php' );
+require_once( 'api/slug.php' );
+require_once( 'api/public-database.php' );
 ?>
 <!doctype html>
 <!--[if lt IE 7]> <html itemscope itemtype="http://schema.org/Product" class="no-js ie6 oldie" lang="en"> <![endif]-->
@@ -121,20 +121,34 @@ elseif (
 			$file_name = date( 'Y-m-d-H-i-s' ) . '_' . $_FILES['file']['name'];
 			$website = filter_var( $_POST[ 'website' ], FILTER_VALIDATE_URL );
 			$author = $_POST[ 'author' ];
+			$name = isset( $_POST[ 'name' ] ) ? $_POST[ 'name' ] : '';
 
 			preg_match_all( '/@([A-Za-z0-9_]+)/', $_POST[ 'twitter' ], $twitter_handles );
 
-			if ( ! $json['id'] )
+			if ( ! isset( $json['id'] ) )
 			{
 				$json['id'] = $file_name;
 			}
 
-			if ( ! $json['name'] )
+			if ( $name === '' )
 			{
 				$json['name'] = $_FILES['file']['name'];
 			}
 
-			if ( strtotime( $json['date'] ) )
+			if ( ! isset(  $json['history'] ) )
+			{
+				$json['history'] = array();
+			}
+
+			if ( count( $json['history'] ) > 3000 )
+			{
+				$json['history'] = array_slice( $json['history'], 0, 3000 );
+			}
+
+			if (
+				isset( $json['date'] ) && 
+				strtotime( $json['date'] )
+			)
 			{
 				$json['date'] = date( 'Y-m-d H:i', strtotime( $json['date'] ) );
 			}
