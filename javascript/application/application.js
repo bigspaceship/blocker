@@ -12,6 +12,14 @@ function Application()
 		$( document ).keydown( keyDown );
 
 		warning();
+
+		window.addEventListener( 'online', connected );
+		window.addEventListener( 'offline', disconnected );
+
+		if ( ! navigator.onLine )
+		{
+			$( '.toggle-button' ).hide();
+		}
 	}
 
 	function keyDown( $event )
@@ -33,6 +41,16 @@ function Application()
 
 			$( 'body' ).prepend( warning_html );
 		}
+	}
+
+	function disconnected( $event )
+	{
+		$( '.toggle-button' ).fadeOut();
+	}
+
+	function connected( $event )
+	{
+		$( '.toggle-button' ).fadeIn();
 	}
 
 	_self.init = init;
