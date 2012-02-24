@@ -106,6 +106,11 @@ $( document ).ready(
 			$( '.sketch-list' ).tsort( '.date', { order: 'desc' } );
 		}
 
+		function sketchPreview( $id )
+		{
+			window.open( 'preview.php?id=' + $id );
+		}
+
 		function listAddItem( $item, $index )
 		{
 			var moderated_class = parseInt( $item.moderated ) > 0 ? 'sketch-moderated' : 'sketch-not-moderated';
@@ -170,7 +175,8 @@ $( document ).ready(
 				item_html += 	'<p class="sketch-options">';
 				item_html += 		'<a href="#" class="sketch-delete">delete</a> ';
 				item_html += 		'<a href="#" class="sketch-accept">accept</a> ';
-				item_html += 		'<a href="#" class="sketch-decline">decline</a>'
+				item_html += 		'<a href="#" class="sketch-decline">decline</a> ';
+				item_html += 		'<a href="#" class="sketch-preview">preview</a>'
 				item_html += 	'</p>';				
 				item_html += '</li>';
 			
@@ -228,6 +234,11 @@ $( document ).ready(
 			if ( action === 'decline' )
 			{
 				sketchDecline( item_id );
+			}
+
+			if ( action === 'preview' )
+			{
+				sketchPreview( item_id );
 			}
 		}
 

@@ -133,7 +133,7 @@ section > *
 	.sketch-website
 	{
 		width: 100%;
-		max-width: 180px;
+		max-width: 130px;
 		overflow: hidden;
 	}
 
@@ -147,7 +147,7 @@ section > *
 	.sketch-options
 	{
 		width: 100%;
-		max-width: 140px;
+		max-width: 200px;
 		display: none;
 	}
 
@@ -156,6 +156,14 @@ section > *
 		display: inline;
 		width: auto;
 		float: none;
+	}
+
+	.sketch-options .sketch-preview
+	{
+		text-align: right;
+		display: block;
+		float: right;
+		margin-right: 10px;
 	}
 
 	li:hover .sketch-options
