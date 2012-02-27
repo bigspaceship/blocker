@@ -130,7 +130,10 @@ $( document ).ready(
 								text = '';
 							}
 
-							if ( $( this ).is( '.sketch-website' ) )
+							if (
+								$( this ).is( '.sketch-website' ) &&
+								text !== ''
+							)
 							{
 								text =  $( this ).find( 'a' ).attr( 'href' );
 							}
