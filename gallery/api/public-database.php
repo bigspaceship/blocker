@@ -1,6 +1,7 @@
 <?php
 include_once( 'config.php' );
 include_once( 'slug.php' );
+include_once( 'validemail.php' );
 
 $connection = mysql_connect( $db_host, $db_username, $db_password );
 
@@ -17,12 +18,13 @@ function sketchSave( $sketch )
 	$db_fields['name'] = $sketch['name'] ? mysql_real_escape_string( $sketch['name'] ) : 'untitled';
 	$db_fields['blocks'] = mysql_real_escape_string( serialize( $sketch['blocks'] ) );
 	$db_fields['history'] = mysql_real_escape_string( serialize( $sketch['history'] ) );
-	$db_fields['author'] = isset( $sketch['author'] ) ? mysql_real_escape_string( $sketch['author'] ) : 'anonymous';
-	$db_fields['website'] = isset( $sketch['website'] ) ? mysql_real_escape_string( $sketch['website'] ) : '';
-	$db_fields['name'] = isset( $sketch['name'] ) ? mysql_real_escape_string( $sketch['name'] ) : '';
-	$db_fields['twitter'] = isset( $sketch['twitter'] ) ? mysql_real_escape_string( $sketch['twitter'] ) : '';
-	$db_fields['date'] = isset( $sketch['date'] ) ? mysql_real_escape_string( $sketch['date'] ) : '';
-	$db_fields['slug'] = generateSlug( $sketch['name'] );
+	$db_fields['author'] = isset( $sketch['author'] ) ? mysql_real_escape_string( utf8_encode( $sketch['author'] ) ) : 'anonymous';
+	$db_fields['website'] = isset( $sketch['website'] ) ? mysql_real_escape_string( utf8_encode( $sketch['website'] ) )  : '';
+	$db_fields['name'] = isset( $sketch['name'] ) ? mysql_real_escape_string( utf8_encode( $sketch['name'] ) ) : '';
+	$db_fields['email'] = ( isset( $sketch['email'] ) && validEmail( $sketch['email'] ) ) ? mysql_real_escape_string( utf8_encode( $sketch['email'] ) ) : '';
+	$db_fields['twitter'] = isset( $sketch['twitter'] ) ? mysql_real_escape_string( utf8_encode( $sketch['twitter'] ) ) : '';
+	$db_fields['date'] = isset( $sketch['date'] ) ? mysql_real_escape_string( ( $sketch['date'] ) ) : '';
+	$db_fields['slug'] = generateSlug( utf8_encode( $sketch['name'] ) );
 	$db_fields['accepted'] = '0';
 
 	foreach( $db_fields as $key => $value )

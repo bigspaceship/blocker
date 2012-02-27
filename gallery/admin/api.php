@@ -52,6 +52,11 @@ if ( isset ( $_GET[ 'action' ] ) )
 		{
 			$output = sketchDecline( $value );
 		}
+
+		if ( $action === 'sketch-update' )
+		{
+			$output = sketchUpdate( $value, $_POST );
+		}
 	}
 
 	if ( $output )

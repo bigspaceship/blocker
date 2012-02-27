@@ -50,7 +50,7 @@ section
 section > *
 {
 	width: 100%;
-	max-width: 650px;
+	max-width: 960px;
 	margin: 0 auto;
 }
 
@@ -113,6 +113,14 @@ section > *
 	.sketch-list p
 	{
 		float: left;
+		width: 100%;
+		overflow: hidden;
+	}
+
+	.sketch-list p:hover
+	{
+		overflow: visible;
+		background-color: #fcfcfc;
 	}
 
 	.sketch-list .title
@@ -122,48 +130,177 @@ section > *
 		padding-left: 12px;
 	}
 
-	.sketch-name,
-	.sketch-author,
-	.sketch-twitter
+	.sketch-list .title p:hover
 	{
-		width: 100%;
-		max-width: 80px;
+		background-color: #fff;
 	}
+
+	.sketch-list input
+	{
+		margin-top: 2px;
+	}
+
+	.sketch-name
+	{
+		max-width: 260px;;
+	}
+
+		.sketch-name input[type="text"]
+		{
+			max-width: 250px;
+		}
+
+	.sketch-author
+	{
+		max-width: 160px;
+	}
+		.sketch-author input[type="text"]
+		{
+			max-width: 150px;
+		}
 
 	.sketch-website
 	{
-		width: 100%;
 		max-width: 130px;
 		overflow: hidden;
 	}
 
+		.sketch-website input[type="text"]
+		{
+			max-width: 120px;
+		}
+
+	.sketch-twitter
+	{
+		max-width: 80px;
+	}
+
+		.sketch-twitter input[type="text"]
+		{
+			max-width: 70px;
+		}
+
+	.sketch-email
+	{
+		max-width: 80px;
+	}
+
+		.sketch-email input[type="text"]
+		{
+			max-width: 70px;
+		}
+
 	.sketch-date
 	{
-		width: 100%;
 		max-width: 80px;
 		font-family: 'Menlo', monospace;
 	}
 
-	.sketch-options
+	p.sketch-options
 	{
-		width: 100%;
-		max-width: 200px;
+		width: auto;
 		display: none;
+		float: right;
+		clear: none;
+		overflow: visible;
 	}
 
-	.sketch-options a
+	.sketch-list .sketch-options a
 	{
-		display: inline;
-		width: auto;
-		float: none;
+		display: block;
+		width: 10px;
+		float: right;
+		position: relative;
+		background-repeat: no-repeat;
+		background-position: left center;
+		height: 30px;
+		margin-right: 5px;
+		text-decoration: none;
+		padding: 0 5px;
+	}
+
+	.sketch-list .sketch-options a span
+	{
+		display: block;
+		padding: 0 5px;
+		color: white;
+		background: #06f;
+		margin-top: -12px;
+		width: 50px;
+		height: 18px;
+		line-height: 18px;
+		margin-left: -30px;
+		text-align: center;
+		color: #fff;
+		text-decoration: none;
+		opacity: 0;
+
+		-webkit-border-radius: 3px;
+		   -moz-border-radius: 3px;
+				border-radius: 3px;
+	}
+
+	.sketch-list .sketch-options a:hover span
+	{
+		opacity: 1;
+		text-decoration: none;
+	}
+
+	.sketch-options .sketch-decline
+	{
+		background-image: url( ../images/cross.gif );
+	}
+
+	.sketch-options .sketch-accept
+	{
+		background-image: url( ../images/tick.gif );
 	}
 
 	.sketch-options .sketch-preview
 	{
-		text-align: right;
+		background-image: url( ../images/magnify_plus.gif );
+	}
+
+	.sketch-options .sketch-delete
+	{
+		background-image: url( ../images/trash.gif );
+	}
+
+	.sketch-options .sketch-email
+	{
+		overflow-x: hidden;
+	}
+
+	.sketch-list .sketch-options .sketch-save
+	{
+		display: none;
+		background-image: url( ../images/save.gif );
+	}
+
+	.sketch-list .editing .sketch-options .sketch-save
+	{
 		display: block;
-		float: right;
-		margin-right: 10px;
+	}
+	
+	.sketch-list .sketch-options .sketch-edit
+	{
+		background-image: url( ../images/field_input.gif );
+	}
+
+	.sketch-list .editing .sketch-options .sketch-edit
+	{
+		display: none;
+	}
+
+	.sketch-list .sketch-options a.sketch-reset
+	{
+		display: none;
+		background-image: url( ../images/turn_left.gif );
+	}
+
+	.sketch-list .editing .sketch-options a.sketch-reset
+	{
+		display: block;
 	}
 
 	li:hover .sketch-options
@@ -185,7 +322,8 @@ label
 
 input[type="text"],
 input[type="url"],
-input[type="file"]
+input[type="file"],
+input[type="email"]
 {
 	display: block;
 	width: 100%;
@@ -201,6 +339,8 @@ input[type="file"]
 	border: 1px #efefef solid;
 	float: left;
 	margin-bottom: 5px;
+
+	outline: none;
 }
 
 

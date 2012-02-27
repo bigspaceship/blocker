@@ -27,6 +27,7 @@ $( document ).ready(
 			}
 
 			listAddTitle();
+			listAddTextEdit();
 		}
 
 		function sketchDelete( $id )
@@ -111,6 +112,165 @@ $( document ).ready(
 			window.open( 'preview.php?id=' + $id );
 		}
 
+		function sketchEdit( $id )
+		{
+			var sketch = $( '#sketch-' + $id );
+			
+			if ( ! sketch.hasClass( 'editing' ) )
+			{
+				sketch
+					.addClass( 'editing' )
+					.find( '.sketch-name, .sketch-author, .sketch-email, .sketch-twitter, .sketch-website' ).each(
+						function()
+						{
+							var text = $( this ).text();
+
+							if ( text === '-' )
+							{
+								text = '';
+							}
+
+							if ( $( this ).is( '.sketch-website' ) )
+							{
+								text =  $( this ).find( 'a' ).attr( 'href' );
+							}
+
+							$( this ).wrapInner( '<div class="original-text" />' );
+							$( this ).append( '<input type="text" value="' + text+ '" />' );
+							$( this ).find( '.original-text' ).hide();
+							$( this ).find( '.sketch-save' ).addClass( 'active' );	
+						}
+					);
+			}
+
+			else
+			{
+				sketch
+					.removeClass( 'editing' )
+					.find( '.sketch-name, .sketch-author, .sketch-email, .sketch-twitter, .sketch-website' ).each(
+						function()
+						{
+							var item = $( this );
+							var text = item.find( '.original-text' ).text();
+
+							if ( text == '' )
+							{
+								text = '-';
+							}
+
+							if (
+								item.is( '.sketch-website' ) &&
+								text !== '-'
+							)
+							{
+								text =  item.find( '.original-text a' ).attr( 'href' );
+								item.html( '<a href="' + text + '">' + text + '</a>' );
+							}
+
+							else
+							{
+								item.html( text );
+							}
+						}
+					);
+			}			
+		}
+
+		function sketchReset( $id )
+		{
+			var sketch = $( '#sketch-' + $id );
+
+			sketch
+				.removeClass( 'editing' )
+				.find( '.sketch-name, .sketch-author, .sketch-email, .sketch-twitter, .sketch-website' ).each(
+					function()
+					{
+						var item = $( this );
+						var text = item.find( '.original-text' ).text();
+
+						if ( text == '' )
+						{
+							text = '-';
+						}
+
+						if (
+							item.is( '.sketch-website' ) && 
+							text !== ''
+						)
+						{
+							text =  item.find( '.original-text a' ).attr( 'href' );
+
+							item.html( '<a href="' + text + '">' + text + '</a>' );
+						}
+
+						else
+						{
+							item.html( text );
+						}
+					}
+				);
+		}
+
+		function sketchSave( $id )
+		{
+			var sketch = $( '#sketch-' + $id );
+			var update_data = {};
+
+			sketch
+				.removeClass( 'editing' )
+				.find( '.sketch-name, .sketch-author, .sketch-email, .sketch-twitter, .sketch-website' ).each(
+					function()
+					{
+						var item = $( this );
+						var text = item.find( 'input' ).val();
+
+						if ( text === '' )
+						{
+							text = '-';
+						}
+
+						if (
+							item.is( '.sketch-website' ) &&
+							text !== '-'
+						)
+						{
+							text = item.find( 'a' ).attr( 'href' );
+						}
+
+						var key = item.attr( 'class' ).replace( 'sketch-', '' );
+
+						if ( $( this ).find( '.original-text' ).length )
+						{
+							if ( text != $( this ).find( '.original-text' ).text() )
+							{
+								update_data[key] = text;
+							}
+						}						
+
+						if (
+							item.is( '.sketch-website' ) &&
+							text !== '-'
+						)
+						{
+							item.html( '<a href="' + text + '">' + text.replace( 'http://', '' ).replace( 'www.', '' ) + '</a>' );
+						}
+
+						else
+						{
+							item.html( text );
+						}
+					}
+				);
+
+			sketch.addClass( 'saving' );
+			$.post( 'api.php?action=sketch-update&value=' + $id, update_data, sketchSaved );
+		}
+
+		function sketchSaved( $id )
+		{
+			$( '#sketch-' + $id ).removeClass( 'saving' );
+		}
+
 		function listAddItem( $item, $index )
 		{
 			var moderated_class = parseInt( $item.moderated ) > 0 ? 'sketch-moderated' : 'sketch-not-moderated';
@@ -138,13 +298,25 @@ $( document ).ready(
 				}
 
 				if ( $item.author )
-				{
+				{	
+
 					item_html += 	'<p class="sketch-author">' + $item.author + '</p>';
 				}
 
 				else
 				{
-					item_html += 	'<p class="sketch-author"> --- </p>';
+					item_html += 	'<p class="sketch-author">-</p>';
+				}
+
+				if ( $item.email )
+				{	
+
+					item_html += 	'<p class="sketch-email">' + $item.email + '</p>';
+				}
+
+				else
+				{
+					item_html += 	'<p class="sketch-email">-</p>';
 				}
 
 				if ( $item.website )
@@ -154,7 +326,7 @@ $( document ).ready(
 
 				else
 				{
-					item_html += 	'<p class="sketch-website"> --- </p>';
+					item_html += 	'<p class="sketch-website">-</p>';
 				}
 
 				if ( $item.twitter )
@@ -164,7 +336,7 @@ $( document ).ready(
 
 				else
 				{
-					item_html += 	'<p class="sketch-twitter"> --- </p>';
+					item_html += 	'<p class="sketch-twitter">-</p>';
 				}
 
 				if ( $item.date )
@@ -173,10 +345,13 @@ $( document ).ready(
 				}
 
 				item_html += 	'<p class="sketch-options">';
-				item_html += 		'<a href="#" class="sketch-delete">delete</a> ';
-				item_html += 		'<a href="#" class="sketch-accept">accept</a> ';
-				item_html += 		'<a href="#" class="sketch-decline">decline</a> ';
-				item_html += 		'<a href="#" class="sketch-preview">preview</a>'
+				item_html += 		'<a href="#" class="sketch-delete"><span>delete</span></a>';
+				item_html += 		'<a href="#" class="sketch-accept"><span>accept</span></a>';
+				item_html += 		'<a href="#" class="sketch-decline"><span>decline</span></a>';
+				item_html += 		'<a href="#" class="sketch-preview"><span>preview</span></a>';
+				item_html += 		'<a href="#" class="sketch-save"><span>save</span></a>';
+				item_html += 		'<a href="#" class="sketch-edit"><span>edit</span></a>';
+				item_html += 		'<a href="#" class="sketch-reset"><span>reset</span></a>';
 				item_html += 	'</p>';				
 				item_html += '</li>';
 			
@@ -201,12 +376,27 @@ $( document ).ready(
 				title_html += '<li class="title">';
 				title_html += 	'<p class="sketch-name">Title</p>';
 				title_html += 	'<p class="sketch-author">Author</p>';
+				title_html += 	'<p class="sketch-email">Email</p>';
 				title_html += 	'<p class="sketch-website">Website</p>';
 				title_html += 	'<p class="sketch-twitter">Twitter</p>';
 				title_html += 	'<p class="sketch-date">Date</p>';
 				title_html += '</li>';
 
 			$( '.sketch-list' ).prepend( title_html );
+		}
+
+		function listAddTextEdit()
+		{
+		//{
+		//	$( '.sketch-list > li' ).each(
+		//		function( $index, $item )
+		//		{
+		//			$( this ).find( '.sketch-name' ).click( sketchNameClicked );
+		//			$( this ).find( '.sketch-author' ).click( sketchAuthorClicked );
+		//			$( this ).find( '.sketch-email' ).click( sketchEmailClicked );
+		//			$( this ).find( '.sketch-website, .sketch-website ' ).click( sketchWebsiteClicked );
+		//		}
+		//	);
 		}
 
 		function optionsClicked( $event )
@@ -239,6 +429,21 @@ $( document ).ready(
 			if ( action === 'preview' )
 			{
 				sketchPreview( item_id );
+			}
+
+			if ( action === 'edit' )
+			{
+				sketchEdit( item_id );
+			}
+
+			if ( action === 'reset' )
+			{
+				sketchReset( item_id );
+			}
+
+			if ( action === 'save' )
+			{
+				sketchSave( item_id );
 			}
 		}
 
