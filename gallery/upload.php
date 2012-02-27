@@ -1,5 +1,6 @@
 <?php
 require_once( 'api/slug.php' );
+require_once( 'api/validemail.php' );
 require_once( 'api/public-database.php' );
 ?>
 <!doctype html>
@@ -9,29 +10,31 @@ require_once( 'api/public-database.php' );
 <!--[if IE 9]>    <html itemscope itemtype="http://schema.org/Product" class="no-js ie9" lang="en"> <![endif]-->
 <html>
 	<head>
-		<title>Isometric Block Editor</title>
+		<title>Upload</title>
 		<script src="../javascript/libraries/modernizr.custom.74974.js"></script>
 		<link rel="stylesheet" href="css/upload.css" />
 	</head>
 	<body>
 		<section>
 			<h1>Sketch Upload</h1>
-			<p>Upload a sketch that you built with the <a href="../index.html">Blocks Builder</a>. Once your sketch has been approved, it will show up in the gallery.</p>
+			<p>Upload a sketch that you built with the <a href="../index.html">Blocks Builder</a>. Once your sketch has been approved, it will show up in the <a href="../gallery">gallery</a>.</p>
 			<p>Please make sure that your sketch consists of less than 1000 blocks before submitting it.</p>
-			<p>Please note: The input fields with a red border are mandatory.</p>
+			<p>Please note: The sketch name and file input fields are mandatory.</p>
+			<p>If you enter your email address, we will notify you if when we have moderated your sketch. We will not display you email address publicly or give it away. Our <a href="http://www.bigspaceship.com/terms-of-service/">Terms and Conditions</a> apply.</p>
 		</section>
 <?php
 $upload_path = "uploads/";
 
 $input_fields = array();
-$input_fields[] = array( 'name' => 'file', 'type' => 'file', 'required' => true, 'label' => 'Sketch File' );
-$input_fields[] = array( 'name' => 'name', 'type' => 'text', 'required' => true, 'label' => 'Sketch Name' );
-$input_fields[] = array( 'name' => 'author', 'type' => 'text', 'required' => false, 'label' => 'Your Name' );
-$input_fields[] = array( 'name' => 'website', 'type' => 'url', 'required' => false, 'label' => 'Your Website' );
-$input_fields[] = array( 'name' => 'twitter', 'type' => 'text', 'required' => false, 'label' => 'Your Twitter Handle' );
+$input_fields[] = array( 'name' => 'file', 		'type' => 'file', 	'required' => true, 	'label' => 'Sketch File' );
+$input_fields[] = array( 'name' => 'name', 		'type' => 'text', 	'required' => true, 	'label' => 'Sketch Name' );
+$input_fields[] = array( 'name' => 'author', 	'type' => 'text', 	'required' => false, 	'label' => 'Your Name' );
+$input_fields[] = array( 'name' => 'email', 	'type' => 'email', 	'required' => false, 	'label' => 'Your Email Address' );
+$input_fields[] = array( 'name' => 'website', 	'type' => 'url', 	'required' => false, 	'label' => 'Your Website' );
+$input_fields[] = array( 'name' => 'twitter', 	'type' => 'text', 	'required' => false, 	'label' => 'Your Twitter Handle' );
 
 if ( 
-	! $_FILES[ 'file' ] &&
+	! isset( $_FILES[ 'file' ] ) &&
 	! isset( $_POST[ 'name' ] )
 )
 {
@@ -121,6 +124,7 @@ elseif (
 			$file_name = date( 'Y-m-d-H-i-s' ) . '_' . $_FILES['file']['name'];
 			$website = filter_var( $_POST[ 'website' ], FILTER_VALIDATE_URL );
 			$author = $_POST[ 'author' ];
+			$email = validEmail( $_POST[ 'email' ] ) ? $_POST[ 'email' ] : false;
 			$name = isset( $_POST[ 'name' ] ) ? $_POST[ 'name' ] : '';
 
 			preg_match_all( '/@([A-Za-z0-9_]+)/', $_POST[ 'twitter' ], $twitter_handles );
@@ -128,11 +132,6 @@ elseif (
 			if ( ! isset( $json['id'] ) )
 			{
 				$json['id'] = $file_name;
-			}
-
-			if ( $name === '' )
-			{
-				$json['name'] = $_FILES['file']['name'];
 			}
 
 			if ( ! isset(  $json['history'] ) )
@@ -158,8 +157,12 @@ elseif (
 				$json['date'] = date( 'Y-m-d H:i' );
 			}
 
+			$json['name'] = ( $name === '' ) ? $_FILES['file']['name'] : $name;
+
 			if ( $website ) { $json['website'] = $website; }
 			if ( $author ){ $json['author'] = $author; }
+			if ( $email ){ $json['email'] = $email; }
+
 			if ( count( $twitter_handles[1] ) ) { $json['twitter'] = $twitter_handles[1][0]; }
 
 			$json['id'] = slug( $json['id'] );

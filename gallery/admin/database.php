@@ -1,5 +1,7 @@
 <?php
 include( '../config.php' );
+include_once( 'sendemail.php' );
+include_once( '../api/validemail.php' );
 
 $connection = mysql_connect( $db_host, $db_username, $db_password );
 
@@ -11,10 +13,10 @@ if ( $connection )
 function sketchSave( $sketch )
 {	
 	$blocks = mysql_real_escape_string( serialize( $sketch['blocks'] ) );
-	$author = $sketch['author'] ? mysql_real_escape_string( $sketch['author'] ) : 'anonymous';
-	$website = $sketch['website'] ? mysql_real_escape_string( $sketch['website'] ) : '';
-	$twitter = $sketch['twitter'] ? mysql_real_escape_string( $sketch['twitter'] ) : '';
-	$date = $sketch['date'] ? mysql_real_escape_string( $sketch['date'] ) : '';
+	$author = isset( $sketch['author'] ) ? mysql_real_escape_string( $sketch['author'] ) : 'anonymous';
+	$website = isset( $sketch['website'] ) ? mysql_real_escape_string( $sketch['website'] ) : '';
+	$twitter = isset( $sketch['twitter'] ) ? mysql_real_escape_string( $sketch['twitter'] ) : '';
+	$date = isset( $sketch['date'] ) ? mysql_real_escape_string( $sketch['date'] ) : '';
 
 	mysql_query( "INSERT INTO blocks (blocks, author, website, twitter, date, accepted, moderated) VALUES ('" . $blocks . "', '" . $author . "', '" . $website . "', '" . $twitter . "', '" . $date . "', '0', '0')" );
 }
@@ -24,6 +26,11 @@ function sketchAccept( $id )
 	$id = mysql_real_escape_string( $id );
 	mysql_query( "UPDATE blocks SET accepted = '1' WHERE id = '" . $id . "'" );
 	mysql_query( "UPDATE blocks SET moderated = '1' WHERE id = '" . $id . "'" );
+
+	$data = resultToArray ( mysql_query( "SELECT id,email,name,twitter,date,author,slug FROM blocks WHERE id = '" . $id . "'" ) );
+
+	sendEmail( $data );
+
 	return $id;
 }
 
@@ -40,6 +47,52 @@ function sketchDelete( $id )
 	$id = mysql_real_escape_string( $id );
 	mysql_query( "DELETE FROM blocks WHERE id = '" . $id . "'" );
 	return $id;
+}
+
+function sketchUpdate( $id, $post )
+{
+	$id = mysql_real_escape_string( $id );
+	$db_items = array();
+	$query_string = "UPDATE blocks SET ";
+
+	foreach ( $post as $key => $value )
+	{
+		if (
+			$value != '' &&
+			$value != '-'
+		)
+		{
+			if ( $key === 'email' )
+			{
+				if ( validEmail( $value ) )
+				{
+					$value = mysql_real_escape_string( $value );
+				}
+
+				else
+				{
+					$value = '';
+				}
+
+				$db_items[] = $key . " = '" . $value . "'";
+			}
+
+			else
+			{
+				$value = mysql_real_escape_string( $value );
+				$db_items[] = $key . " = '" . $value . "'";
+			}
+		}
+	}
+
+	$query_string .= implode( ', ', $db_items ) . " WHERE id = '" . $id . "'";
+
+	if ( count( $db_items ) )
+	{
+		mysql_query( $query_string );
+	}
+
+	return $id;	
 }
 
 function getAcceptedSketchIDs()
@@ -59,18 +112,18 @@ function getAllSketchIDs()
 
 function getAllSketchMeta()
 {
-	return resultToArray( mysql_query( "SELECT id,author,website,twitter,date,accepted,moderated FROM blocks ORDER BY date DESC" ) );
+	return resultToArray( mysql_query( "SELECT id,name,author,website,twitter,email,date,accepted,moderated FROM blocks ORDER BY date DESC" ) );
 }
 
 function getNewSketchMeta()
 {
-	return resultToArray( mysql_query( "SELECT id,author,website,twitter,date,accepted,moderated FROM blocks WHERE moderated = '0' ORDER BY date DESC" ) );
+	return resultToArray( mysql_query( "SELECT id,name,author,website,twitter,email,date,accepted,moderated FROM blocks WHERE moderated = '0' ORDER BY date DESC" ) );
 }
 
 function getSketch( $id )
 {
 	$id = mysql_real_escape_string( $id );
-	$result = resultToArray( mysql_query( "SELECT id,blocks,author,website,twitter,accepted,moderated FROM blocks WHERE id = ' . $id .  '" ) );
+	$result = resultToArray( mysql_query( "SELECT id,name,blocks,author,website,twitter,accepted,moderated FROM blocks WHERE id = ' . $id . '" ) );
 	
 	$result['blocks'] = unserialize( stripslashes( $result['blocks'] ) );
 	$result['author'] = stripslashes( $result['blocks'] );
@@ -82,11 +135,12 @@ function getSketch( $id )
 function getSketchMeta( $id )
 {
 	$id = mysql_real_escape_string( $id );
-	$result = resultToArray( mysql_query( "SELECT id,author,website,twitter,date,accepted,moderated FROM blocks WHERE id = ' . $id .  '" ) );
+	$result = resultToArray( mysql_query( "SELECT id,name,author,website,twitter,email,date,email,accepted,moderated FROM blocks WHERE id = ' . $id . '" ) );
 	
 	$result['author'] = stripslashes( $result['blocks'] );
 	$result['website'] = stripslashes( $result['website'] );
-
+	$result['email'] = stripslashes( $result['email'] );
+	
 	return $result;
 }
 
