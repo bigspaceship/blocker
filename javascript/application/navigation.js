@@ -29,7 +29,7 @@ var Navigation = function()
 		$( '#delete-all' ).click( deleteAllClicked );
 		$( '#delete-transparent' ).click( deleteTransparentClicked );
 
-		$( '.save-info a' ).click( saveToLocal );
+		$( '.save-info a' ).click( save );
 		
 		$( '#export-html' ).click( exportHTMLClicked );
 		$( '#export-json' ).click( exportJSONClicked );
@@ -219,7 +219,7 @@ var Navigation = function()
 		_modules.memory.exportJSON( $event );
 	}
 
-	function saveToLocal( $event )
+	function save( $event )
 	{
 		$event.preventDefault();
 
@@ -231,7 +231,7 @@ var Navigation = function()
 				.text( 'Saved' )
 				.addClass( 'inactive' );
 
-			_modules.memory.saveToLocal();
+			_modules.memory.save();
 		}		
 	}
 
