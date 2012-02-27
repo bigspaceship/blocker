@@ -66,12 +66,15 @@ function Editor()
 	{
 		if ( getNumberKey( $key ) !== -1 )
 		{
-			numberPressed( $event, $key );
+			if ( ! $( 'input:focus' ).length )
+			{
+				numberPressed( $event, $key );
+			}
 		}
 
 		else
 		{
-			if ( ! $( 'input:focus').length )
+			if ( ! $( 'input:focus' ).length )
 			{
 				// backspace		
 				if ( $key === 8 )
