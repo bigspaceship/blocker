@@ -38,7 +38,7 @@ function sketchSave( $sketch )
 	$query_string .= ") VALUES (";
 	$query_string .= join( ', ', $field_values );
 	$query_string .= ")";
-
+	
 	mysql_query( $query_string );
 }
 

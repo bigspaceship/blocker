@@ -121,6 +121,8 @@ elseif (
 	{
 		if ( count( $json['blocks'] ) < 1000 )
 		{
+			date_default_timezone_set( 'America/New_York' );
+			
 			$file_name = date( 'Y-m-d-H-i-s' ) . '_' . $_FILES['file']['name'];
 			$website = filter_var( $_POST[ 'website' ], FILTER_VALIDATE_URL );
 			$author = $_POST[ 'author' ];
