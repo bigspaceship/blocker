@@ -230,6 +230,6 @@ elseif (
 <?php
 }
 ?>
-
+		<footer><p>Blocker was built by <a href="http://www.bigspaceship.com">Big Spaceship</a>.</p></footer>
 	</body>
 </html>

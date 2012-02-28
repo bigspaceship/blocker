@@ -375,3 +375,11 @@ input[type="email"]
 .clearfix:before,
 .clearfix:after { content: ''; display: table; }
 .clearfix:after { clear: both; }
+
+footer > *
+{
+	width: 100%;
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 10px 0;
+}

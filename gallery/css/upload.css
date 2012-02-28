@@ -106,3 +106,11 @@ input.required-not-filled
 {
 	border: 1px #333 solid;
 }
+
+footer > *
+{
+	width: 100%;
+	max-width: 650px;
+	margin: 0 auto;
+	padding: 10px 0;
+}

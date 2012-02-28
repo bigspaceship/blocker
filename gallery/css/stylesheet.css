@@ -136,8 +136,8 @@ body
 	float: left;
 	clear: none;
 	position: absolute;
-	right: 50px;
-	top: 50px;
+	right: 30px;
+	top: 30px;
 	padding: 0 10px;
 	z-index: 10;
 	display: none;
@@ -165,6 +165,7 @@ body
 
 	.gallery-info
 	{
+		margin-left: 20px;
 		opacity: 0;
 				transition: opacity 0.5s ease-out;
 			 -o-transition: opacity 0.5s ease-out;
@@ -273,6 +274,11 @@ body
 		color: #06f;
 	}
 
+	.gallery-controls
+	{
+		margin-right: 20px;
+	}
+
 .dialog
 {
 	position: absolute;
@@ -310,3 +316,23 @@ body
 	{
 		text-decoration: underline;
 	}
+
+footer
+{
+	display: block;
+	position: absolute;
+	bottom: 70px;
+	right: 30px;
+	color: #333;
+}
+
+footer a
+{
+	color: #06f;
+	text-decoration: none;
+}
+
+footer a:hover
+{
+	text-decoration: underline;
+}
