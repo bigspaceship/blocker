@@ -220,10 +220,12 @@ elseif (
 	{
 ?>
 			<h1>Upload successfull</h1>
-			<p>We will now review your submisstion. If everything goes well, we will add your sketch to the gallery.</p>
+			<p>We will now review your submisston. If everything goes well, we will add your sketch to the gallery.</p>
+			<p>If you provided an email address, we will notify you when we have reviewed and accepted your sketch.</p>
 <?php
 	}
 ?>
+			<p>You can <a href="upload.php">upload</a> another sketch</p>
 		</section>
 <?php
 }
