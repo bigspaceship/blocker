@@ -96,13 +96,13 @@ function Editor()
 						if ( $event.shiftKey )
 						{
 							$event.preventDefault();
-							historyUpdate( 'redo' );
+							_modules.canvas.historyUpdate( 'redo' );
 						}
 
 						else
 						{
 							$event.preventDefault();
-							historyUpdate( 'undo' );
+							_modules.canvas.historyUpdate( 'undo' );
 						}
 
 						_modules.navigation.showInfo( _modules.canvas.getMode() );
