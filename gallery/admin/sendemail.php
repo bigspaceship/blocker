@@ -8,9 +8,9 @@ function sendEmail( $data )
 	{
 		$recipient = $data['email'];
 
-		$subject = 'Sketch Accepted';
-		$message = 'Your sketch has been accepted to the gallery. You can see it here: http://gfischer.local/blocks-editor/gallery/#/' . $data['slug'];
-		$headers = "From: info@bigspaceship.com\r\n" . "X-Mailer: php";
+		$subject = 'Your Sketch Has Been Accepted';
+		$message = 'Congratulations!\n\nYour sketch has been accepted to the public gallery of Blocker. You can see it here:\n\nhttp://blocker.bigspaceship.com/gallery/#/' . $data['slug'];
+		$headers = 'From: blocker@bigspaceship.com' . '\r\n' . 'Reply-To: blocker@bigspaceship.com' . '\r\n' . 'X-Mailer: php';
 		
 		if ( mail( $recipient, $subject, $message, $headers ) )
 		{

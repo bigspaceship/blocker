@@ -10,14 +10,14 @@ require_once( 'api/public-database.php' );
 <!--[if IE 9]>    <html itemscope itemtype="http://schema.org/Product" class="no-js ie9" lang="en"> <![endif]-->
 <html>
 	<head>
-		<title>Upload</title>
+		<title>Blocker - Sketch Upload</title>
 		<script src="../javascript/libraries/modernizr.custom.74974.js"></script>
-		<link rel="stylesheet" href="css/upload.css" />
+		<link rel="stylesheet" href="css/upload.min.css" />
 	</head>
 	<body>
 		<section>
-			<h1>Sketch Upload</h1>
-			<p>Upload a sketch that you built with the <a href="../index.html">Blocks Builder</a>. Once your sketch has been approved, it will show up in the <a href="../gallery">gallery</a>.</p>
+			<h1>Blocker Sketch Upload</h1>
+			<p>Upload a sketch that you built with <a href="../index.html">Blocker</a>. Once your sketch has been approved, it will show up in the <a href="../gallery">gallery</a>.</p>
 			<p>Please make sure that your sketch consists of less than 1000 blocks before submitting it.</p>
 			<p>Please note: The sketch name and file input fields are mandatory.</p>
 			<p>If you enter your email address, we will notify you if when we have moderated your sketch. We will not display you email address publicly or give it away. Our <a href="http://www.bigspaceship.com/terms-of-service/">Terms and Conditions</a> apply.</p>
@@ -191,7 +191,7 @@ elseif (
 
 		else
 		{
-			$errors[] =  'Your sketch has ' . count( $json['blocks'] ) . ' blocks. Please reduce the block count to less than 1000 blocks and upload the file again.';
+			$errors[] =  'The maximum number of blocks allowed is 3000 blocks. Your sketch has too many blocks. Please make sure your sketch has less than 3000 blocks and upload the file again.';
 		}
 	}
 
@@ -219,17 +219,19 @@ elseif (
 	else
 	{
 ?>
-			<h1>Upload successfull</h1>
-			<p>We will now review your submisston. If everything goes well, we will add your sketch to the gallery.</p>
-			<p>If you provided an email address, we will notify you when we have reviewed and accepted your sketch.</p>
+			<h1>Thanks! Your sketch has been uploaded.</h1>
+			<p>
+				Your submission is being reviewed and will be added to the gallery if approved. If you provided an email address, 
+				you will be notified when it is added to the gallery.
+			</p>
 <?php
 	}
 ?>
-			<p>You can <a href="upload.php">upload</a> another sketch</p>
+			<p>You can <a href="upload.php">upload</a> another sketch.</p>
 		</section>
 <?php
 }
 ?>
-
+		<footer><p>Blocker was built by <a href="http://www.bigspaceship.com">Big Spaceship</a>.</p></footer>
 	</body>
 </html>

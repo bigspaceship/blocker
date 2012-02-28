@@ -153,7 +153,7 @@ function Gallery()
 
 	function sketchIDsLoad()
 	{		
-		var json_url = 'api/public-api?action=get-sketch-ids';
+		var json_url = 'api/public-api.php?action=get-sketch-ids';
 			
 		$.ajax(
 			{
@@ -201,7 +201,7 @@ function Gallery()
 				getSketchIndex( $id ) === -1
 			)
 			{
-				var json_url = 'api/public-api?action=get-sketch&value=' + $id;
+				var json_url = 'api/public-api.php?action=get-sketch&value=' + $id;
 		
 				$.ajax(
 					{

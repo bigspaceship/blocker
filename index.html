@@ -6,8 +6,8 @@
 <!-- <html manifest="editor.manifest"> -->
 <html>
 	<head>
-		<title>Isometric Block Editor</title>
-		<link rel="stylesheet" href="css/stylesheet.css" />
+		<title>Blocker - An Isometric Block Editor</title>
+		<link rel="stylesheet" href="css/stylesheet.min.css" />
 		<link rel="stylesheet" href="css/blocks.css" />
 		<script src="javascript/libraries/modernizr.custom.74974.js"></script>
 	</head>
@@ -17,61 +17,56 @@
 			Please upgrade or change your browser.
 		</article><![endif]-->
 		</div>		
-		<a href="gallery/" class="toggle-button show-gallery">Go to Gallery</a>
+		<a href="gallery/" class="toggle-button show-gallery">Open Gallery</a>
 		<section class="help">
 			<a href="#" class="help-button help-toggle">?</a>
 			<article class="help-text help-welcome">
-				<h1>Welcome to The Blocks Editor</h1>
+				<h1>Welcome to Blocker</h1>
 				<p>
-					With this Editor you can draw isometric pixel sketches in your browser.
+					Blocker is an isometric block editor. It allows you to create isometric pixel sketches right in the browser.
 				</p>
 				<div class="help-getting-started">
 					<h1>Getting Started</h1>
 					<p>
-						To get started, select a color from the toolbar on the bottom of the screen and
-						click on the canvas. A transparent block shows you where the next block will be positioned
-						when you click.
-					</p>
-					<p>
-						There are three edit modes available. You can switch between modes in the toolbar.
+						To start drawing, select a color from the toolbar on the bottom of the screen and click on the canvas. 
+						A transparent block shows you where the next block will be placed when you click. You can add or remove 
+						blocks from the canvas easily by switching drawing modes.
 					</p>
 				</div>
 				<div class="help-drawing-modes">
 					<h1>Drawing Modes</h1>
-					<ul>
-						<li>
-							In <strong>single block</strong> mode you can add one block at a time to the canvas.
-						</li>
-						<li>
-							In the <strong>multiple blocks</strong> mode, you can add multiple blocks
-							to the canvas. Using the sliders in the toolbar, you can adjust the size of the
-							grid.
-						</li>
-						<li>
-							You can use the <strong>delete</strong> mode to remove blocks from the canvas.
-							Click on a block to add it to the selection (it turns black). To remove all selected
-							blocks, click on the delete button in the toolbar or backspace on you keyboard.
-						</li>
-					</ul>
-					<p>You can use the history buttons to undo and redo your actions.</p>
+					<p>
+						Single block mode adds one block at at time to the canvas.
+						In multiple blocks mode, you can add multiple blocks and can control the number of blocks 
+						using the sliders to adjust the grid size.
+					</p>
+					<p>
+						Delete mode removes blocks from the canvas. Selecting one or multiple blocks will turn them black indicating what 
+						blocks will be removed - then click the delete button in the toolbar or hitting the backspace button on the keyboard.
+					</p>
+					<p>The history buttons in the toolbar allow you to redo or undo your actions.</p>
 				</div>
 				<div class="help-import-export">
 					<h1>Import and Export</h1>
+					<p>
+						Sketches saved as json files can be imported. Sketches can be saved to the local web storage 
+						or exported in either a json or html format.
+					</p>
 					<p>In the <strong>file</strong> menu you can:</p>
 					<ul>
 						<li>
-							<strong>save</strong> your sketch. This saves your sketch on your local machine.
+							<strong>Save</strong> your sketch to your local machine.
 						</li>
 						<li>
-							<strong>load</strong> a sketch. you can choose from sketches you saved before.
+							<strong>Load</strong> a sketch that you have saved to your local machine.
 						</li>
 						<li>
-							<strong>import</strong> a sketch from a file.
+							<strong>Import</strong> a sketch that was exported in a <code>json</ode> format.
 						</li>
 						<li>
-							<strong>export</strong> a sketch from a to a file. There are two output formats available:
-							<code>html</code> and <code>json</code>. Export your sketch as <code>html</code> to embed it on other websites.
-							Export it as <code>json</code> if you want to import and modify it later on using this editor.
+							<strong>Export</strong> a sketch to either an <code>html</code> or a <code>json</code> file. 
+							Export it as <code>html</code> to embed your sketch on other websites. Export it as <code>json</code> 
+							if you want to import and modify your sketch at a later date using this editor. 
 						</li>
 					</ul>
 				</div>
@@ -106,7 +101,7 @@
 						</li>
 					</ul>
 				</div>
-				<p>If you want to share your sketches with others, you can <a href="gallery/upload">upload</a> it it to our <a href="gallery">gallery</a>.</p>
+				<p>If you want to share your sketches with others, you can <a href="gallery/upload.php">upload</a> it it to our <a href="gallery">gallery</a>.</p>
 				<p><a class="help-toggle" href="#">close</a></p>
 			</article>
 		</section>
@@ -185,7 +180,7 @@
 					<li><a href="#" id="history-undo" class="history-button">undo</a></li>
 					<li><a href="#" id="history-redo" class="history-button">redo</a></li>
 				</ul>
-			</div>			
+			</div>
 			<div class="file-buttons">
 				<h1>File</h1>
 				<ul>
@@ -195,6 +190,7 @@
 					<li><a href="#" id="file-export" class="file-button">export</a></li>
 				</ul>
 			</div>
+			<footer><p>Blocker was built by <a href="http://www.bigspaceship.com">Big Spaceship</a>.</p></footer>
 		</nav>
 		<script src="javascript/editor.min.js"></script>
 	</body>
