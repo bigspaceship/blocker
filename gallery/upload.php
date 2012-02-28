@@ -12,7 +12,7 @@ require_once( 'api/public-database.php' );
 	<head>
 		<title>Blocker - Sketch Upload</title>
 		<script src="../javascript/libraries/modernizr.custom.74974.js"></script>
-		<link rel="stylesheet" href="css/upload.css" />
+		<link rel="stylesheet" href="css/upload.min.css" />
 	</head>
 	<body>
 		<section>
