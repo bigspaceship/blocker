@@ -191,7 +191,7 @@ elseif (
 
 		else
 		{
-			$errors[] =  'Your sketch has ' . count( $json['blocks'] ) . ' blocks. Please reduce the block count to less than 3000 blocks and upload the file again.';
+			$errors[] =  'The maximum number of blocks allowed is 3000 blocks. Your sketch has too many blocks. Please make sure your sketch has less than 3000 blocks and upload the file again.';
 		}
 	}
 
@@ -219,13 +219,15 @@ elseif (
 	else
 	{
 ?>
-			<h1>Upload successfull</h1>
-			<p>We will now review your submisston. If everything goes well, we will add your sketch to the gallery.</p>
-			<p>If you provided an email address, we will notify you when we have reviewed and accepted your sketch.</p>
+			<h1>Thanks! Your sketch has been uploaded.</h1>
+			<p>
+				Your submission is being reviewed and will be added to the gallery if approved. If you provided an email address, 
+				you will be notified when it is added to the gallery.
+			</p>
 <?php
 	}
 ?>
-			<p>You can <a href="upload.php">upload</a> another sketch</p>
+			<p>You can <a href="upload.php">upload</a> another sketch.</p>
 		</section>
 <?php
 }
