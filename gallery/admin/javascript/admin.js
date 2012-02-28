@@ -27,7 +27,6 @@ $( document ).ready(
 			}
 
 			listAddTitle();
-			listAddTextEdit();
 		}
 
 		function sketchDelete( $id )
@@ -109,7 +108,7 @@ $( document ).ready(
 
 		function sketchPreview( $id )
 		{
-			window.open( 'preview.php?id=' + $id );
+			previewShow( $id );
 		}
 
 		function sketchEdit( $id )
@@ -388,20 +387,6 @@ $( document ).ready(
 			$( '.sketch-list' ).prepend( title_html );
 		}
 
-		function listAddTextEdit()
-		{
-		//{
-		//	$( '.sketch-list > li' ).each(
-		//		function( $index, $item )
-		//		{
-		//			$( this ).find( '.sketch-name' ).click( sketchNameClicked );
-		//			$( this ).find( '.sketch-author' ).click( sketchAuthorClicked );
-		//			$( this ).find( '.sketch-email' ).click( sketchEmailClicked );
-		//			$( this ).find( '.sketch-website, .sketch-website ' ).click( sketchWebsiteClicked );
-		//		}
-		//	);
-		}
-
 		function optionsClicked( $event )
 		{
 			var target = $( $event.target );
@@ -447,6 +432,77 @@ $( document ).ready(
 			if ( action === 'save' )
 			{
 				sketchSave( item_id );
+			}
+		}
+
+		function previewShow( $id )
+		{
+			var current_section = $( '#sketch-' + $id ).closest( 'section' );
+			var title = $( '#sketch-' + $id + ' .sketch-name' ).text() || $( '#sketch-' + $id + ' input' ).val();
+			var preview_html = '<iframe id="iframe" src="preview.php?id=' + $id + '" scrolling="yes"></iframe>';
+				preview_html += '<p class="preview-controls">';
+				preview_html += 	'<strong>' + title + '</strong> ';
+				preview_html += 	'<a href="#" class="preview-close">close</a> preview or open it in ';
+				preview_html += 	'<a href="#sketch-' + $id + '" class="preview-new-window">new window</a>';
+				preview_html += '</p>';
+
+			var timeout = 10;
+			
+			if ( ! $( '#preview' ).length )
+			{
+				var section_html = '<section id="preview"></section>';
+				
+				current_section.before( section_html );
+			}
+
+			else
+			{
+				if ( $( '#preview' ).hasClass( 'active' ) )
+				{
+					$( '#preview' ).removeClass( 'active' );
+
+					timeout += 400;
+					setTimeout( function(){ $( '#preview' ).insertBefore( current_section ); }, 400 );
+				}
+
+				else
+				{
+					$( '#preview' ).insertBefore( current_section );
+				}				
+			}
+
+			$( '#preview' ).html( preview_html )
+
+			setTimeout( function()
+			{				
+				$( '#preview' ).addClass( 'active' );
+				$( '#preview .preview-close' ).click( previewClose );
+				$( '#preview .preview-new-window' )
+					.attr( { href: '#sketch-' + $id } )
+					.click( previewNewWindow );
+
+			}, 10 );
+		}
+
+		function previewClose( $event )
+		{
+			if ( $event )
+			{
+				$event.preventDefault();
+			}
+
+			$( '#preview' ).removeClass( 'active' );
+		}
+
+		function previewNewWindow( $event )
+		{
+			if ( $event )
+			{
+				$event.preventDefault();
+
+				var id = $( $event.target ).attr( 'href' ).replace( '#sketch-', '' );
+
+				window.open( 'preview.php?id=' + id );
 			}
 		}
 

@@ -17,6 +17,7 @@ if ( $connection )
 		<title>Gallery Preview</title>
 		<link href="../css/stylesheet.css" rel="stylesheet" />
 		<link href="../css/blocks.css" rel="stylesheet" />
+		<link href="css/preview.css" rel="stylesheet" />
 	</head>
 	<body>
 <?php
@@ -36,10 +37,8 @@ if ( $connection )
 
 				foreach ( $blocks as $block )
 				{
-
 					$left = $block['position']['x'];
 					$top = $block['position']['y'] + ( - 14 * $block['position']['z'] );
-				//position.top = parseInt( original_position.y + ( - block_size.height * original_position.z ) );
 ?>
 			<div class="block color-<?=$block['color']?>" style="top: <?=$top?>px; left: <?=$left?>px; z-index: <?=$block['position']['z']?>; "></div>
 <?php

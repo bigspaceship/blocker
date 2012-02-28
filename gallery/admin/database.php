@@ -37,8 +37,10 @@ function sketchAccept( $id )
 function sketchDecline( $id )
 {
 	$id = mysql_real_escape_string( $id );
+
 	mysql_query( "UPDATE blocks SET accepted = '0' WHERE id = '" . $id . "'" );
 	mysql_query( "UPDATE blocks SET moderated = '1' WHERE id = '" . $id . "'" );
+	
 	return $id;
 }
 
@@ -118,18 +120,6 @@ function getAllSketchMeta()
 function getNewSketchMeta()
 {
 	return resultToArray( mysql_query( "SELECT id,name,author,website,twitter,email,date,accepted,moderated FROM blocks WHERE moderated = '0' ORDER BY date DESC" ) );
-}
-
-function getSketch( $id )
-{
-	$id = mysql_real_escape_string( $id );
-	$result = resultToArray( mysql_query( "SELECT id,name,blocks,author,website,twitter,accepted,moderated FROM blocks WHERE id = ' . $id . '" ) );
-	
-	$result['blocks'] = unserialize( stripslashes( $result['blocks'] ) );
-	$result['author'] = stripslashes( $result['blocks'] );
-	$result['website'] = stripslashes( $result['website'] );
-
-	return $result;
 }
 
 function getSketchMeta( $id )

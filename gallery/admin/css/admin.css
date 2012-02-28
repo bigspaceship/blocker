@@ -343,6 +343,34 @@ input[type="email"]
 	outline: none;
 }
 
+#preview
+{
+	height: 0;
+	padding: 0;
+	overflow: hidden;
+	-webkit-transition: height 0.3s ease-in;
+	   -moz-transition: height 0.3s ease-in;
+	    -ms-transition: height 0.3s ease-in;
+	     -o-transition: height 0.3s ease-in;
+	        transition: height 0.3s ease-in;
+	border-bottom: none;
+}
+
+#preview.active
+{
+	height: 430px;
+	border-bottom: 1px #efefef solid;
+}
+
+	#iframe
+	{
+		border: none;
+		width: 100%;
+		max-width: 100%;
+		overflow: hidden;
+		overflow-y: scroll;
+		height: 400px;
+	}
 
 .clearfix:before,
 .clearfix:after { content: ''; display: table; }

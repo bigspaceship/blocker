@@ -33,11 +33,6 @@ if ( isset ( $_GET[ 'action' ] ) )
 	{
 		$value = $_GET[ 'value' ];
 
-		if ( $action === 'get-sketch' )
-		{
-			$output = getSketch( $value );
-		}
-
 		if ( $action === 'sketch-delete' )
 		{
 			$output = sketchDelete( $value );
