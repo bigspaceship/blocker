@@ -169,15 +169,20 @@ body
 		-webkit-transition: opacity 0.5s ease-out;
 	}
 
-	.gallery-info
+	.bottom-bar
+	{
+		font-size: 12px;
+	}
 
-	.gallery-info a
+	.gallery-info a,
+	.bottom-bar a
 	{
 		color: #06f;
 		text-decoration: none;
 	}
 
-	.gallery-info a:hover
+	.gallery-info a:hover,
+	.bottom-bar a:hover
 	{
 		text-decoration: underline;
 	}
