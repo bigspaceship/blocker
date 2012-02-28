@@ -119,7 +119,7 @@ elseif (
 		$json['blocks']
 	)
 	{
-		if ( count( $json['blocks'] ) < 1000 )
+		if ( count( $json['blocks'] ) < 3000 )
 		{
 			date_default_timezone_set( 'America/New_York' );
 			

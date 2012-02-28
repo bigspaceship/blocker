@@ -21,7 +21,7 @@ function sketchSave( $sketch )
 	$db_fields['author'] = 	isset( $sketch['author'] ) ? mysql_real_escape_string( utf8_encode( $sketch['author'] ) ) : 'anonymous';
 	$db_fields['website'] = isset( $sketch['website'] ) ? mysql_real_escape_string( utf8_encode( $sketch['website'] ) )  : '';
 	$db_fields['name'] = 	isset( $sketch['name'] ) ? mysql_real_escape_string( utf8_encode( $sketch['name'] ) ) : '';
-	$db_fields['email'] = 	isset( $sketch['email'] && validEmail( $sketch['email'] ) ) ? mysql_real_escape_string( utf8_encode( $sketch['email'] ) ) : '';
+	$db_fields['email'] = 	isset( $sketch['email'] ) && validEmail( $sketch['email'] ) ? mysql_real_escape_string( utf8_encode( $sketch['email'] ) ) : '';
 	$db_fields['twitter'] = isset( $sketch['twitter'] ) ? mysql_real_escape_string( utf8_encode( $sketch['twitter'] ) ) : '';
 	$db_fields['date'] = 	isset( $sketch['date'] ) ? mysql_real_escape_string( $sketch['date'] ) : '';
 	$db_fields['slug'] = 	generateSlug( utf8_encode( $sketch['name'] ) );

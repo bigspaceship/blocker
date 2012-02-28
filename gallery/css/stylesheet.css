@@ -97,8 +97,11 @@ body
 	{
 				transition: all 0.3s ease-out;
 			 -o-transition: all 0.3s ease-out;
+			-ms-transition: all 0.3s ease-out;
 		   -moz-transition: all 0.3s ease-out;
 		-webkit-transition: all 0.3s ease-out;
+		-webkit-transform: translateZ(0);
+		   -moz-transform: translateZ(0);
 	}
 
 	.gallery-sketch
@@ -165,19 +168,25 @@ body
 		opacity: 0;
 				transition: opacity 0.5s ease-out;
 			 -o-transition: opacity 0.5s ease-out;
+			-ms-transition: opacity 0.5s ease-out;
 		   -moz-transition: opacity 0.5s ease-out;
 		-webkit-transition: opacity 0.5s ease-out;
 	}
 
-	.gallery-info
+	.bottom-bar
+	{
+		font-size: 12px;
+	}
 
-	.gallery-info a
+	.gallery-info a,
+	.bottom-bar a
 	{
 		color: #06f;
 		text-decoration: none;
 	}
 
-	.gallery-info a:hover
+	.gallery-info a:hover,
+	.bottom-bar a:hover
 	{
 		text-decoration: underline;
 	}
@@ -236,6 +245,7 @@ body
 		opacity: 1;
 			transition: opacity 0.2s ease-out;
 		 -o-transition: opacity 0.2s ease-out;
+		-ms-transition: opacity 0.2s ease-out;
 	   -moz-transition: opacity 0.2s ease-out;
 	-webkit-transition: opacity 0.2s ease-out;
 	}

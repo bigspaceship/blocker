@@ -376,11 +376,11 @@ function Gallery()
 
 			else
 			{
-				animation_duration = animation_duration / 10;
+				animation_duration = animation_duration / 5;
 				block_animation_time = animation_duration / sketch_block_count;			
 				blocks_to_animate = sketch_block_count / animation_duration;
 				timeout = 1;
-				blocks_to_animate = Math.ceil( blocks_to_animate ) * 2;
+				blocks_to_animate = Math.ceil( blocks_to_animate );
 			}			
 
 			if ( ! $direction )
@@ -403,13 +403,14 @@ function Gallery()
 			{
 				if ( $options.blocks_to_animate > 1 )
 				{
-					for ( var i = 0; i < $options.blocks_to_animate; i++ )
+					var i = $options.blocks_to_animate; while ( i-- )
 					{
 						var index = $options.block_index + i;
 
 						if ( index < _sketches[sketch_index].blocks.length )
 						{
-							$( '#gallery #gallery-sketch-' + _sketches[sketch_index].id + '-block-' + _sketches[sketch_index].blocks[index].index ).css( new_positions[index] );
+							var block_id = '#gallery-sketch-' + _sketches[sketch_index].id + '-block-' + _sketches[sketch_index].blocks[index].index;
+							$( block_id  ).css( new_positions[index] );
 						}
 					}
 				}
@@ -423,7 +424,7 @@ function Gallery()
 				{
 					if ( $options.block_index < _sketches[sketch_index].blocks.length - 1  )
 					{
-						$options.block_index++;
+						$options.block_index += $options.blocks_to_animate;
 
 						setTimeout( function(){ blockAnimate( $options ); }, $options.timeout );
 					}
