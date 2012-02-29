@@ -1,0 +1,385 @@
+*
+{
+	margin: 0;
+	padding: 0;
+}
+
+body
+{
+	font-family: sans-serif;
+	font-size: 12px;
+	color #666;
+	line-height: 20px;
+	color: #666;
+}
+
+h1
+{
+	font-size: 12px;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 10px;
+}
+
+h2
+{
+	font-size: 12px;
+	font-weight: bold;
+	color: #666;
+	margin-bottom: 5px;
+}
+
+a
+{
+	color: #06f;
+	text-decoration: none;
+}
+
+a:hover
+{
+	text-decoration: underline;
+}
+
+section
+{
+	padding: 30px 0;
+	border-bottom: 1px #efefef solid;
+	margin: 0 auto;
+}
+
+section > *
+{
+	width: 100%;
+	max-width: 960px;
+	margin: 0 auto;
+}
+
+.sketch-list li
+{
+	display: block;
+	width: 100%;
+	float: left;
+	height: 30px;
+	line-height: 30px;
+	margin-bottom: 1px;
+	padding-left: 12px;
+	color: #999;
+}
+
+	.sketch-list li:hover
+	{
+		background-color: #fcfcfc;
+	}
+
+	.sketch-list li.sketch-not-accepted
+	{
+		
+	}
+
+	.sketch-list li.sketch-accepted
+	{
+		color: #666;
+		border-left: 2px #ccc solid;
+		padding-left: 10px;
+	}
+
+	.sketch-list li.sketch-not-moderated
+	{
+		color: #000;
+		border-left: 2px #06f solid;
+		padding-left: 10px;
+	}
+
+	.sketch-list li .sketch-decline
+	{
+		display: none;
+	}
+
+	.sketch-list li.sketch-not-moderated .sketch-decline
+	{
+		display: inline;
+	}
+
+	.sketch-list li.sketch-accepted .sketch-accept
+	{
+		display: none;
+	}
+
+	.sketch-list li.sketch-accepted .sketch-decline
+	{
+		display: inline;
+	}
+
+	.sketch-list p
+	{
+		float: left;
+		width: 100%;
+		overflow: hidden;
+	}
+
+	.sketch-list p:hover
+	{
+		overflow: visible;
+		background-color: #fcfcfc;
+	}
+
+	.sketch-list .title
+	{
+		font-weight: bold;
+		border: none;
+		padding-left: 12px;
+	}
+
+	.sketch-list .title p:hover
+	{
+		background-color: #fff;
+	}
+
+	.sketch-list input
+	{
+		margin-top: 2px;
+	}
+
+	.sketch-name
+	{
+		max-width: 260px;;
+	}
+
+		.sketch-name input[type="text"]
+		{
+			max-width: 250px;
+		}
+
+	.sketch-author
+	{
+		max-width: 160px;
+	}
+		.sketch-author input[type="text"]
+		{
+			max-width: 150px;
+		}
+
+	.sketch-website
+	{
+		max-width: 130px;
+		overflow: hidden;
+	}
+
+		.sketch-website input[type="text"]
+		{
+			max-width: 120px;
+		}
+
+	.sketch-twitter
+	{
+		max-width: 80px;
+	}
+
+		.sketch-twitter input[type="text"]
+		{
+			max-width: 70px;
+		}
+
+	.sketch-email
+	{
+		max-width: 80px;
+	}
+
+		.sketch-email input[type="text"]
+		{
+			max-width: 70px;
+		}
+
+	.sketch-date
+	{
+		max-width: 80px;
+		font-family: 'Menlo', monospace;
+	}
+
+	p.sketch-options
+	{
+		width: auto;
+		display: none;
+		float: right;
+		clear: none;
+		overflow: visible;
+	}
+
+	.sketch-list .sketch-options a
+	{
+		display: block;
+		width: 10px;
+		float: right;
+		position: relative;
+		background-repeat: no-repeat;
+		background-position: left center;
+		height: 30px;
+		margin-right: 5px;
+		text-decoration: none;
+		padding: 0 5px;
+	}
+
+	.sketch-list .sketch-options a span
+	{
+		display: block;
+		padding: 0 5px;
+		color: white;
+		background: #06f;
+		margin-top: -12px;
+		width: 50px;
+		height: 18px;
+		line-height: 18px;
+		margin-left: -30px;
+		text-align: center;
+		color: #fff;
+		text-decoration: none;
+		opacity: 0;
+
+		-webkit-border-radius: 3px;
+		   -moz-border-radius: 3px;
+				border-radius: 3px;
+	}
+
+	.sketch-list .sketch-options a:hover span
+	{
+		opacity: 1;
+		text-decoration: none;
+	}
+
+	.sketch-options .sketch-decline
+	{
+		background-image: url( ../images/cross.gif );
+	}
+
+	.sketch-options .sketch-accept
+	{
+		background-image: url( ../images/tick.gif );
+	}
+
+	.sketch-options .sketch-preview
+	{
+		background-image: url( ../images/magnify_plus.gif );
+	}
+
+	.sketch-options .sketch-delete
+	{
+		background-image: url( ../images/trash.gif );
+	}
+
+	.sketch-options .sketch-email
+	{
+		overflow-x: hidden;
+	}
+
+	.sketch-list .sketch-options .sketch-save
+	{
+		display: none;
+		background-image: url( ../images/save.gif );
+	}
+
+	.sketch-list .editing .sketch-options .sketch-save
+	{
+		display: block;
+	}
+	
+	.sketch-list .sketch-options .sketch-edit
+	{
+		background-image: url( ../images/field_input.gif );
+	}
+
+	.sketch-list .editing .sketch-options .sketch-edit
+	{
+		display: none;
+	}
+
+	.sketch-list .sketch-options a.sketch-reset
+	{
+		display: none;
+		background-image: url( ../images/turn_left.gif );
+	}
+
+	.sketch-list .editing .sketch-options a.sketch-reset
+	{
+		display: block;
+	}
+
+	li:hover .sketch-options
+	{
+		display: block;
+	}
+
+label
+{
+	display: block;
+	float: left;
+	width: 100%;
+	max-width: 150px;
+	height: 26px;
+	line-height: 26px;
+	clear: left;
+	margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="url"],
+input[type="file"],
+input[type="email"]
+{
+	display: block;
+	width: 100%;
+	max-width: 300px;
+	height: 18px;
+	padding: 3px;
+
+	line-height: 18px;
+	font-family: "Menlo", "Lucida Mono", monospace;
+	color: #666;
+	font-size: 15px;
+
+	border: 1px #efefef solid;
+	float: left;
+	margin-bottom: 5px;
+
+	outline: none;
+}
+
+#preview
+{
+	height: 0;
+	padding: 0;
+	overflow: hidden;
+	-webkit-transition: height 0.3s ease-in;
+	   -moz-transition: height 0.3s ease-in;
+	    -ms-transition: height 0.3s ease-in;
+	     -o-transition: height 0.3s ease-in;
+	        transition: height 0.3s ease-in;
+	border-bottom: none;
+}
+
+#preview.active
+{
+	height: 430px;
+	border-bottom: 1px #efefef solid;
+}
+
+	#iframe
+	{
+		border: none;
+		width: 100%;
+		max-width: 100%;
+		overflow: hidden;
+		overflow-y: scroll;
+		height: 400px;
+	}
+
+.clearfix:before,
+.clearfix:after { content: ''; display: table; }
+.clearfix:after { clear: both; }
+
+footer > *
+{
+	width: 100%;
+	max-width: 960px;
+	margin: 0 auto;
+	padding: 10px 0;
+}
