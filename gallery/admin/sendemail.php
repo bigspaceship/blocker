@@ -14,12 +14,7 @@ function sendEmail( $data )
 		
 		if ( mail( $recipient, $subject, $message, $headers ) )
 		{
-			//error_log( 'email successfully sent to ' . $recipient );
-		}
-
-		else
-		{
-			//error_log( 'email did not for for ' . $recipient );
+			
 		}
 	}
 }
