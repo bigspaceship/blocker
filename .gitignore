@@ -2,4 +2,5 @@
 *.sublime-workspace
 .DS_Store
 config.*
-# sketches/*
+.htaccess
+.htpasswd
