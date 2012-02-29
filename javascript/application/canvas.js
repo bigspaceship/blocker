@@ -937,7 +937,6 @@ function Canvas()
 	{
 		if ( _active )
 		{
-			//console.log( _size, $size );
 			_size[$size.id] = $size.value;
 
 			previewUpdateBlocks();
