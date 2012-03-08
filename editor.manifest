@@ -1,6 +1,6 @@
 CACHE MANIFEST
 
-# Version: 1.04
+# Version: 1.05
 
 CACHE:
 index.html
@@ -14,5 +14,5 @@ javascript/editor.min.js
 images/blocks.png
 images/grid.png
 images/select.png
-css/stylesheet.css
+css/stylesheet.min.css
 css/blocks.css
