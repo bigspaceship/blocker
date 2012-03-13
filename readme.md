@@ -11,5 +11,8 @@ Blocker uses the following JavaScript libraries:
 - jQuery event drag http://threedubmedia.com/code/event/drag
 - jQuery mousewheel https://github.com/brandonaaron/jquery-mousewheel
 - jQuery Address http://www.asual.com/jquery/address/
+- jQuery tinysort
+- spin.js http://fgnass.github.com/spin.js/
+- JS date format http://blog.stevenlevithan.com/archives/date-time-format
 
 This repository contains the code for the editor as well as the backend which is written in JavaScript and PHP.
