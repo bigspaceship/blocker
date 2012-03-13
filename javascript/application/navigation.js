@@ -13,8 +13,7 @@ var Navigation = function()
 		$( '.mode-buttons a:first' ).addClass( 'active' );
 
 		slidersAdd( '.multiple-info .size-slider' );
-
-		$( '.single-info' ).show();
+		showInfo( 'single' );
 
 		$( '.color-buttons a' ).click( colorChanged );
 		$( '.mode-buttons a' ).click( modeChanged );
@@ -22,6 +21,8 @@ var Navigation = function()
 
 		$( '#file-export' ).click( exportClicked );
 		$( '#file-import' ).click( importClicked );
+		$( '#file-upload' ).click( uploadClicked );
+
 		$( '#file-save' ).click( saveClicked );
 		$( '#file-load' ).click( loadClicked );
 
@@ -33,6 +34,10 @@ var Navigation = function()
 		
 		$( '#export-html' ).click( exportHTMLClicked );
 		$( '#export-json' ).click( exportJSONClicked );
+
+		$( '#upload' ).click( sketchUpload );
+		$( '.upload-info input' ).keyup( uploadInputCheck );
+		$( '#upload-again, #upload-try-again' ).click( uploadAgain );
 
 		$( '#import-file' ).change( fileChanged );
 
@@ -55,6 +60,10 @@ var Navigation = function()
 			$( '#file-export' ).remove();
 		}
 
+		$( '.upload-inprogress' ).prepend( '<div class="upload-spin"></div>' );
+
+		spinnerAdd( $( '.upload-spin' ) );
+
 		_modules.canvas.setMode( 'single' );
 		_modules.canvas.colorUpdate( color );		
 	}
@@ -67,6 +76,27 @@ var Navigation = function()
 	function start()
 	{
 		$( 'nav' ).show()
+	}
+
+	function spinnerAdd( $element )
+	{
+		var spinner_options = {
+			lines: 10,
+			length: 2,
+			width: 1,
+			radius: 3,
+			color: '#000',
+			speed: 0.8,
+			trail: 30,
+			shadow: false,
+			hwaccel: false,
+			className: 'spinner',
+			zIndex: 2e9,
+			top: '10px',
+			left: '10px'
+		};
+
+		var spinner = new Spinner( spinner_options ).spin( $element[0] );
 	}
 
 	function colorChanged( $event )
@@ -183,6 +213,74 @@ var Navigation = function()
 		showInfo( 'export' );
 	}
 
+	function uploadClicked( $event )
+	{
+		$event.preventDefault();
+
+		showInfo( 'upload' );
+	}
+
+	function uploadInputCheck()
+	{
+		if ( $( '#upload-sketch' ).val().length > 3 )
+		{
+			$( '#upload' ).addClass( 'active' );
+		}
+
+		else
+		{
+			$( '#upload' ).removeClass( 'active' );
+		}
+	}
+
+	function sketchUpload( $event )
+	{
+		if ( $( '#upload-sketch' ).val().length > 3 )
+		{
+			var upload_data = {};
+				upload_data.name = $( '.upload-info #upload-sketch' ).val()
+				upload_data.author = $( '.upload-info #upload-author' ).val() || undefined;
+				upload_data.email = $( '.upload-info #upload-email' ).val() || undefined;
+				upload_data.website = $( '.upload-info #upload-website' ).val() || undefined;
+				upload_data.twitter = $( '.upload-info #upload-twitter' ).val() || undefined;
+				upload_data.blocks = _modules.canvas.getBlocks();
+				upload_data.history = _modules.history.getHistory();
+
+			_modules.memory.upload( upload_data );
+
+			$( '.upload-form' ).addClass( 'upload-hidden' );
+			$( '.upload-inprogress' ).removeClass( 'upload-hidden' );
+		}
+	}
+
+	function sketchUploadCallback( $response )
+	{
+		$( '.upload-inprogress' ).addClass( 'upload-hidden' );
+		
+		if (
+			$response.success &&
+			$response.messages
+		)
+		{
+			$( '.upload-success' ).removeClass( 'upload-hidden' );
+		}
+
+		else
+		{
+			$( '.upload-failed' ).removeClass( 'upload-hidden' );
+		}
+	}
+
+	function uploadAgain( $event )
+	{
+		$event.preventDefault();
+
+		$( '.upload-success, .upload-failed' ).addClass( 'upload-hidden' );
+		$( '.upload-form' ).removeClass( 'upload-hidden' );
+
+		uploadInputCheck();
+	}
+
 	function importClicked( $event )
 	{
 		$event.preventDefault();
@@ -239,12 +337,10 @@ var Navigation = function()
 	{
 		$( '.info-container > *' )
 			.not( '.info-' + $subnav )
-			.removeClass( 'info-container-active' )
-			.hide();
+			.removeClass( 'info-container-active' )			
 
 		$( '.info-container .' + $subnav + '-info' )
 			.addClass( 'info-container-active' )
-			.show();
 
 		$( '.mode-buttons #mode-' + $subnav )
 			.addClass( 'active' )
@@ -276,11 +372,6 @@ var Navigation = function()
 
 			$( '.load-info .sketch-list' ).html( list_html );
 			$( '.load-info .sketch-list a' ).click( sketchListClicked );
-		}
-
-		else
-		{
-			// gf: no sketches :-(
 		}
 	}
 
@@ -378,4 +469,5 @@ var Navigation = function()
 	_self.showInfo = showInfo;
 	_self.setMode = setMode;
 	_self.getColors = getColors;
+	_self.sketchUploadCallback = sketchUploadCallback;
 }

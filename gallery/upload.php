@@ -2,6 +2,10 @@
 require_once( 'api/slug.php' );
 require_once( 'api/validemail.php' );
 require_once( 'api/public-database.php' );
+require_once( 'api/data-validate.php' );
+
+if ( ! isset( $_GET[ 'ajax-upload' ] ) )
+{
 ?>
 <!doctype html>
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
@@ -33,7 +37,7 @@ $input_fields[] = array( 'name' => 'email', 	'type' => 'email', 	'required' => f
 $input_fields[] = array( 'name' => 'website', 	'type' => 'url', 	'required' => false, 	'label' => 'Your Website' );
 $input_fields[] = array( 'name' => 'twitter', 	'type' => 'text', 	'required' => false, 	'label' => 'Your Twitter Handle' );
 
-if ( 
+if (
 	! isset( $_FILES[ 'file' ] ) &&
 	! isset( $_POST[ 'name' ] )
 )
@@ -114,91 +118,36 @@ elseif (
 	$success = false;
 	$errors = array();
 
-	if ( 
-		$json &&
-		$json['blocks']
-	)
+	$data = $json;
+
+	if ( isset( $_POST['website'] ) ) { $data['website'] = $_POST['website']; };
+	if ( isset( $_POST['email'] ) ) { $data['email'] = $_POST['email']; };
+	if ( isset( $_POST['twitter'] ) ) { $data['twitter'] = $_POST['twitter']; };
+	if ( isset( $_POST['author'] ) && ! isset( $data['author'] ) ) { $data['author'] = $_POST['author']; };
+	if ( isset( $_POST['date'] ) && ! isset( $data['date'] ) ) { $data['date'] = $_POST['date']; };
+
+	if ( ! isset( $data['name'] ) )
 	{
-		if ( count( $json['blocks'] ) < 3000 )
+		if ( isset( $_POST['name'] ) )
 		{
-			date_default_timezone_set( 'America/New_York' );
-			
-			$file_name = date( 'Y-m-d-H-i-s' ) . '_' . $_FILES['file']['name'];
-			$website = filter_var( $_POST[ 'website' ], FILTER_VALIDATE_URL );
-			$author = $_POST[ 'author' ];
-			$email = validEmail( $_POST[ 'email' ] ) ? $_POST[ 'email' ] : false;
-			$name = isset( $_POST[ 'name' ] ) ? $_POST[ 'name' ] : '';
-
-			preg_match_all( '/@([A-Za-z0-9_]+)/', $_POST[ 'twitter' ], $twitter_handles );
-
-			if ( ! isset( $json['id'] ) )
-			{
-				$json['id'] = $file_name;
-			}
-
-			if ( ! isset(  $json['history'] ) )
-			{
-				$json['history'] = array();
-			}
-
-			if ( count( $json['history'] ) > 3000 )
-			{
-				$json['history'] = array_slice( $json['history'], 0, 3000 );
-			}
-
-			if (
-				isset( $json['date'] ) && 
-				strtotime( $json['date'] )
-			)
-			{
-				$json['date'] = date( 'Y-m-d H:i', strtotime( $json['date'] ) );
-			}
-
-			else
-			{
-				$json['date'] = date( 'Y-m-d H:i' );
-			}
-
-			$json['name'] = ( $name === '' ) ? $_FILES['file']['name'] : $name;
-
-			if ( $website ) { $json['website'] = $website; }
-			if ( $author ){ $json['author'] = $author; }
-			if ( $email ){ $json['email'] = $email; }
-
-			if ( count( $twitter_handles[1] ) ) { $json['twitter'] = $twitter_handles[1][0]; }
-
-			$json['id'] = slug( $json['id'] );
-
-			if ( $json )
-			{
-				$file = $upload_path . $file_name;
-
-				if ( strpos( $file, '.json') === false )
-				{
-					$file = $file . '.json';
-				}
-			
-				sketchSave( $json );
-
-				$success = true;
-			}
-
-			else
-			{
-				$errors[] = 'Could not write the file ' . $file_name;
-			}
+			$data['name'] = $_POST['name'];
 		}
 
-		else
+		elseif ( isset( $_FILES['file']['name'] ) )
 		{
-			$errors[] =  'The maximum number of blocks allowed is 3000 blocks. Your sketch has too many blocks. Please make sure your sketch has less than 3000 blocks and upload the file again.';
+			$data['name'] = $_FILES['file']['name'];
 		}
 	}
 
-	else
+	$validated_data = dataValidate( $data );
+
+	if ( $validated_data['valid'] )
 	{
-		$errors[] = 'Could not read the uploaded file.';
+		sketchSave( $validated_data['data'] );
 	}
+
+	$success = $validated_data['valid'];
+	$errors = $validated_data['messages'];	
 ?>
 		<section>
 <?php
@@ -235,3 +184,35 @@ elseif (
 		<footer><p>Blocker was built by <a href="http://www.bigspaceship.com">Big Spaceship</a>.</p></footer>
 	</body>
 </html>
+<?php
+}
+else
+{
+	if ( isset( $_POST[ 'data' ] ) )
+	{
+
+		$data = json_decode( $_POST[ 'data' ], true );
+
+		$validated_data = dataValidate( $data );
+		$result = array();
+
+		if ( $validated_data['valid'] )
+		{
+			$result = sketchSave( $validated_data['data'] );
+		}
+	
+		$success = $validated_data['valid'];
+		$messages = $validated_data['messages'];
+				
+		$return_value = array( 'success' => $success, 'messages' => $messages, 'success' => $success, 'result' => $result );
+
+		echo json_encode( $return_value );
+	}
+
+	else
+	{
+?>
+<p>Please <a href="upload.php">return to the upload form</a>.</p>
+<?php
+	}
+}

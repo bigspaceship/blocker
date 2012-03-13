@@ -2,7 +2,7 @@ CACHE MANIFEST
 
 # Version: 1.05
 
-CACHE:
+# CACHE:
 index.html
 javascript/libraries/modernizr.custom.74974.js
 javascript/libraries/jquery-1.7.1.min.js
@@ -10,6 +10,7 @@ javascript/libraries/jquery-ui-1.8.17.custom.min.js
 javascript/libraries/jquery.mousewheel.js
 javascript/libraries/jquery.event.drag-2.0.js
 javascript/libraries/date.format.js
+javascript/libraries/spin.min.js
 javascript/editor.min.js
 images/blocks.png
 images/grid.png

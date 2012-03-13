@@ -386,9 +386,7 @@ function Canvas()
 			_blocks.push( new_block );
 
 			$( '#blocks' ).append( new_block_html );
-			$( '#block-' + new_block.index )
-				.css( new_block_css )
-				.hover( blockOver, blockOut );
+			$( '#block-' + new_block.index ).css( new_block_css );
 
 			if ( $type === 'preview' )
 			{
@@ -517,16 +515,6 @@ function Canvas()
 				target.toggleClass( 'selected' );
 			}
 		}
-	}
-
-	function blockOver( $event )
-	{
-
-	}
-
-	function blockOut( $event )
-	{
-
 	}
 
 	function previewUpdate()
@@ -764,11 +752,6 @@ function Canvas()
 					}
 				}
 			}
-
-			else
-			{
-
-			}
 		}
 	}
 
@@ -967,9 +950,7 @@ function Canvas()
 				_blocks.push( new_block );
 
 				$( '#blocks' ).append( new_block_html );
-				$( '#block-' + new_block.index )
-					.css( new_block_css )
-					.hover( blockOver, blockOut );
+				$( '#block-' + new_block.index ).css( new_block_css )
 			}
 
 			updateCounter();
@@ -1001,6 +982,34 @@ function Canvas()
 					$( '.stats .count-color-' + _colors[i] + ' span' ).text( color_count );
 				}
 			}
+		}
+
+		updateUploadButton();
+	}
+
+	function updateUploadButton()
+	{
+		var button_show = false;
+
+		if (
+			_blocks.length - $( '.block.preview' ).length > 0 &&
+			_blocks.length < 3000 &&
+			_modules.history.getHistoryLength() < 3000 &&
+			navigator.onLine
+		)
+		{
+			button_show = true;
+		}
+
+		if ( button_show )
+		{
+			$( '#file-upload' ).addClass( 'active' );
+		}
+
+		else
+		{
+			$( '.upload-info' ).removeClass( 'info-container-active' );
+			$( '#file-upload' ).removeClass( 'active' );
 		}
 	}
 

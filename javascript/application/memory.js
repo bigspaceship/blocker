@@ -119,6 +119,32 @@ function Memory()
 		}
 	}
 
+	function upload( $data )
+	{
+		var return_value = false;
+
+		if (
+			JSON &&
+			JSON.stringify &&
+			$data.blocks.length < 3000 &&
+			$data.name
+		)
+		{
+			var post_data = { data: JSON.stringify( $data ) };
+			
+			$.ajax(
+				{
+					type: 'POST',
+					url: 'gallery/upload.php?ajax-upload=true',
+					data: post_data,
+					success: _modules.navigation.sketchUploadCallback,
+					error: _modules.navigation.sketchUploadCallback,
+					dataType: 'json'
+				}
+			);
+		}
+	}
+
 	function save()
 	{
 		if ( $( '#blocks' ).length )
@@ -197,7 +223,7 @@ function Memory()
 	function fileDownloaded( $event )
 	{
 		var target = $( $event.target );
-		var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+		var is_chrome = navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1;
 
 		// gf: chrome is the only browser that suppports the a[download] attribute. :-/
 		if ( ! is_chrome )
@@ -209,8 +235,6 @@ function Memory()
 
 		target.remove();
 
-		
-
 		$( '.export-info input, .export-info label, .export-info a' ).show();
 	}
 
@@ -218,6 +242,7 @@ function Memory()
 	_self.exportJSON = exportJSON;
 	_self.fileImported = fileImported;
 	_self.load = load;
+	_self.upload = upload;
 	_self.save = save;
 	_self.init = init;
 }

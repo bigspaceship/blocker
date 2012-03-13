@@ -46,11 +46,18 @@ function Application()
 	function disconnected( $event )
 	{
 		$( '.toggle-button' ).fadeOut();
+		$( '#file-upload').removeClass( 'active' );
+		$( '.upload-info.info-container-active' ).removeClass( '.info-container-active' );
 	}
 
 	function connected( $event )
 	{
 		$( '.toggle-button' ).fadeIn();
+
+		if ( $( '.block' ).not( '.preview' ).length )
+		{
+			$( '#file-upload').addClass( 'active' );
+		}
 	}
 
 	_self.init = init;
