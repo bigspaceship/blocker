@@ -11,7 +11,7 @@ Blocker uses the following JavaScript libraries:
 - jQuery event drag http://threedubmedia.com/code/event/drag
 - jQuery mousewheel https://github.com/brandonaaron/jquery-mousewheel
 - jQuery Address http://www.asual.com/jquery/address/
-- jQuery tinysort
+- jQuery tinysort http://tinysort.sjeiti.com/
 - spin.js http://fgnass.github.com/spin.js/
 - JS date format http://blog.stevenlevithan.com/archives/date-time-format
 
