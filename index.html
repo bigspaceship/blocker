@@ -134,9 +134,42 @@
 				<div class="import-info">
 					<h1>Import</h1>
 					<label for="import-file">Choose JSON File</label>
-					<!-- <input id="import-file" type="file" accept="application/json,text/json,text/plain" /> -->
 					<input id="import-file" type="file" />
 					<p>You can import .json files that you saved from previous sessions.</p>
+				</div>
+				<div class="upload-info">
+					<div class="upload-form">
+						<h1>Upload Sketch to the Gallery</h1>
+
+						<label for="upload-sketch">Sketch Name</label>
+						<input id="upload-sketch" type="text"  class="required" required />
+
+						<label for="upload-author">Your Name</label>
+						<input id="upload-author" type="text" />
+
+						<label for="upload-email">Your Email Address</label>
+						<input id="upload-email" type="email" />
+
+						<label for="upload-website">Your Website</label>
+						<input id="upload-website" type="url" />
+
+						<label for="upload-twitter">Your Twitter Handle</label>
+						<input id="upload-twitter" type="text" />
+
+						<a href="#" id="upload" class="info-button">Upload Sketch</a>
+						<p>You can upload your sketch to the gallery. The <em>Sketch Name</em> field is mandatory. Our <a href="http://www.bigspaceship.com/terms-of-service/">Terms and Conditions</a> apply.</p>
+					</div>
+					<div class="upload-inprogress upload-hidden">
+						<h1>Uploading</h1>
+					</div>
+					<div class="upload-success upload-hidden">
+						<h1>Upload successful.</h1>
+						<a href="#" id="upload-again" class="info-button">Upload again</a>
+					</div>
+					<div class="upload-failed upload-hidden">
+						<h1>Upload failed.</h1>
+						<a href="#" id="upload-try-again" class="info-button">Try again</a>
+					</div>
 				</div>
 				<div class="single-info">
 					<p>Click or drag the mouse to add blocks. Hold down shift to draw even more blocks.</p>
@@ -187,6 +220,7 @@
 					<li><a href="#" id="file-load" class="file-button">load</a></li>
 					<li><a href="#" id="file-import" class="file-button">import</a></li>
 					<li><a href="#" id="file-export" class="file-button">export</a></li>
+					<li><a href="#" id="file-upload" class="file-button">upload</a></li>
 				</ul>
 			</div>
 			<footer><p>Blocker was built by <a href="http://www.bigspaceship.com">Big Spaceship</a>.</p></footer>

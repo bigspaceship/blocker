@@ -10,6 +10,7 @@ function init()
 		'javascript/libraries/jquery.mousewheel.js',
 		'javascript/libraries/jquery.event.drag-2.0.js',
 		'javascript/libraries/date.format.js',
+		'javascript/libraries/spin.min.js',
 		'javascript/application/navigation.js',
 		'javascript/application/canvas.js',
 		'javascript/application/history.js',

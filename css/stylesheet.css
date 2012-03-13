@@ -157,6 +157,39 @@ nav
 		text-decoration: underline;
 	}
 
+	#file-upload
+	{
+		display: none;
+	}
+
+	#file-upload.active
+	{
+		display: block;
+	}
+
+	#upload
+	{
+		display: none;
+	}
+
+	#upload.active
+	{
+		display: block;
+	}
+
+	.upload-hidden
+	{
+		display: none;
+	}
+
+	.upload-spin
+	{
+		position: relative;
+		width: 20px;
+		height: 20px;
+		float: left;
+	}
+
 	.stats
 	{
 		position: absolute;
@@ -166,7 +199,14 @@ nav
 		left: auto;
 		text-align: right;
 		color: #333;
+		cursor: pointer;
 	}
+
+		.stats p
+		{
+			float: left;
+			margin-left: 15px;
+		}
 
 		.stats .count-color
 		{
@@ -202,6 +242,11 @@ nav
 	color: #666;
 	float: left;
 }
+
+	.info-container .info-container-active
+	{
+		display: block;
+	}
 
 	.info-container h1
 	{
@@ -276,6 +321,29 @@ nav
 		height: 25px;
 	}
 
+	.upload-info p
+	{
+		margin-left: 8px;
+	}
+
+	.upload-info p a
+	{
+		color: #06f;
+		display: inline;
+		padding: 0;
+		margin: 0;
+		line-height: 25px;
+		float: none;
+	}
+
+	.upload-info label,
+	.upload-info input,
+	.upload-info p,
+	.upload-info h1
+	{
+		margin-bottom: 3px;
+	}
+
 	.info-button
 	{
 		margin-right: 10px;
@@ -314,9 +382,10 @@ nav
 		min-height: 25px;
 	}
 
-	.export-info input,
-	.import-info input,
-	.save-info input
+	.info-container input[type="text"],
+	.info-container input[type="url"],
+	.info-container input[type="email"],
+	.info-container input[type="file"]
 	{
 		display: block;
 		float: left;
@@ -333,18 +402,25 @@ nav
 		margin-right: 15px;
 	}
 
-	.export-info input:active,
-	.export-info input:focus,
-	.import-info input:active,
-	.import-info input:focus
+	.info-container input.required
+	{
+		border-color: #666;
+	}
+
+	.info-container input[type="text"]:active,
+	.info-container input[type="text"]:focus,
+	.info-container input[type="url"]:active,
+	.info-container input[type="url"]:focus,
+	.info-container input[type="email"]:active,
+	.info-container input[type="email"]:focus,
+	.info-container input[type="file"]:active,
+	.info-container input[type="file"]:focus
 	{
 		color: #333;,
 		border: 1px #fff solid;
 	}
 
-	.export-info label,
-	.import-info label,
-	.save-info label
+	.info-container label
 	{
 		display: block;
 		float: left;

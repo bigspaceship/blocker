@@ -91,6 +91,11 @@ function History()
 		return _history;
 	}
 
+	function getHistoryLength()
+	{
+		return _history.length;
+	}
+
 	function historyLoadFromStorage()
 	{
 		var storage = _modules.memory.load();
@@ -158,6 +163,7 @@ function History()
 	_self.hasNext = hasNext;
 	_self.hasPrev = hasPrev;
 	_self.getHistory = getHistory;
+	_self.getHistoryLength = getHistoryLength;
 	_self.importHistory = importHistory;
 	_self.historyUpdateIDs = historyUpdateIDs;
 }

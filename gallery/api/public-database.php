@@ -12,10 +12,13 @@ if ( $connection )
 
 function sketchSave( $sketch )
 {	
-	$field_keys= array();
-	$field_values = array();
+	$return_value = array();
 
-	$db_fields['name'] =	$sketch['name'] ? mysql_real_escape_string( $sketch['name'] ) : 'untitled';
+	$field_keys = array();
+	$field_values = array();
+	$db_fields = array();
+
+	$db_fields['name'] =	isset( $sketch['name'] ) ? mysql_real_escape_string( $sketch['name'] ) : 'untitled';
 	$db_fields['blocks'] = 	mysql_real_escape_string( serialize( $sketch['blocks'] ) );
 	$db_fields['history'] = mysql_real_escape_string( serialize( $sketch['history'] ) );
 	$db_fields['author'] = 	isset( $sketch['author'] ) ? mysql_real_escape_string( utf8_encode( $sketch['author'] ) ) : 'anonymous';
@@ -39,7 +42,11 @@ function sketchSave( $sketch )
 	$query_string .= join( ', ', $field_values );
 	$query_string .= ")";
 	
-	mysql_query( $query_string );
+	$success = mysql_query( $query_string );
+
+	$return_value = array( 'success' => $success, 'sketch' => $sketch );
+
+	return $return_value;
 }
 
 function getAcceptedSketchIDs()
